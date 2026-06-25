@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Full Gap Diagnostic &middot; MOSei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#1a2744; --navy-deep:#111c33; --gold:#c9a84c; --gold-light:#e8c97a;
+    --accent:#2E75B6; --ink:#1d2230; --muted:#5a6072; --hint:#8b91a0;
+    --line:#e3e6ec; --surface:#ffffff; --surface2:#f5f7fa; --page:#f8f5ef;
+    --info-bg:#e6f1fb; --info-tx:#0c447c;
+    --teal-bg:#e1f5ee; --teal-tx:#085041;
+    --green-bg:#eaf3de; --green-tx:#27500a;
+    --amber-bg:#faeeda; --amber-tx:#633806;
+    --coral-bg:#faece7; --coral-tx:#712b13;
+    --red-bg:#fcebeb; --red-tx:#791f1f;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --radius: 10px; --radius-lg: 14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#e8ebf2; --muted:#a3aab9; --hint:#7b8294;
+      --line:#2a2f3c; --surface:#161a22; --surface2:#1d222c; --page:#11141b;
+      --info-bg:#0c2a44; --info-tx:#9cc6f0;
+      --teal-bg:#0a2c24; --teal-tx:#7fd9bb;
+      --green-bg:#1c2c0f; --green-tx:#a6cf6f;
+      --amber-bg:#332108; --amber-tx:#e8b878;
+      --coral-bg:#331409; --coral-tx:#e09a7c;
+      --red-bg:#330d0d; --red-tx:#e89494;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--page);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  /* ── Brand header ── */
+  .tool-header{background:var(--navy);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+  .tool-logo{font-family:var(--serif);font-size:1.15rem;color:#fff;}
+  .tool-logo span{color:var(--gold);}
+  .tool-tagline{font-size:0.7rem;color:rgba(255,255,255,0.45);margin-top:1px;}
+  .tool-badge{font-size:0.68rem;color:rgba(255,255,255,0.5);border:0.5px solid rgba(255,255,255,0.2);padding:3px 10px;border-radius:20px;}
+
+  /* ── Tabs ── */
+  .tab-bar{display:flex;border-bottom:1px solid var(--line);background:var(--surface);padding:0 1.25rem;}
+  .tab-btn{font-size:0.8rem;font-family:var(--sans);padding:8px 14px;cursor:pointer;color:var(--muted);border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .tab-btn.active{color:var(--navy);font-weight:500;border-bottom-color:var(--navy);}
+
+  /* ── Wrap ── */
+  .wrap{max-width:720px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+
+  /* ── Read Me ── */
+  .readme-hero{background:var(--navy);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.25rem;}
+  .readme-hero-title{font-family:var(--serif);font-size:1.35rem;color:#fff;margin-bottom:6px;}
+  .readme-hero-title span{color:var(--gold);}
+  .readme-hero-sub{font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.65;}
+  .readme-h3{font-size:0.9rem;font-weight:500;color:var(--ink);margin-bottom:0.5rem;margin-top:1.25rem;}
+  .readme-p{font-size:0.82rem;color:var(--muted);line-height:1.7;margin-bottom:0.5rem;}
+  .band-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+  .band-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .band-label{font-size:0.8rem;font-weight:500;color:var(--ink);width:200px;}
+  .band-desc{font-size:0.75rem;color:var(--muted);}
+  .step-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:0.75rem;}
+  .step-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;font-size:0.7rem;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .step-text{font-size:0.82rem;color:var(--muted);line-height:1.6;}
+  .step-text b{color:var(--ink);font-weight:500;}
+  .readme-divider{border:none;border-top:1px solid var(--line);margin:1.25rem 0;}
+  .readme-source{font-size:0.72rem;color:var(--hint);font-style:italic;}
+
+  /* ── Tool form ── */
+  .block{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+  .block-head{font-size:15px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+  .block-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--info-bg);color:var(--info-tx);font-size:13px;font-weight:600;flex-shrink:0;}
+  .block-sub{font-size:13px;color:var(--muted);margin-bottom:1rem;}
+  .sec-divider{border:none;border-top:1px solid var(--line);margin:1rem 0;}
+
+  /* Tier grid */
+  .tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem;}
+  .tier-opt{border:1px solid var(--line);border-radius:8px;padding:10px 10px;cursor:pointer;background:var(--surface);transition:all 0.15s;text-align:center;user-select:none;}
+  .tier-opt:hover{border-color:var(--navy);background:var(--surface2);}
+  .tier-opt.selected{border:2px solid var(--navy);background:var(--info-bg);}
+  .tier-opt .t-name{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:2px;}
+  .tier-opt .t-mult{font-size:18px;font-weight:600;color:var(--navy);margin-bottom:2px;}
+  .tier-opt.selected .t-mult{color:var(--info-tx);}
+  .tier-opt .t-desc{font-size:11px;color:var(--hint);line-height:1.4;}
+
+  /* Severity slider */
+  .slider-block{margin-bottom:0.75rem;}
+  .slider-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px;}
+  .slider-label{font-size:13px;font-weight:500;color:var(--ink);}
+  .slider-val{font-size:20px;font-weight:600;color:var(--navy);min-width:32px;text-align:right;}
+  .slider-desc{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:8px;min-height:18px;}
+  input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:var(--line);border-radius:2px;outline:none;cursor:pointer;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--navy);border:2px solid #fff;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.2);}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--navy);border:2px solid #fff;cursor:pointer;}
+  .slider-ticks{display:flex;justify-content:space-between;font-size:10px;color:var(--hint);margin-top:4px;}
+
+  /* Radio options */
+  .factor-block{margin-bottom:0.5rem;}
+  .fname{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+  .fhint{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:8px;}
+  .radio-group{display:flex;flex-direction:column;gap:5px;}
+  .radio-opt{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:var(--surface);transition:all 0.15s;user-select:none;}
+  .radio-opt:hover{border-color:var(--navy);background:var(--surface2);}
+  .radio-opt.selected{border:2px solid var(--accent);background:var(--info-bg);padding:8px 11px;}
+  .radio-opt input[type=radio]{margin-top:2px;accent-color:var(--accent);flex-shrink:0;width:14px;height:14px;cursor:pointer;}
+  .ro-label{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:1px;}
+  .ro-desc{font-size:12px;color:var(--muted);line-height:1.45;}
+  .radio-opt.selected .ro-label{color:var(--info-tx);}
+
+  /* Calculate button */
+  button.cta{width:100%;padding:14px;font-size:15px;font-weight:600;border-radius:10px;border:none;background:var(--navy);color:#fff;cursor:pointer;font-family:inherit;margin-top:8px;}
+  button.cta:hover{opacity:0.92;}
+  button.ghost{width:100%;padding:12px;font-size:14px;font-weight:500;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-family:inherit;}
+  button.ghost:hover{background:var(--surface2);}
+
+  /* Results */
+  .metricgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1rem;}
+  .metric{background:var(--surface2);border-radius:8px;padding:1rem;}
+  .metric .ml{font-size:12px;color:var(--muted);margin:0 0 3px;}
+  .metric .mv{font-size:22px;font-weight:600;margin:0;color:var(--ink);}
+  .metric .ms{font-size:11px;color:var(--hint);margin-top:2px;}
+  .comprow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem;}
+  .comp{background:var(--surface2);border-radius:8px;padding:0.75rem;}
+  .comp .cl{font-size:11px;color:var(--muted);margin-bottom:2px;}
+  .comp .cv{font-size:16px;font-weight:600;color:var(--ink);}
+  .scorecard{border-radius:12px;padding:1.25rem;margin-bottom:1rem;border:1px solid var(--line);}
+  .scorecard .sl{font-size:12px;margin:0 0 3px;opacity:0.8;}
+  .scorecard .sv{font-size:38px;font-weight:600;margin:0;line-height:1;}
+  .scorecard .sb{font-size:16px;font-weight:600;margin:10px 0 3px;}
+  .scorecard .sd{font-size:13px;margin:0;opacity:0.9;line-height:1.55;}
+  .verdict-bar{height:4px;border-radius:2px;background:var(--line);margin-bottom:1rem;overflow:hidden;}
+  .verdict-fill{height:100%;border-radius:2px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);}
+  .foot{margin-top:2.5rem;text-align:center;font-size:13px;color:var(--hint);}
+  .foot .tag{font-style:italic;color:var(--accent);}
+
+  @media (max-width:600px){
+    .tier-grid{grid-template-columns:1fr;}
+    .metricgrid{grid-template-columns:1fr;}
+    .comprow{grid-template-columns:repeat(2,1fr);}
+  }
+  @media print{
+    .tool-header,.tab-bar,.no-print{display:none !important;}
+    .wrap{padding:1rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- MOSei brand header -->
+<div class="tool-header">
+  <div>
+    <div class="tool-logo">MOS<span>ei</span></div>
+    <div class="tool-tagline">Full Gap Diagnostic</div>
+  </div>
+  <div class="tool-badge">Norman&rsquo;s Gap Framework</div>
+</div>
+
+<!-- Tabs -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('readme')">Read me</button>
+  <button class="tab-btn" onclick="showTab('tool')">Run diagnostic</button>
+</div>
+
+<!-- READ ME TAB -->
+<div id="tab-readme">
+  <div class="wrap">
+    <div class="readme-hero">
+      <div class="readme-hero-title">Full <span>Gap</span> Diagnostic</div>
+      <div class="readme-hero-sub">The deep precision instrument. Slider-based scoring across external pressure, system regulation, and leader regulation. Produces four outputs: Gap Score, Gap Index, Gap Severity, and Effectiveness %.</div>
+    </div>
+
+    <div class="readme-h3">What this tool measures</div>
+    <p class="readme-p">Norman's Gap is the structural distance between external pressure and internal regulation. This tool measures that gap with precision — using a tier-weighted severity score for pressure and a composite of system and leader regulation for response capacity.</p>
+    <p class="readme-p">The result is four numbers that together tell you not just whether a gap exists, but how wide it is, how fast it may be growing, and where the regulation breakdown is occurring.</p>
+
+    <hr class="readme-divider">
+
+    <div class="readme-h3">The five Gap Index bands</div>
+    <div style="margin-top:0.6rem;">
+      <div class="band-row"><div class="band-dot" style="background:#1D9E75;"></div><span class="band-label">Stable (below 1.0)</span><span class="band-desc">Regulation exceeds pressure. Reserve capacity exists.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#639922;"></div><span class="band-label">Managed tension (1.0&ndash;1.15)</span><span class="band-desc">Pressure and regulation close. Monitor the trend.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#BA7517;"></div><span class="band-label">Widening gap (1.16&ndash;1.30)</span><span class="band-desc">Pressure outpacing regulation. Intervention warranted now.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#993C1D;"></div><span class="band-label">Instability forming (1.31&ndash;1.50)</span><span class="band-desc">Gap is material. Visible to anyone looking. Act now.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#A32D2D;"></div><span class="band-label">System risk (above 1.50)</span><span class="band-desc">Regulation overwhelmed. Outcomes degrading. Stabilize first.</span></div>
+    </div>
+
+    <hr class="readme-divider">
+
+    <div class="readme-h3">What this tool scores</div>
+    <div class="step-row"><div class="step-num">1</div><div class="step-text"><b>External pressure</b> &mdash; Tier classification (behavioral, operational, or system-level) multiplied by severity (6.0&ndash;9.0 scale).</div></div>
+    <div class="step-row"><div class="step-num">2</div><div class="step-text"><b>System regulation</b> &mdash; Four factors scored: ownership clarity, decision speed, escalation discipline, and KPI truth.</div></div>
+    <div class="step-row"><div class="step-num">3</div><div class="step-text"><b>Leader regulation</b> &mdash; Three sliders: self-regulation under pressure, decision composure, and trade-off discipline.</div></div>
+    <div class="step-row"><div class="step-num">4</div><div class="step-text"><b>Results</b> &mdash; Gap Score (pressure minus regulation), Gap Index (pressure divided by regulation), Severity band, and Effectiveness %.</div></div>
+
+    <hr class="readme-divider">
+    <p class="readme-source">Based on Norman&rsquo;s Gap, Signal Compression, and the Norman Decision Window frameworks by Norman Applegate. Published by MOSei.org.</p>
+
+    <div style="margin-top:1rem;">
+      <button class="cta no-print" onclick="showTab('tool')" style="max-width:220px;">Run diagnostic &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOOL TAB -->
+<div id="tab-tool" style="display:none;">
+  <div class="wrap">
+
+    <!-- SECTION 01 — EXTERNAL PRESSURE -->
+    <div class="block">
+      <div class="block-head"><span class="block-num">1</span> External pressure</div>
+      <p class="block-sub">Classify the tier of pressure, then score its severity.</p>
+
+      <div class="fname">Tier classification</div>
+      <div class="fhint" style="margin-bottom:10px;">What level of consequence does this pressure carry?</div>
+      <div class="tier-grid">
+        <div class="tier-opt selected" data-tier="1.0" onclick="selectTier(this)">
+          <div class="t-name">Tier 1</div>
+          <div class="t-mult">&times;1.0</div>
+          <div class="t-desc">Behavioral — leadership, decisions, communication</div>
+        </div>
+        <div class="tier-opt" data-tier="1.1" onclick="selectTier(this)">
+          <div class="t-name">Tier 2</div>
+          <div class="t-mult">&times;1.1</div>
+          <div class="t-desc">Operational — execution, cost/margin, delivery</div>
+        </div>
+        <div class="tier-opt" data-tier="1.2" onclick="selectTier(this)">
+          <div class="t-name">Tier 3</div>
+          <div class="t-mult">&times;1.2</div>
+          <div class="t-desc">System — AI, energy, supply chain, regulation</div>
+        </div>
+      </div>
+
+      <div class="slider-block">
+        <div class="slider-header">
+          <span class="slider-label">Severity</span>
+          <span class="slider-val" id="sev-val">7.0</span>
+        </div>
+        <div class="slider-desc" id="sev-desc">Pressure building — 2 of 3 dimensions confirmed. Problem real and recurring. Response warranted.</div>
+        <input type="range" min="6" max="9" step="0.5" value="7" id="sev-slider" oninput="updateSeverity(this.value)">
+        <div class="slider-ticks"><span>6.0 Monitored</span><span>7.5 Strain</span><span>9.0 Systemic risk</span></div>
+      </div>
+    </div>
+
+    <!-- SECTION 02 — SYSTEM REGULATION -->
+    <div class="block">
+      <div class="block-head"><span class="block-num">2</span> System regulation</div>
+      <p class="block-sub">Can the organization convert a signal into action without delay or distortion? Score four factors.</p>
+
+      <div class="factor-block">
+        <span class="fname">Ownership clarity</span>
+        <div class="fhint">Issues assigned to a named owner immediately and consistently.</div>
+        <div class="radio-group" id="own-group">
+          <label class="radio-opt selected">
+            <input type="radio" name="own" value="2.5" checked onchange="selectRadio('own-group',this)">
+            <div><div class="ro-label">Strong &mdash; 2.5</div><div class="ro-desc">Named owner. Ownership doesn&rsquo;t diffuse under pressure.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="own" value="1.5" onchange="selectRadio('own-group',this)">
+            <div><div class="ro-label">Mixed &mdash; 1.5</div><div class="ro-desc">Ownership inconsistent. Erodes when pressure increases or boundaries blur.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="own" value="0.5" onchange="selectRadio('own-group',this)">
+            <div><div class="ro-label">Weak &mdash; 0.5</div><div class="ro-desc">Accountability routinely diffused. Shared ownership is the default.</div></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="sec-divider"></div>
+
+      <div class="factor-block">
+        <span class="fname">Decision speed</span>
+        <div class="fhint">How fast does the signal-to-decision cycle run?</div>
+        <div class="radio-group" id="spd-group">
+          <label class="radio-opt selected">
+            <input type="radio" name="spd" value="2.5" checked onchange="selectRadio('spd-group',this)">
+            <div><div class="ro-label">Strong &mdash; 2.5</div><div class="ro-desc">Cycle in hours. Decisions made at the right level without unnecessary escalation.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="spd" value="1.5" onchange="selectRadio('spd-group',this)">
+            <div><div class="ro-label">Mixed &mdash; 1.5</div><div class="ro-desc">Cycle in days. Delays common. Decisions frequently require additional review.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="spd" value="0.5" onchange="selectRadio('spd-group',this)">
+            <div><div class="ro-label">Weak &mdash; 0.5</div><div class="ro-desc">Cycle in weeks. Decisions avoided, deferred, or escalated beyond appropriate level.</div></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="sec-divider"></div>
+
+      <div class="factor-block">
+        <span class="fname">Escalation discipline</span>
+        <div class="fhint">Does raw signal reach decision-makers intact, with the clock attached?</div>
+        <div class="radio-group" id="esc-group">
+          <label class="radio-opt selected">
+            <input type="radio" name="esc" value="2.5" checked onchange="selectRadio('esc-group',this)">
+            <div><div class="ro-label">Strong &mdash; 2.5</div><div class="ro-desc">Problems move up cleanly and completely. Window travels with the signal.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="esc" value="1.5" onchange="selectRadio('esc-group',this)">
+            <div><div class="ro-label">Mixed &mdash; 1.5</div><div class="ro-desc">Escalation inconsistent. Information softened in transit. Clock separated from signal.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="esc" value="0.5" onchange="selectRadio('esc-group',this)">
+            <div><div class="ro-label">Weak &mdash; 0.5</div><div class="ro-desc">Problems routinely buried or stalled. Signal compression is structural, not incidental.</div></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="sec-divider"></div>
+
+      <div class="factor-block" style="margin-bottom:0;">
+        <span class="fname">KPI truth</span>
+        <div class="fhint">Are metrics real, unfiltered, and reviewed without adjustment?</div>
+        <div class="radio-group" id="kpi-group">
+          <label class="radio-opt selected">
+            <input type="radio" name="kpi" value="2.5" checked onchange="selectRadio('kpi-group',this)">
+            <div><div class="ro-label">Strong &mdash; 2.5</div><div class="ro-desc">Metrics real and unfiltered. Bad news presented with the same clarity as good news.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="kpi" value="1.5" onchange="selectRadio('kpi-group',this)">
+            <div><div class="ro-label">Mixed &mdash; 1.5</div><div class="ro-desc">Metrics adjusted before reaching leadership. Underperformance contextualized, not named.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="kpi" value="0.5" onchange="selectRadio('kpi-group',this)">
+            <div><div class="ro-label">Weak &mdash; 0.5</div><div class="ro-desc">Metrics systematically politicized or withheld. Leadership decides on distorted outputs.</div></div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 03 — LEADER REGULATION -->
+    <div class="block">
+      <div class="block-head"><span class="block-num">3</span> Leader regulation</div>
+      <p class="block-sub">Observable behavior under pressure. Score honestly &mdash; most leaders overrate this.</p>
+
+      <div class="slider-block">
+        <div class="slider-header">
+          <span class="slider-label">Self-regulation under pressure</span>
+          <span class="slider-val" id="sr-val">7</span>
+        </div>
+        <div class="slider-desc" id="sr-desc">Grounded and composed. Pressure increases clarity and decision quality, not reactivity.</div>
+        <input type="range" min="1" max="10" step="1" value="7" id="sr-slider">
+        <div class="slider-ticks"><span>1&ndash;3 Reactive</span><span>4&ndash;6 Variable</span><span>7&ndash;10 Composed</span></div>
+      </div>
+
+      <div class="sec-divider"></div>
+
+      <div class="slider-block">
+        <div class="slider-header">
+          <span class="slider-label">Decision composure</span>
+          <span class="slider-val" id="dc-val">7</span>
+        </div>
+        <div class="slider-desc" id="dc-desc">Trade-offs made explicitly and promptly. Decisions clear and not requiring subsequent reversal.</div>
+        <input type="range" min="1" max="10" step="1" value="7" id="dc-slider">
+        <div class="slider-ticks"><span>1&ndash;3 Avoidant</span><span>4&ndash;6 Hedged</span><span>7&ndash;10 Clear</span></div>
+      </div>
+
+      <div class="sec-divider"></div>
+
+      <div class="slider-block" style="margin-bottom:0;">
+        <div class="slider-header">
+          <span class="slider-label">Trade-off discipline</span>
+          <span class="slider-val" id="td-val">7</span>
+        </div>
+        <div class="slider-desc" id="td-desc">Hard decisions made and enforced. Stated priorities reflected in actual resource and attention allocation.</div>
+        <input type="range" min="1" max="10" step="1" value="7" id="td-slider">
+        <div class="slider-ticks"><span>1&ndash;3 Avoided</span><span>4&ndash;6 Deferred</span><span>7&ndash;10 Enforced</span></div>
+      </div>
+    </div>
+
+    <button class="cta" onclick="calculate()">Calculate Norman&rsquo;s Gap &rarr;</button>
+
+    <!-- RESULTS -->
+    <div id="results" style="display:none;margin-top:1.5rem;">
+      <div class="block">
+        <div class="verdict-bar"><div class="verdict-fill" id="verdict-fill" style="width:0%;"></div></div>
+        <div class="scorecard" id="scorecard" style="border:none;padding:0.5rem 0 1rem;">
+          <p class="sl">Gap Index</p>
+          <p class="sv" id="r-index">&mdash;</p>
+          <p class="sb" id="verdict-state"></p>
+          <p class="sd" id="verdict-interp"></p>
+        </div>
+
+        <div class="metricgrid">
+          <div class="metric"><p class="ml">External pressure</p><p class="mv" id="r-pressure">&mdash;</p><p class="ms" id="r-pressure-sub"></p></div>
+          <div class="metric"><p class="ml">Internal regulation</p><p class="mv" id="r-regulation">&mdash;</p><p class="ms" id="r-reg-sub"></p></div>
+          <div class="metric"><p class="ml">Gap Score</p><p class="mv" id="r-gap">&mdash;</p><p class="ms">Pressure minus regulation</p></div>
+          <div class="metric"><p class="ml">Effectiveness</p><p class="mv" id="r-eff">&mdash;</p><p class="ms">Regulation / pressure</p></div>
+        </div>
+
+        <div class="comprow">
+          <div class="comp"><p class="cl">System regulation</p><p class="cv" id="r-sys">&mdash;</p></div>
+          <div class="comp"><p class="cl">Leader regulation</p><p class="cv" id="r-ldr">&mdash;</p></div>
+          <div class="comp"><p class="cl">Tier weight</p><p class="cv" id="r-tier">&mdash;</p></div>
+        </div>
+
+        <button class="ghost no-print" onclick="resetTool()">&#8635; &nbsp;Reset diagnostic</button>
+      </div>
+    </div>
+
+    <p class="foot">MOSei.org &middot; The Tempered Signal &middot; <span class="tag">Judgment Formed Under Pressure</span></p>
+  </div>
+</div>
+
+<script>
+function showTab(name) {
+  document.getElementById('tab-readme').style.display = name === 'readme' ? '' : 'none';
+  document.getElementById('tab-tool').style.display = name === 'tool' ? '' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(function(t, i) {
+    t.classList.toggle('active', ['readme','tool'][i] === name);
+  });
+}
+
+var tierWeight = 1.0;
+var severity = 7.0;
+var srVal = 7, dcVal = 7, tdVal = 7;
+
+var sevDescs = {
+  '6':   'Monitored — early signal present. 0 of 3 dimensions confirmed. Watch, not act.',
+  '6.5': 'Elevated — signal visible. 1 of 3 confirmed. Pattern emerging, not yet structural.',
+  '7':   'Pressure building — 2 of 3 confirmed. Problem real and recurring. Response warranted.',
+  '7.5': 'Strain — 2–3 confirmed, spreading across functions. Not yet measurable in outcomes.',
+  '8':   'Disruption — all 3 confirmed and measurable in outcomes. Throughput, cost, or delivery affected.',
+  '8.5': 'System stress — disruption accelerating. Outcomes degrading faster than correction closes the gap.',
+  '9':   'Systemic risk — failure without intervention likely. System no longer self-correcting.'
+};
+
+var leaderDescs = {
+  sr: {
+    high: 'Grounded and composed. Pressure increases clarity and decision quality, not reactivity.',
+    mid:  'Composure varies with pressure intensity. Behavior observable by the team as unpredictable under load.',
+    low:  'Reactive. Pressure distorts communication and judgment. Team adjusts behavior to manage the leader.'
+  },
+  dc: {
+    high: 'Trade-offs made explicitly and promptly. Decisions clear and not requiring subsequent reversal.',
+    mid:  'Decisions made but hedged. Hesitation visible under pressure. Commitments frequently qualified.',
+    low:  'Decisions avoided or reversed under pressure. Overreaction and withdrawal both present as patterns.'
+  },
+  td: {
+    high: 'Hard decisions made and enforced. Stated priorities reflected in actual resource and attention allocation.',
+    mid:  'Trade-offs acknowledged but frequently deferred. Competing priorities left in tension longer than warranted.',
+    low:  'Trade-offs avoided. Declared priorities diverge visibly from actual behavior.'
+  }
+};
+
+function selectTier(el) {
+  document.querySelectorAll('.tier-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  tierWeight = parseFloat(el.dataset.tier);
+}
+
+function selectRadio(groupId, input) {
+  var group = document.getElementById(groupId);
+  group.querySelectorAll('.radio-opt').forEach(function(o) { o.classList.remove('selected'); });
+  input.closest('.radio-opt').classList.add('selected');
+}
+
+function updateSeverity(v) {
+  severity = parseFloat(v);
+  document.getElementById('sev-val').textContent = parseFloat(v).toFixed(1);
+  document.getElementById('sev-desc').textContent = sevDescs[v] || '';
+}
+
+function leaderBand(n) { return n >= 7 ? 'high' : n >= 4 ? 'mid' : 'low'; }
+
+function updateLeader(key, v) {
+  var n = parseInt(v);
+  if (key === 'sr') srVal = n;
+  if (key === 'dc') dcVal = n;
+  if (key === 'td') tdVal = n;
+  document.getElementById(key + '-val').textContent = n;
+  document.getElementById(key + '-desc').textContent = leaderDescs[key][leaderBand(n)];
+}
+
+function getRadioVal(name) {
+  var el = document.querySelector('input[name="' + name + '"]:checked');
+  return el ? parseFloat(el.value) : 0.5;
+}
+
+function calculate() {
+  var pressure = parseFloat((severity * tierWeight).toFixed(2));
+  var own = getRadioVal('own');
+  var spd = getRadioVal('spd');
+  var esc = getRadioVal('esc');
+  var kpi = getRadioVal('kpi');
+  var sysReg = Math.min(10, Math.max(2, own + spd + esc + kpi));
+  var ldrReg = parseFloat(((srVal + dcVal + tdVal) / 3).toFixed(2));
+  var intReg = parseFloat(((sysReg * 0.6) + (ldrReg * 0.4)).toFixed(2));
+  var gapScore = parseFloat((pressure - intReg).toFixed(2));
+  var gapIndex = parseFloat((pressure / intReg).toFixed(2));
+  var effectiveness = Math.round((intReg / pressure) * 100);
+
+  document.getElementById('r-pressure').textContent = pressure.toFixed(1);
+  document.getElementById('r-pressure-sub').textContent = 'Severity ' + severity.toFixed(1) + ' × tier ' + tierWeight.toFixed(1);
+  document.getElementById('r-regulation').textContent = intReg.toFixed(2);
+  document.getElementById('r-reg-sub').textContent = 'Sys ' + sysReg.toFixed(1) + ' (×0.6) + Ldr ' + ldrReg.toFixed(1) + ' (×0.4)';
+  document.getElementById('r-gap').textContent = (gapScore > 0 ? '+' : '') + gapScore.toFixed(2);
+  document.getElementById('r-index').textContent = gapIndex.toFixed(2);
+  document.getElementById('r-eff').textContent = effectiveness + '%';
+  document.getElementById('r-sys').textContent = sysReg.toFixed(1) + ' / 10';
+  document.getElementById('r-ldr').textContent = ldrReg.toFixed(1) + ' / 10';
+  document.getElementById('r-tier').textContent = '×' + tierWeight.toFixed(1);
+
+  var state, interp, color, fillPct;
+  if (gapIndex < 1.0) {
+    state = 'Stable'; color = '#1D9E75'; fillPct = 8;
+    interp = 'Regulation exceeds pressure. The system has reserve capacity. Invest in building the buffer further.';
+  } else if (gapIndex <= 1.15) {
+    state = 'Managed tension'; color = '#639922'; fillPct = 26;
+    interp = 'Pressure and regulation are close. Monitor trend direction. No immediate intervention required.';
+  } else if (gapIndex <= 1.30) {
+    state = 'Widening gap'; color = '#BA7517'; fillPct = 50;
+    interp = 'Pressure beginning to outpace regulation. Behavioral indicators will be emerging. Intervention warranted now.';
+  } else if (gapIndex <= 1.50) {
+    state = 'Instability forming'; color = '#993C1D'; fillPct = 72;
+    interp = 'Gap is material. Behavioral indicators are visible to anyone looking. Act now before outcomes degrade.';
+  } else {
+    state = 'System risk'; color = '#A32D2D'; fillPct = 96;
+    interp = 'Regulation significantly overwhelmed. Outcomes already degrading or about to. Stabilize before optimizing.';
+  }
+
+  var fill = document.getElementById('verdict-fill');
+  fill.style.background = color;
+  setTimeout(function() { fill.style.width = fillPct + '%'; }, 50);
+
+  document.getElementById('verdict-state').style.color = color;
+  document.getElementById('verdict-state').textContent = state;
+  document.getElementById('verdict-interp').textContent = interp;
+
+  document.getElementById('results').style.display = 'block';
+  setTimeout(function() { document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+}
+
+function resetTool() {
+  document.querySelectorAll('.tier-opt').forEach(function(o, i) { o.classList.toggle('selected', i === 0); });
+  tierWeight = 1.0; severity = 7.0; srVal = 7; dcVal = 7; tdVal = 7;
+
+  document.getElementById('sev-slider').value = 7;
+  document.getElementById('sev-val').textContent = '7.0';
+  document.getElementById('sev-desc').textContent = sevDescs['7'];
+
+  ['sr','dc','td'].forEach(function(k) {
+    document.getElementById(k + '-slider').value = 7;
+    document.getElementById(k + '-val').textContent = 7;
+    document.getElementById(k + '-desc').textContent = leaderDescs[k].high;
+  });
+
+  ['own','spd','esc','kpi'].forEach(function(n) {
+    var first = document.querySelector('input[name="' + n + '"]');
+    if (first) { first.checked = true; selectRadio(n + '-group', first); }
+  });
+
+  document.getElementById('verdict-fill').style.width = '0%';
+  document.getElementById('results').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('sr-slider').addEventListener('input', function() { updateLeader('sr', this.value); });
+document.getElementById('dc-slider').addEventListener('input', function() { updateLeader('dc', this.value); });
+document.getElementById('td-slider').addEventListener('input', function() { updateLeader('td', this.value); });
+</script>
+</body>
+</html>

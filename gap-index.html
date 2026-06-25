@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gap Index Scorer &middot; MOSei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#1a2744; --navy-deep:#111c33; --gold:#c9a84c; --gold-light:#e8c97a;
+    --accent:#2E75B6; --ink:#1d2230; --muted:#5a6072; --hint:#8b91a0;
+    --line:#e3e6ec; --surface:#ffffff; --surface2:#f5f7fa; --page:#f8f5ef;
+    --info-bg:#e6f1fb; --info-tx:#0c447c;
+    --teal-bg:#e1f5ee; --teal-tx:#085041;
+    --green-bg:#eaf3de; --green-tx:#27500a;
+    --amber-bg:#faeeda; --amber-tx:#633806;
+    --coral-bg:#faece7; --coral-tx:#712b13;
+    --red-bg:#fcebeb; --red-tx:#791f1f;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --radius: 10px; --radius-lg: 14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#e8ebf2; --muted:#a3aab9; --hint:#7b8294;
+      --line:#2a2f3c; --surface:#161a22; --surface2:#1d222c; --page:#11141b;
+      --info-bg:#0c2a44; --info-tx:#9cc6f0;
+      --teal-bg:#0a2c24; --teal-tx:#7fd9bb;
+      --green-bg:#1c2c0f; --green-tx:#a6cf6f;
+      --amber-bg:#332108; --amber-tx:#e8b878;
+      --coral-bg:#331409; --coral-tx:#e09a7c;
+      --red-bg:#330d0d; --red-tx:#e89494;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--page);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  /* ── Brand header ── */
+  .tool-header{background:var(--navy);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+  .tool-logo{font-family:var(--serif);font-size:1.15rem;color:#fff;}
+  .tool-logo span{color:var(--gold);}
+  .tool-tagline{font-size:0.7rem;color:rgba(255,255,255,0.45);margin-top:1px;}
+  .tool-badge{font-size:0.68rem;color:rgba(255,255,255,0.5);border:0.5px solid rgba(255,255,255,0.2);padding:3px 10px;border-radius:20px;}
+
+  /* ── Tabs ── */
+  .tab-bar{display:flex;border-bottom:1px solid var(--line);background:var(--surface);padding:0 1.25rem;}
+  .tab-btn{font-size:0.8rem;font-family:var(--sans);padding:8px 14px;cursor:pointer;color:var(--muted);border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .tab-btn.active{color:var(--navy);font-weight:500;border-bottom-color:var(--navy);}
+
+  /* ── Wrap ── */
+  .wrap{max-width:680px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+
+  /* ── Read Me ── */
+  .readme-hero{background:var(--navy);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.25rem;}
+  .readme-hero-title{font-family:var(--serif);font-size:1.35rem;color:#fff;margin-bottom:6px;}
+  .readme-hero-title span{color:var(--gold);}
+  .readme-hero-sub{font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.65;}
+  .readme-h3{font-size:0.9rem;font-weight:500;color:var(--ink);margin-bottom:0.5rem;margin-top:1.25rem;}
+  .readme-p{font-size:0.82rem;color:var(--muted);line-height:1.7;margin-bottom:0.5rem;}
+  .band-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+  .band-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .band-label{font-size:0.8rem;font-weight:500;color:var(--ink);width:140px;}
+  .band-desc{font-size:0.75rem;color:var(--muted);}
+  .step-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:0.75rem;}
+  .step-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;font-size:0.7rem;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .step-text{font-size:0.82rem;color:var(--muted);line-height:1.6;}
+  .step-text b{color:var(--ink);font-weight:500;}
+  .readme-divider{border:none;border-top:1px solid var(--line);margin:1.25rem 0;}
+  .readme-source{font-size:0.72rem;color:var(--hint);font-style:italic;}
+  .diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0.75rem 0;}
+  .diff-box{border-radius:8px;padding:0.875rem;font-size:0.78rem;line-height:1.6;}
+  .diff-box-title{font-size:0.7rem;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
+
+  /* ── Tool form ── */
+  .block{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+  .qhead{font-size:16px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:10px;}
+  .qnum{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--info-bg);color:var(--info-tx);font-size:13px;font-weight:600;flex-shrink:0;}
+  .qsub{font-size:14px;color:var(--muted);margin:7px 0 14px;}
+  .flab{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;}
+  select{width:100%;padding:9px 11px;font-size:14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font-family:inherit;}
+  .checks{display:flex;flex-direction:column;gap:9px;}
+  .chk{display:flex;align-items:flex-start;gap:9px;font-size:14px;color:var(--ink);cursor:pointer;}
+  .chk input{margin-top:3px;flex-shrink:0;width:16px;height:16px;accent-color:var(--accent);}
+  .factor{margin-bottom:14px;}
+  .fname{display:block;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:7px;}
+  .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .opt{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:9px 11px;font-size:13px;font-weight:600;line-height:1.2;border:1px solid var(--line);border-radius:8px;background:var(--surface);cursor:pointer;color:var(--ink);font-family:inherit;}
+  .opt small{font-weight:400;font-size:11.5px;color:var(--hint);margin-top:4px;line-height:1.3;}
+  .opt.sel{border:2px solid var(--accent);background:var(--info-bg);padding:8px 10px;}
+  .opt.sel small{color:var(--info-tx);}
+  button.cta{width:100%;padding:14px;font-size:16px;font-weight:600;border-radius:10px;border:none;background:var(--navy);color:#fff;cursor:pointer;font-family:inherit;margin-top:8px;}
+  button.cta:hover{opacity:0.92;}
+  button.ghost{width:100%;padding:12px;font-size:15px;font-weight:600;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-family:inherit;}
+  button.ghost:hover{background:var(--surface2);}
+  .metricgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:1rem;}
+  .metric{background:var(--surface2);border-radius:8px;padding:1rem;}
+  .metric .ml{font-size:13px;color:var(--muted);margin:0 0 4px;}
+  .metric .mv{font-size:24px;font-weight:600;margin:0;color:var(--ink);}
+  .scorecard{border-radius:12px;padding:1.4rem;margin-bottom:1rem;border:1px solid var(--line);}
+  .scorecard .sl{font-size:13px;margin:0 0 4px;opacity:0.85;}
+  .scorecard .sv{font-size:42px;font-weight:600;margin:0;line-height:1;}
+  .scorecard .sb{font-size:18px;font-weight:600;margin:12px 0 4px;}
+  .scorecard .sd{font-size:14px;margin:0;opacity:0.92;}
+  .divbox{background:var(--surface2);border-left:3px solid var(--accent);padding:12px 14px;margin-bottom:1rem;font-size:14px;color:var(--ink);}
+  .nextbox{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.4rem;}
+  .nextbox h3{font-size:16px;font-weight:600;margin:0 0 6px;color:var(--ink);}
+  .nextbox p{font-size:14px;color:var(--muted);margin:0 0 14px;}
+  .foot{margin-top:2.5rem;text-align:center;font-size:13px;color:var(--hint);}
+  .foot .tag{font-style:italic;color:var(--accent);}
+  a{color:var(--accent);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  @media print {
+    .tool-header, .tab-bar, .no-print { display: none !important; }
+    .wrap { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MOSei brand header -->
+<div class="tool-header">
+  <div>
+    <div class="tool-logo">MOS<span>ei</span></div>
+    <div class="tool-tagline">Gap Index Scorer</div>
+  </div>
+  <div class="tool-badge">Norman&rsquo;s Gap Framework</div>
+</div>
+
+<!-- Tabs -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('readme')">Read me</button>
+  <button class="tab-btn" onclick="showTab('tool')">Score your system</button>
+</div>
+
+<!-- READ ME TAB -->
+<div id="tab-readme">
+  <div class="wrap">
+    <div class="readme-hero">
+      <div class="readme-hero-title">Gap <span>Index</span> Scorer</div>
+      <div class="readme-hero-sub">Ten minutes. Answer from what you observe, not what you hope. The number at the end is your Gap Index &mdash; the same instrument The Tempered Signal runs on other people&rsquo;s cases.</div>
+    </div>
+
+    <div class="readme-h3">What is the Gap Index?</div>
+    <p class="readme-p">The Gap Index is a ratio: External Pressure divided by Internal Regulation. A score below 1.0 means regulation exceeds pressure &mdash; the system has reserve capacity. Above 1.0 means pressure is outpacing the system&rsquo;s ability to respond. The higher the number, the wider the gap and the greater the instability risk.</p>
+    <p class="readme-p">Unlike the Plant Change Readiness Assessment (which diagnoses the structural condition of a site), the Gap Index Scorer measures the real-time condition of a system under a specific pressure &mdash; and includes a leader regulation component, because how a leader behaves under pressure is part of the system.</p>
+
+    <div class="diff-grid">
+      <div class="diff-box" style="background:var(--info-bg);">
+        <div class="diff-box-title" style="color:var(--info-tx);">This tool</div>
+        <div style="font-size:0.78rem;color:var(--info-tx);line-height:1.6;">Real-time condition under a specific pressure. Includes leader regulation. Ratio-based score.</div>
+      </div>
+      <div class="diff-box" style="background:var(--teal-bg);">
+        <div class="diff-box-title" style="color:var(--teal-tx);">Plant Assessment</div>
+        <div style="font-size:0.78rem;color:var(--teal-tx);line-height:1.6;">Structural site-level readiness. Used with clients. Dimension-based Gap Score.</div>
+      </div>
+    </div>
+
+    <hr class="readme-divider">
+
+    <div class="readme-h3">The five Gap Index bands</div>
+    <div style="margin-top:0.6rem;">
+      <div class="band-row"><div class="band-dot" style="background:#1D9E75;"></div><span class="band-label">Stable (below 1.0)</span><span class="band-desc">Regulation exceeds pressure. Reserve capacity exists.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#639922;"></div><span class="band-label">Managed tension (1.0&ndash;1.15)</span><span class="band-desc">Pressure and regulation close. Monitor the trend.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#BA7517;"></div><span class="band-label">Widening gap (1.16&ndash;1.30)</span><span class="band-desc">Pressure outpacing regulation. Intervention warranted now.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#993C1D;"></div><span class="band-label">Instability forming (1.31&ndash;1.50)</span><span class="band-desc">Gap is material. Visible to anyone looking. Act now.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#A32D2D;"></div><span class="band-label">System risk (above 1.50)</span><span class="band-desc">Regulation overwhelmed. Outcomes degrading. Stabilize first.</span></div>
+    </div>
+
+    <hr class="readme-divider">
+
+    <div class="readme-h3">What this tool scores</div>
+    <p class="readme-p">The assessment has four sections scored in about ten minutes.</p>
+    <div class="step-row"><div class="step-num">1</div><div class="step-text"><b>External pressure</b> &mdash; Consequence level and how confirmed the pressure is across the organization.</div></div>
+    <div class="step-row"><div class="step-num">2</div><div class="step-text"><b>System regulation</b> &mdash; Ownership clarity, decision speed, escalation discipline, and KPI truth. The structural capacity of the organization to respond.</div></div>
+    <div class="step-row"><div class="step-num">3</div><div class="step-text"><b>Leader regulation</b> &mdash; Self-regulation under pressure, decision composure, and trade-off discipline. How the leader&rsquo;s own behavior amplifies or absorbs system stress.</div></div>
+    <div class="step-row"><div class="step-num">4</div><div class="step-text"><b>Direction</b> &mdash; Whether the gap has been widening, holding, or closing over the last several weeks.</div></div>
+
+    <hr class="readme-divider">
+    <p class="readme-source">Based on Norman&rsquo;s Gap, Signal Compression, and the Norman Decision Window frameworks by Norman Applegate. Published by MOSei.org and The Tempered Signal.</p>
+
+    <div style="margin-top:1rem;">
+      <button class="cta no-print" onclick="showTab('tool')" style="max-width:220px;">Start scoring &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOOL TAB -->
+<div id="tab-tool" style="display:none;">
+  <div class="wrap">
+    <div id="form">
+      <div class="block">
+        <div class="qhead"><span class="qnum">1</span> External pressure</div>
+        <p class="qsub">What kind of pressure is the system under, and how confirmed is it?</p>
+        <label class="flab">Consequence level of the dominant pressure</label>
+        <select id="tier">
+          <option value="1.2">System impact (energy, supply chain, regulation, AI infrastructure)</option>
+          <option value="1.1" selected>Operational impact (throughput, cost, margin, delivery)</option>
+          <option value="1.0">Behavioral impact (leadership, decisions, communication)</option>
+        </select>
+        <label class="flab" style="margin-top:14px;">How real is it? Count what is confirmed.</label>
+        <div class="checks">
+          <label class="chk"><input type="checkbox" id="vis"> <span>Visible and nameable at the floor level</span></label>
+          <label class="chk"><input type="checkbox" id="spread"> <span>Spreading across multiple functions or teams</span></label>
+          <label class="chk"><input type="checkbox" id="persist"> <span>Persisting unresolved across multiple cycles</span></label>
+          <label class="chk"><input type="checkbox" id="measured"> <span>Already measurable in outcomes (throughput dropped, cost rose, delivery slipped)</span></label>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="qhead"><span class="qnum">2</span> System regulation</div>
+        <p class="qsub">Can the organization convert a signal into action without delay or distortion? Score four factors.</p>
+        <div class="factor" data-id="own">
+          <span class="fname">Ownership clarity</span>
+          <div class="opts">
+            <button class="opt" data-v="2.5">Strong<small>named owner, holds under pressure</small></button>
+            <button class="opt sel" data-v="1.5">Mixed<small>assigned but erodes under load</small></button>
+            <button class="opt" data-v="0.5">Weak<small>shared by default, no single name</small></button>
+          </div>
+        </div>
+        <div class="factor" data-id="spd">
+          <span class="fname">Decision speed</span>
+          <div class="opts">
+            <button class="opt" data-v="2.5">Strong<small>cycle in hours</small></button>
+            <button class="opt sel" data-v="1.5">Mixed<small>cycle in days, delays common</small></button>
+            <button class="opt" data-v="0.5">Weak<small>cycle in weeks, deferred</small></button>
+          </div>
+        </div>
+        <div class="factor" data-id="esc">
+          <span class="fname">Escalation discipline</span>
+          <div class="opts">
+            <button class="opt" data-v="2.5">Strong<small>raw signal arrives intact</small></button>
+            <button class="opt sel" data-v="1.5">Mixed<small>softened in transit</small></button>
+            <button class="opt" data-v="0.5">Weak<small>buried or stalled</small></button>
+          </div>
+        </div>
+        <div class="factor" data-id="kpi">
+          <span class="fname">KPI truth</span>
+          <div class="opts">
+            <button class="opt" data-v="2.5">Strong<small>bad news as clear as good</small></button>
+            <button class="opt sel" data-v="1.5">Mixed<small>softened before leadership</small></button>
+            <button class="opt" data-v="0.5">Weak<small>politicized or withheld</small></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="qhead"><span class="qnum">3</span> Leader regulation</div>
+        <p class="qsub">Can the leader absorb pressure without distorting the system? Score honestly. Most leaders overrate this.</p>
+        <div class="factor" data-id="self">
+          <span class="fname">Self-regulation under pressure</span>
+          <div class="opts">
+            <button class="opt" data-v="8.5">Grounded<small>pressure sharpens clarity</small></button>
+            <button class="opt sel" data-v="5">Variable<small>composure swings with load</small></button>
+            <button class="opt" data-v="2">Reactive<small>team manages the leader</small></button>
+          </div>
+        </div>
+        <div class="factor" data-id="comp">
+          <span class="fname">Decision composure</span>
+          <div class="opts">
+            <button class="opt" data-v="8.5">Clear<small>trade-offs made promptly</small></button>
+            <button class="opt sel" data-v="5">Hedged<small>decisions qualified, hesitant</small></button>
+            <button class="opt" data-v="2">Avoided<small>reversed or withdrawn</small></button>
+          </div>
+        </div>
+        <div class="factor" data-id="trade">
+          <span class="fname">Trade-off discipline</span>
+          <div class="opts">
+            <button class="opt" data-v="8.5">Enforced<small>stated priority is real priority</small></button>
+            <button class="opt sel" data-v="5">Deferred<small>priorities left in tension</small></button>
+            <button class="opt" data-v="2">Avoided<small>declared differs from actual</small></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="qhead"><span class="qnum">4</span> Direction</div>
+        <p class="qsub">Over the last several weeks, the gap has been...</p>
+        <div class="factor" data-id="dir">
+          <div class="opts">
+            <button class="opt" data-v="up">Widening<small>pressure outpacing regulation</small></button>
+            <button class="opt sel" data-v="flat">Holding<small>steady, healthy or fragile</small></button>
+            <button class="opt" data-v="down">Closing<small>regulation catching up</small></button>
+          </div>
+        </div>
+      </div>
+
+      <button class="cta" id="calc">See my Gap Index</button>
+    </div>
+
+    <div id="result" style="display:none;"></div>
+
+    <p class="foot">MOSei.org &middot; The Tempered Signal &middot; <span class="tag">Judgment Formed Under Pressure</span></p>
+  </div>
+</div>
+
+<script>
+function showTab(name) {
+  document.getElementById('tab-readme').style.display = name === 'readme' ? '' : 'none';
+  document.getElementById('tab-tool').style.display = name === 'tool' ? '' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(function(t, i) {
+    t.classList.toggle('active', ['readme','tool'][i] === name);
+  });
+}
+
+(function(){
+  var SUBSCRIBE_URL = "https://www.temperedsignal.com/subscribe";
+
+  var form = document.getElementById('form');
+  form.addEventListener('click', function(e) {
+    var b = e.target.closest('.opt');
+    if (!b) return;
+    b.parentNode.querySelectorAll('.opt').forEach(function(s){ s.classList.remove('sel'); });
+    b.classList.add('sel');
+  });
+  function sel(id){ return document.querySelector('.factor[data-id="'+id+'"] .opt.sel'); }
+
+  document.getElementById('calc').addEventListener('click', function(){
+    var tier = parseFloat(document.getElementById('tier').value);
+    var conf = 0;
+    if(document.getElementById('vis').checked) conf++;
+    if(document.getElementById('spread').checked) conf++;
+    if(document.getElementById('persist').checked) conf++;
+    var measured = document.getElementById('measured').checked;
+    var sevMap = {0:6.0,1:6.5,2:7.0,3:7.5};
+    var severity = sevMap[conf];
+    if(conf===3&&measured) severity=8.0;
+    var pressure = severity * tier;
+    if(pressure<6.0) pressure=6.0;
+    if(pressure>9.0) pressure=9.0;
+
+    var sys = ['own','spd','esc','kpi'].reduce(function(a,id){ return a+parseFloat(sel(id).dataset.v); },0);
+    if(sys<2.0) sys=2.0;
+    var lead = ['self','comp','trade'].reduce(function(a,id){ return a+parseFloat(sel(id).dataset.v); },0)/3;
+    if(lead<1.0) lead=1.0;
+    var reg = (sys*0.6)+(lead*0.4);
+
+    var gapIndex = pressure/reg;
+    var dir = sel('dir').dataset.v;
+    var arrow = dir==='up'?'\u2191':dir==='down'?'\u2193':'\u2192';
+
+    var band,cls,bandText;
+    if(gapIndex<1.0){band='Stable';cls=['--teal-bg','--teal-tx'];bandText='Regulation exceeds pressure. Reserve capacity. Invest in the buffer.';}
+    else if(gapIndex<=1.15){band='Managed tension';cls=['--green-bg','--green-tx'];bandText='Pressure and regulation close. Monitor the trend. No immediate intervention.';}
+    else if(gapIndex<=1.30){band='Widening gap';cls=['--amber-bg','--amber-tx'];bandText='Pressure beginning to outpace regulation. Behavioral indicators emerging. Intervention warranted now.';}
+    else if(gapIndex<=1.50){band='Instability forming';cls=['--coral-bg','--coral-tx'];bandText='The gap is material. Indicators visible to anyone looking. Act before outcomes degrade.';}
+    else{band='System risk';cls=['--red-bg','--red-tx'];bandText='Regulation significantly overwhelmed. Outcomes degrading or about to. Stabilize before optimizing.';}
+
+    var divergence='';
+    if(sys>=6.0&&lead<=4.0) divergence='Your system is well built but individual behavior under pressure is destabilizing it. That is a leader-regulation problem, not a structural one.';
+    else if(lead>=6.5&&sys<=4.0) divergence='You are a capable leader inside a structurally broken system. The fix is structural, not personal.';
+
+    var r = document.getElementById('result');
+    r.innerHTML=
+      '<div class="scorecard" style="background:var('+cls[0]+');color:var('+cls[1]+');">'+
+        '<p class="sl">Your Gap Index</p>'+
+        '<p class="sv">'+gapIndex.toFixed(2)+' <span style="font-size:30px;">'+arrow+'</span></p>'+
+        '<p class="sb">'+band+'</p>'+
+        '<p class="sd">'+bandText+'</p>'+
+      '</div>'+
+      '<div class="metricgrid">'+
+        '<div class="metric"><p class="ml">External pressure</p><p class="mv">'+pressure.toFixed(1)+'</p></div>'+
+        '<div class="metric"><p class="ml">Internal regulation</p><p class="mv">'+reg.toFixed(2)+'</p></div>'+
+        '<div class="metric"><p class="ml">System component</p><p class="mv">'+sys.toFixed(1)+'</p></div>'+
+        '<div class="metric"><p class="ml">Leader component</p><p class="mv">'+lead.toFixed(2)+'</p></div>'+
+      '</div>'+
+      (divergence?'<div class="divbox">'+divergence+'</div>':'')+
+      '<div class="nextbox">'+
+        '<h3>One number is a data point. The trend is the diagnosis.</h3>'+
+        '<p>A single score tells you the condition today. The curve over four to twelve weeks tells you whether you are correcting or accelerating toward the failure condition. That is the difference between a snapshot and a prognosis.</p>'+
+        '<a href="'+SUBSCRIBE_URL+'"><button class="cta" style="margin-top:0;margin-bottom:8px;">Read the editions that score this every week</button></a>'+
+        '<button class="ghost" id="again">Score it again</button>'+
+      '</div>';
+    r.style.display='block';
+    document.getElementById('form').style.display='none';
+    window.scrollTo({top:0,behavior:'smooth'});
+
+    document.getElementById('again').addEventListener('click',function(){
+      r.style.display='none';
+      document.getElementById('form').style.display='block';
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+})();
+</script>
+</body>
+</html>
