@@ -1,3 +1,21 @@
+const https = require('https');
+
+function httpsPost(options, body) {
+  return new Promise((resolve, reject) => {
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try { resolve(JSON.parse(data)); }
+        catch(e) { reject(new Error('Invalid JSON: ' + data.substring(0, 200))); }
+      });
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+}
+
 exports.handler = async function(event, context) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -190,22 +208,25 @@ Lubrication Compliance: The percentage of scheduled lubrication tasks completed 
 Answer questions concisely and practically. Ground every answer in the framework. Keep responses under 300 words. Speak like a trusted advisor, not a textbook. When asked about KPIs, provide the definition and then connect it to what it reveals about system or management health where relevant. Do not start with "I" or use excessive preamble.`;
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const payload = JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: question }]
+    });
+
+    const data = await httpsPost({
+      hostname: 'api.anthropic.com',
+      path: '/v1/messages',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(payload),
         'x-api-key': process.env.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1024,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: question }]
-      })
-    });
+      }
+    }, payload);
 
-    const data = await response.json();
     const answer = data.content[0].text;
 
     return {
