@@ -1,4 +1,3 @@
-
 const https = require('https');
 
 function httpsPost(options, body) {
@@ -142,8 +141,10 @@ exports.handler = async function(event, context) {
   }
 
   try {
-    const { question } = JSON.parse(event.body);
-    
+    const body = JSON.parse(event.body);
+    const messages = body.messages || [{ role: 'user', content: body.question }];
+    const question = messages.filter(m => m.role === 'user').map(m => m.content).pop() || '';
+
     const relevantKPIs = findRelevantKPIs(question);
     const kpiContext = relevantKPIs.length > 0 
       ? '\n\nRELEVANT KPI DEFINITIONS:\n' + relevantKPIs.join('\n')
@@ -155,7 +156,7 @@ exports.handler = async function(event, context) {
       model: 'claude-sonnet-4-6',
       max_tokens: 1024,
       system: systemPrompt,
-      messages: [{ role: 'user', content: question }]
+      messages: messages
     });
 
     const data = await httpsPost({
