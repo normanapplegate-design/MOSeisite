@@ -181,7 +181,7 @@ exports.handler = async function(event, context) {
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answer })
+      body: JSON.stringify({ answer, content: [{ text: answer }] })
     };
   } catch (error) {
     console.error('Advisor error:', error.message);
