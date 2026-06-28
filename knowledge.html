@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knowledge &mdash; MOSei</title>
+  <meta name="description" content="The complete Norman System knowledge base. White papers, books, articles, podcast, and Ask MOSei." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #1a2744;
+      --navy-deep: #111c33;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --cream: #f8f5ef;
+      --cream-dark: #ede9e1;
+      --text: #1a1a1a;
+      --text-mid: #444;
+      --text-muted: #777;
+      --border: rgba(26,39,68,0.12);
+      --serif: 'EB Garamond', Georgia, serif;
+      --sans: 'Inter', system-ui, sans-serif;
+      --radius: 10px;
+      --radius-lg: 14px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--cream); color: var(--text); line-height: 1.6; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    nav { position: sticky; top: 0; z-index: 100; background: var(--navy); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 56px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .nav-logo { font-family: var(--serif); font-size: 1.35rem; color: #fff; letter-spacing: 0.01em; }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 1.75rem; }
+    .nav-links a { font-size: 0.8rem; color: rgba(255,255,255,0.6); letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a.active { color: var(--gold); }
+    .page-hero { background: var(--navy); padding: 4rem 2rem 3.5rem; text-align: center; position: relative; overflow: hidden; }
+    .page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%); pointer-events: none; }
+    .page-hero-eyebrow { display: inline-block; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(201,168,76,0.4); padding: 4px 14px; border-radius: 20px; margin-bottom: 1.25rem; }
+    .page-hero h1 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; color: #fff; line-height: 1.2; margin-bottom: 0.75rem; }
+    .page-hero-sub { font-size: 0.95rem; color: rgba(255,255,255,0.5); max-width: 500px; margin: 0 auto; line-height: 1.7; }
+    .jump-nav { background: #fff; border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; gap: 0; overflow-x: auto; }
+    .jump-nav a { font-size: 0.78rem; font-weight: 500; color: var(--text-muted); padding: 0.85rem 1.25rem; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.2s, border-color 0.2s; letter-spacing: 0.02em; }
+    .jump-nav a:hover { color: var(--navy); border-bottom-color: var(--navy); }
+    .k-section { padding: 4rem 2rem; }
+    .k-section:nth-child(even) { background: #fff; }
+    .container { max-width: 1080px; margin: 0 auto; }
+    .section-eyebrow { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+    .section-title { font-family: var(--serif); font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 400; color: var(--navy); line-height: 1.2; margin-bottom: 0.65rem; }
+    .section-sub { font-size: 0.9rem; color: var(--text-muted); max-width: 540px; line-height: 1.7; margin-bottom: 2rem; }
+    .wp-card { background: var(--navy-deep); border-radius: var(--radius-lg); padding: 2.5rem; display: flex; align-items: flex-start; gap: 2rem; flex-wrap: wrap; }
+    .wp-icon { width: 64px; height: 80px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: var(--serif); font-size: 1.5rem; color: var(--gold); }
+    .wp-body { flex: 1; min-width: 200px; }
+    .wp-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(201,168,76,0.7); margin-bottom: 0.4rem; }
+    .wp-title { font-family: var(--serif); font-size: 1.4rem; color: #fff; margin-bottom: 0.5rem; }
+    .wp-desc { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.7; margin-bottom: 1.25rem; max-width: 520px; }
+    .wp-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .wp-meta-item { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+    .wp-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--navy-deep); font-size: 0.82rem; font-weight: 500; padding: 10px 22px; border-radius: var(--radius); transition: background 0.2s; }
+    .wp-btn:hover { background: var(--gold-light); }
+    .concept-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+    .concept-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; border-left: 3px solid var(--gold); }
+    .concept-name { font-size: 0.88rem; font-weight: 500; color: var(--navy); margin-bottom: 0.3rem; }
+    .concept-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+    .laws-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+    .law-row { display: flex; align-items: flex-start; gap: 1rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
+    .law-num { width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 0.72rem; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .law-text { font-size: 0.85rem; color: var(--text-mid); line-height: 1.6; }
+    .law-text b { color: var(--navy); font-weight: 500; }
+    .books-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+    .book-card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; transition: box-shadow 0.2s, transform 0.2s; }
+    .book-card:hover { box-shadow: 0 8px 28px rgba(26,39,68,0.12); transform: translateY(-2px); }
+    .book-cover { aspect-ratio: 2/3; background: var(--cream-dark); overflow: hidden; }
+    .book-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .book-info { padding: 1rem 1.1rem 1.25rem; flex: 1; display: flex; flex-direction: column; }
+    .book-title { font-family: var(--serif); font-size: 1rem; color: var(--navy); line-height: 1.3; margin-bottom: 0.4rem; }
+    .book-layer { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.35rem; }
+    .book-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.55; flex: 1; }
+    .book-link { display: inline-block; margin-top: 0.85rem; font-size: 0.75rem; font-weight: 500; color: var(--gold); border: 1px solid rgba(201,168,76,0.4); border-radius: 6px; padding: 5px 12px; text-align: center; transition: background 0.2s, color 0.2s; }
+    .book-link:hover { background: var(--gold); color: var(--navy-deep); }
+    .book-card.coming-soon { opacity: 0.7; }
+    .book-coming-badge { display: inline-block; margin-top: 0.85rem; font-size: 0.75rem; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 6px; padding: 5px 12px; text-align: center; }
+    .article-featured { background: var(--navy-deep); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 1.5rem; }
+    .article-featured-badge { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); background: var(--gold); padding: 3px 10px; border-radius: 20px; display: inline-block; margin-bottom: 0.6rem; }
+    .article-featured-title { font-family: var(--serif); font-size: 1.4rem; color: #fff; margin-bottom: 0.5rem; line-height: 1.3; }
+    .article-featured-desc { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.7; margin-bottom: 1.25rem; max-width: 500px; }
+    .article-featured-meta { font-size: 0.72rem; color: rgba(255,255,255,0.35); margin-bottom: 1rem; }
+    .article-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--navy-deep); font-size: 0.82rem; font-weight: 500; padding: 9px 20px; border-radius: var(--radius); transition: background 0.2s; }
+    .article-btn:hover { background: var(--gold-light); }
+    .substack-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+    .substack-card-title { font-size: 0.95rem; font-weight: 500; color: var(--navy); margin-bottom: 0.25rem; }
+    .substack-card-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+    .substack-btn { display: inline-flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 500; color: var(--navy); border: 1px solid rgba(26,39,68,0.3); border-radius: var(--radius); padding: 9px 18px; white-space: nowrap; transition: background 0.2s; }
+    .substack-btn:hover { background: var(--cream-dark); }
+    .podcast-card { background: var(--navy); border-radius: var(--radius-lg); padding: 2rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+    .podcast-icon { width: 72px; height: 72px; border-radius: 16px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0; }
+    .podcast-body { flex: 1; min-width: 200px; }
+    .podcast-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(201,168,76,0.7); margin-bottom: 0.35rem; }
+    .podcast-title { font-family: var(--serif); font-size: 1.3rem; color: #fff; margin-bottom: 0.3rem; }
+    .podcast-tagline { font-size: 0.8rem; font-style: italic; color: var(--gold-light); margin-bottom: 0.75rem; }
+    .podcast-desc { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.65; margin-bottom: 1.25rem; max-width: 480px; }
+    .podcast-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .podcast-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 0.78rem; font-weight: 500; padding: 8px 16px; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.8); transition: background 0.2s, color 0.2s; }
+    .podcast-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .ask-section { background: var(--cream); }
+    .qa-box { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; max-width: 700px; }
+    .qa-header { background: var(--navy); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 10px; }
+    .qa-header-logo { font-family: var(--serif); font-size: 1rem; color: #fff; }
+    .qa-header-logo span { color: var(--gold); }
+    .qa-header-sub { font-size: 0.75rem; color: rgba(255,255,255,0.45); }
+    .qa-messages { padding: 1.25rem 1.5rem; min-height: 180px; max-height: 320px; overflow-y: auto; }
+    .qa-msg { margin-bottom: 0.85rem; }
+    .qa-msg-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
+    .qa-msg-bubble { display: inline-block; max-width: 90%; font-size: 0.875rem; line-height: 1.6; padding: 10px 14px; border-radius: 10px; }
+    .qa-msg.user .qa-msg-bubble { background: var(--navy); color: #fff; }
+    .qa-msg.assistant .qa-msg-bubble { background: var(--cream-dark); color: var(--text); }
+    .qa-msg.assistant .qa-msg-label { color: var(--gold); }
+    .qa-prompts { padding: 0.75rem 1.5rem 0; display: flex; flex-wrap: wrap; gap: 7px; }
+    .qa-prompt-chip { font-size: 0.72rem; font-weight: 500; padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(26,39,68,0.2); color: var(--navy); background: var(--cream); cursor: pointer; transition: background 0.15s, border-color 0.15s; white-space: nowrap; }
+    .qa-prompt-chip:hover { background: var(--cream-dark); border-color: var(--navy); }
+    .qa-input-row { border-top: 1px solid var(--border); padding: 0.85rem 1.25rem; display: flex; gap: 8px; margin-top: 0.75rem; }
+    .qa-input { flex: 1; font-size: 0.875rem; font-family: var(--sans); padding: 8px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--cream); color: var(--text); outline: none; }
+    .qa-input:focus { border-color: var(--navy); }
+    .qa-send { background: var(--navy); color: #fff; border: none; border-radius: var(--radius); padding: 8px 16px; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    .qa-send:hover { background: var(--navy-deep); }
+    .qa-send:disabled { opacity: 0.5; cursor: not-allowed; }
+    .qa-footer { font-size: 0.72rem; color: var(--text-muted); padding: 0 1.5rem 1rem; }
+    footer { background: var(--navy-deep); padding: 2.5rem 2rem; text-align: center; }
+    .footer-logo { font-family: var(--serif); font-size: 1.4rem; color: #fff; margin-bottom: 0.4rem; }
+    .footer-logo span { color: var(--gold); }
+    .footer-tagline { font-size: 0.8rem; color: rgba(255,255,255,0.35); margin-bottom: 1.25rem; }
+    .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-size: 0.75rem; color: rgba(255,255,255,0.4); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.2); }
+    @media (max-width: 640px) { .nav-links { display: none; } .wp-card { flex-direction: column; } .podcast-card { flex-direction: column; } }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">MOS<span>ei</span></a>
+  <div class="nav-links">
+    <a href="index.html#start-here">Start Here</a>
+    <a href="index.html#framework">Framework</a>
+    <a href="index.html#books">Books</a>
+    <a href="knowledge.html" class="active">Knowledge</a>
+    <a href="tools.html">Tools</a>
+    <a href="index.html#signal">The Signal</a>
+    <a href="index.html#ask-mosei">Ask MOSei</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+</nav>
+<div class="page-hero">
+  <div class="page-hero-eyebrow">The Norman System</div>
+  <h1>The Knowledge Base</h1>
+  <p class="page-hero-sub">White papers, books, articles, and podcast -- every layer of the Norman System in one place.</p>
+</div>
+<div class="jump-nav">
+  <a href="#white-papers">White Papers</a>
+  <a href="#framework">Framework</a>
+  <a href="#books">Books</a>
+  <a href="#articles">Articles</a>
+  <a href="#podcast">Podcast</a>
+  <a href="#ask-mosei">Ask MOSei</a>
+</div>
+<section class="k-section" id="white-papers">
+  <div class="container">
+    <p class="section-eyebrow">White Papers</p>
+    <h2 class="section-title">The diagnostic foundation</h2>
+    <p class="section-sub">The Norman System white paper is the primary reference document for the framework -- 26 pages covering all seven laws, the Gap measurement methodology, and applied examples.</p>
+    <div class="wp-card">
+      <div class="wp-icon">W</div>
+      <div class="wp-body">
+        <div class="wp-label">Norman System White Paper</div>
+        <div class="wp-title">The Norman System</div>
+        <div class="wp-desc">The complete diagnostic framework. Covers Norman's Gap, the seven laws of organizational instability, Signal Compression, the Norman Decision Window, KPI Truth, Ownership Diffusion, and the Gap Index measurement methodology. The primary reference document for every tool and concept on this platform.</div>
+        <div class="wp-meta"><span class="wp-meta-item">26 pages</span><span class="wp-meta-item">Free download</span><span class="wp-meta-item">Published via Substack</span></div>
+        <a href="https://www.temperedsignal.com/p/the-norman-system?r=4g9tmz" class="wp-btn" target="_blank" rel="noopener">Download White Paper &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="k-section" id="framework">
+  <div class="container">
+    <p class="section-eyebrow">Framework</p>
+    <h2 class="section-title">The Norman System</h2>
+    <p class="section-sub">A diagnostic and operational framework for understanding why organizations become unstable under pressure -- and what to do about it.</p>
+    <div style="background:var(--navy-deep);border-radius:var(--radius-lg);padding:2rem;margin-bottom:2rem;">
+      <div style="font-family:var(--serif);font-size:1.1rem;color:rgba(255,255,255,0.9);margin-bottom:0.5rem;">Norman's Law</div>
+      <div style="font-family:var(--serif);font-style:italic;font-size:1.4rem;color:#fff;line-height:1.4;margin-bottom:0.75rem;">&ldquo;When external pressure exceeds internal regulation, instability follows.&rdquo;</div>
+      <div style="font-size:0.8rem;color:rgba(255,255,255,0.4);">The foundational principle of The Norman System. Everything else is measurement, diagnosis, and response.</div>
+    </div>
+    <p style="font-size:0.75rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">Core Concepts</p>
+    <div class="concept-grid" style="margin-bottom:2rem;">
+      <div class="concept-card"><div class="concept-name">Norman's Gap</div><div class="concept-desc">The structural distance between external pressure and internal regulation. When the Gap widens, instability follows. Law #2 of The Norman System.</div></div>
+      <div class="concept-card"><div class="concept-name">Gap Index / Gap Score</div><div class="concept-desc">The quantified measure of the Gap. Positive means strain. The wider it grows, the higher the organizational risk.</div></div>
+      <div class="concept-card"><div class="concept-name">Signal Compression</div><div class="concept-desc">The distortion of operational signals as they travel from the floor to leadership. Compressed signals produce decisions based on incomplete reality.</div></div>
+      <div class="concept-card"><div class="concept-name">Norman Decision Window (NDW)</div><div class="concept-desc">The available time between when a problem is recognized and when a decision must be made. Narrow windows produce poor decisions under pressure.</div></div>
+      <div class="concept-card"><div class="concept-name">Ownership Diffusion</div><div class="concept-desc">The dispersal of accountability across too many people or roles. When everyone owns something, no one does. A primary driver of escalation failure.</div></div>
+      <div class="concept-card"><div class="concept-name">KPI Truth</div><div class="concept-desc">The degree to which a KPI reflects operational reality rather than a managed or cosmetic version of it. Low KPI Truth accelerates Signal Compression.</div></div>
+      <div class="concept-card"><div class="concept-name">Signal Flow Index</div><div class="concept-desc">A composite measure of how well signals travel through the tiered meeting structure -- from floor to leadership without distortion or delay.</div></div>
+      <div class="concept-card"><div class="concept-name">Internal Regulation</div><div class="concept-desc">The organization's capacity to sense, decide, and act in response to external pressure. The right side of the Gap equation.</div></div>
+      <div class="concept-card"><div class="concept-name">IMI Maturity Framework</div><div class="concept-desc">Seven levels of MOS implementation maturity: Dark, Named, Started, Compliant, Regulating, Embedded, Compounding. North Star Metric: % of elements at Level 4+.</div></div>
+    </div>
+    <p style="font-size:0.75rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">The Seven Laws</p>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">The Norman System is built on seven laws of organizational instability. Each law describes a predictable failure condition.</p>
+    <div class="laws-list">
+      <div class="law-row"><div class="law-num">1</div><div class="law-text"><b>Norman's Law</b> -- When external pressure exceeds internal regulation, instability follows.</div></div>
+      <div class="law-row"><div class="law-num">2</div><div class="law-text"><b>The Gap Law</b> -- The structural distance between pressure and regulation is measurable, predictable, and closeable.</div></div>
+      <div class="law-row"><div class="law-num">3</div><div class="law-text"><b>The Signal Law</b> -- Organizations fail not because problems exist, but because signals about those problems are compressed before they reach decision-makers.</div></div>
+      <div class="law-row"><div class="law-num">4</div><div class="law-text"><b>The Ownership Law</b> -- Diffused accountability produces no accountability. Every critical function requires a single named owner.</div></div>
+      <div class="law-row"><div class="law-num">5</div><div class="law-text"><b>The Decision Window Law</b> -- Every problem has a window in which it can be resolved without compounding. Miss the window and the cost multiplies.</div></div>
+      <div class="law-row"><div class="law-num">6</div><div class="law-text"><b>The Regulation Law</b> -- Internal regulation is not a byproduct of culture. It is a system. Systems can be built, measured, and improved.</div></div>
+      <div class="law-row"><div class="law-num">7</div><div class="law-text"><b>The Compounding Law</b> -- Organizations that regulate well under low pressure will compound that advantage under high pressure. The Gap works in both directions.</div></div>
+    </div>
+  </div>
+</section>
+<section class="k-section" id="books">
+  <div class="container">
+    <p class="section-eyebrow">Books</p>
+    <h2 class="section-title">Four books. One operating system.</h2>
+    <p class="section-sub">Each book addresses a different layer of the system -- operational, physiological, human, and diagnostic. Together they form a complete framework for organizational regulation.</p>
+    <div class="books-grid">
+      <div class="book-card"><div class="book-cover"><img src="https://m.media-amazon.com/images/I/715UTYs3MXL._SY522_.jpg" alt="Building a Management Operating System" onerror="this.parentElement.style.background='#1a2744';this.remove();" /></div><div class="book-info"><div class="book-layer">Operational Layer</div><div class="book-title">Building a Management Operating System</div><div class="book-desc">The operational prescription layer. How to build the MOS infrastructure that absorbs and responds to pressure.</div><a href="https://a.co/d/07TrZE9C" class="book-link" target="_blank" rel="noopener">Buy on Amazon &rarr;</a></div></div>
+      <div class="book-card"><div class="book-cover"><img src="https://m.media-amazon.com/images/I/71r+DqMkuwL._SY522_.jpg" alt="Regulate" onerror="this.parentElement.style.background='#1a2744';this.remove();" /></div><div class="book-info"><div class="book-layer">Physiological Layer</div><div class="book-title">Regulate</div><div class="book-desc">The individual regulation layer. How leaders regulate themselves under sustained pressure.</div><a href="https://a.co/d/0bojFIcV" class="book-link" target="_blank" rel="noopener">Buy on Amazon &rarr;</a></div></div>
+      <div class="book-card"><div class="book-cover"><img src="https://m.media-amazon.com/images/I/712UJnSanFL._SY522_.jpg" alt="The Eight Limbs of Consulting" onerror="this.parentElement.style.background='#1a2744';this.remove();" /></div><div class="book-info"><div class="book-layer">Human Layer</div><div class="book-title">The Eight Limbs of Consulting</div><div class="book-desc">The human and leadership layer. Eight disciplines that define effective consulting under operational pressure.</div><a href="https://a.co/d/0e7P1hcP" class="book-link" target="_blank" rel="noopener">Buy on Amazon &rarr;</a></div></div>
+      <div class="book-card coming-soon"><div class="book-cover" style="background:#1a2744;display:flex;align-items:center;justify-content:center;"><div style="font-family:'EB Garamond',serif;color:#c9a84c;font-size:1.1rem;text-align:center;padding:1rem;line-height:1.4;">The<br>Norman<br>System</div></div><div class="book-info"><div class="book-layer">Diagnostic Layer</div><div class="book-title">The Norman System</div><div class="book-desc">The fourth book. A unified theory of organizational instability and the conditions that precede it.</div><span class="book-coming-badge">Coming soon -- join waitlist</span></div></div>
+    </div>
+  </div>
+</section>
+<section class="k-section" id="articles">
+  <div class="container">
+    <p class="section-eyebrow">Articles</p>
+    <h2 class="section-title">Written work</h2>
+    <p class="section-sub">Essays and analysis applying The Norman System to real operational events, leadership decisions, and organizational dynamics.</p>
+    <div class="article-featured">
+      <div class="article-featured-badge">Most Read</div>
+      <div class="article-featured-title">Failure is a Signal</div>
+      <div class="article-featured-desc">When something goes wrong in an organization, the instinct is to treat it as an isolated event. The Norman System treats it differently -- failure is data. It is a compressed signal about the state of internal regulation. This piece unpacks what failure tells you and how to read it correctly.</div>
+      <div class="article-featured-meta">Published on The Tempered Signal &middot; 104 views</div>
+      <a href="https://www.temperedsignal.com/p/failure-is-a-signal?r=4g9tmz&utm_campaign=post&utm_medium=web" class="article-btn" target="_blank" rel="noopener">Read Article &rarr;</a>
+    </div>
+    <div class="substack-card">
+      <div><div class="substack-card-title">The Tempered Signal on Substack</div><div class="substack-card-desc">All articles, essays, and framework explainers are published on Substack. Subscribe to receive new pieces as they are published -- free.</div></div>
+      <a href="https://temperedsignal.com" class="substack-btn" target="_blank" rel="noopener">Browse all articles &rarr;</a>
+    </div>
+  </div>
+</section>
+<section class="k-section" id="podcast">
+  <div class="container">
+    <p class="section-eyebrow">Podcast</p>
+    <h2 class="section-title">The Tempered Signal</h2>
+    <p class="section-sub">Conversations and deep dives on the seven laws of The Norman System -- from the plant floor to the boardroom.</p>
+    <div class="podcast-card">
+      <div class="podcast-icon">&#9654;</div>
+      <div class="podcast-body">
+        <div class="podcast-label">Podcast</div>
+        <div class="podcast-title">The Tempered Signal</div>
+        <div class="podcast-tagline">Judgment Formed Under Pressure</div>
+        <div class="podcast-desc">Each episode applies Signal Compression, Norman's Gap, the Norman Decision Window, and the seven laws to real operational events. For plant managers, operations leaders, and consultants navigating real pressure.</div>
+        <div class="podcast-links">
+          <a href="https://podcasts.apple.com/us/podcast/the-tempered-signal-with-norm-applegate/id1885971440" class="podcast-btn" target="_blank" rel="noopener">&#9654; Listen on Apple Podcasts</a>
+          <a href="https://temperedsignal.com" class="podcast-btn" target="_blank" rel="noopener">All Episodes on Substack &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="k-section ask-section" id="ask-mosei">
+  <div class="container">
+    <p class="section-eyebrow">Ask MOSei</p>
+    <h2 class="section-title">Search the Norman System knowledge base</h2>
+    <p class="section-sub">Ask MOSei anything about the framework. Every answer is grounded in Norman Applegate's published works.</p>
+    <div class="qa-box">
+      <div class="qa-header"><div><div class="qa-header-logo">MOS<span>ei</span></div><div class="qa-header-sub">Search the complete Norman System knowledge base</div></div></div>
+      <div class="qa-messages" id="qa-messages">
+        <div class="qa-msg assistant"><div class="qa-msg-label">Ask MOSei</div><div class="qa-msg-bubble">Ask me anything about the Norman System -- Norman's Gap, Signal Compression, Decision Velocity, Tiered Meetings, KPI design, escalation, leadership, safety, or continuous improvement.</div></div>
+      </div>
+      <div class="qa-prompts">
+        <span class="qa-prompt-chip" onclick="qaAsk('What is Norman\'s Gap?')">Norman's Gap</span>
+        <span class="qa-prompt-chip" onclick="qaAsk('What is Signal Compression?')">Signal Compression</span>
+        <span class="qa-prompt-chip" onclick="qaAsk('What is Decision Velocity?')">Decision Velocity</span>
+        <span class="qa-prompt-chip" onclick="qaAsk('How do Tiered Meetings work?')">Tiered Meetings</span>
+        <span class="qa-prompt-chip" onclick="qaAsk('How do I design better KPIs?')">KPI Design</span>
+        <span class="qa-prompt-chip" onclick="qaAsk('How should escalation work in a tiered system?')">Escalation</span>
+        <span class="qa-prompt-chip" onclick="qaAsk('What does the Norman System say about leadership?')">Leadership</span>
+        <span class="qa-prompt-chip" onclick="qaAsk('How does the Norman System apply to safety?')">Safety</span>
+      </div>
+      <div class="qa-input-row">
+        <input type="text" class="qa-input" id="qa-input" placeholder="Ask about the Norman System..." onkeydown="if(event.key==='Enter')qaSend()" />
+        <button class="qa-send" id="qa-send-btn" onclick="qaSend()">Ask</button>
+      </div>
+      <p class="qa-footer">Responses are grounded in Norman Applegate's published works. For complex diagnostics, use the tools or contact MOSei directly.</p>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-logo">MOS<span>ei</span></div>
+  <div class="footer-tagline">Management Operating System -- External &amp; Internal Pressure</div>
+  <div class="footer-links">
+    <a href="index.html#framework">Framework</a>
+    <a href="index.html#books">Books</a>
+    <a href="knowledge.html">Knowledge</a>
+    <a href="tools.html">Tools</a>
+    <a href="https://temperedsignal.com" target="_blank" rel="noopener">The Tempered Signal</a>
+    <a href="index.html#ask-mosei">Ask MOSei</a>
+  </div>
+  <div class="footer-copy">&copy; 2026 Norman Applegate. All rights reserved. &middot; MOSei.org</div>
+</footer>
+<script>
+var qaHistory = [];
+function qaAsk(question) { document.getElementById('qa-input').value = question; qaSend(); }
+async function qaSend() {
+  var input = document.getElementById('qa-input');
+  var q = input.value.trim();
+  if (!q) return;
+  input.value = '';
+  document.getElementById('qa-send-btn').disabled = true;
+  var msgs = document.getElementById('qa-messages');
+  msgs.innerHTML += '<div class="qa-msg user"><div class="qa-msg-label">You</div><div class="qa-msg-bubble">'+q.replace(/</g,'&lt;')+'</div></div>';
+  var thinkingId = 'qa-thinking-'+Date.now();
+  msgs.innerHTML += '<div class="qa-msg assistant" id="'+thinkingId+'"><div class="qa-msg-label">Ask MOSei</div><div class="qa-msg-bubble" style="opacity:0.5;">Thinking...</div></div>';
+  msgs.scrollTop = msgs.scrollHeight;
+  qaHistory.push({ role:'user', content: q });
+  try {
+    var res = await fetch('/.netlify/functions/advisor', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ messages: qaHistory }) });
+    var data = await res.json();
+    var answer = data.content && data.content[0] ? data.content[0].text : 'Unable to reach Ask MOSei. Please try again.';
+    qaHistory.push({ role:'assistant', content: answer });
+    var el = document.getElementById(thinkingId);
+    if (el) el.querySelector('.qa-msg-bubble').innerHTML = answer.replace(/\n/g,'<br>');
+  } catch(e) {
+    var el = document.getElementById(thinkingId);
+    if (el) el.querySelector('.qa-msg-bubble').textContent = 'Connection error. Please try again.';
+  }
+  document.getElementById('qa-send-btn').disabled = false;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+</script>
+</body>
+</html>
