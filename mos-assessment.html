@@ -1,42 +1,470 @@
-MOSei
-START HERE
-FRAMEWORK
-KNOWLEDGE
-TOOLS
-ASK MOSEI
-CONTACT
-MOS Assessment Tool
-Score your Management Operating System across 12 elements. Receive your maturity level and a prioritized action plan.
-
-Read Me
-Start Assessment
-MOSei -- MOS Assessment Tool
-Built on The Norman System. Designed for plant managers, operations leaders, and CI leads who want to know where their Management Operating System actually stands -- not where they think it stands.
-WHY
-Most organizations believe their MOS is more mature than it is. Elements exist on paper but are not owned, not practiced, and not changing behavior. This tool surfaces that gap before pressure does.
-PURPOSE
-Score 12 MOS elements across four pillars. Receive a maturity level, a pillar breakdown, and a prioritized action plan that tells you exactly where to focus first.
-INPUTS
-Your honest assessment of each element. Score what is actually happening on the floor -- not what is intended, documented, or planned. This tool produces accurate results only when scored accurately.
-OUTPUTS
-A maturity level (Dark through Compounding), pillar scores across Governance, Execution, Performance, and Health, your weakest element, three priority recommendations, and a bundle recommendation.
-CADENCE
-Run quarterly. MOS maturity is not static -- it degrades under pressure, leadership change, and organizational disruption. A quarterly score tracks whether you are advancing or regressing.
-ESCALATION PATH
-Results below Level 3 (Compliant) indicate structural risk. Share the pillar breakdown with your leadership team and treat the weakest element as a priority action item in your next tiered meeting.
-SUPPORTING DOCUMENTS
-Gap Index Scorer
-Plant Health Score
-Signal Flow Index
-IMI Tool (XLSX)
-The Norman System White Paper
-THREE THINGS MOST LIKELY TO FAIL IN YEAR ONE
-1
-Scoring what you wish were true. The most common failure is rating elements by intent rather than reality. Score what is happening today, not what is planned or occasionally practiced.
-2
-Running the assessment once and moving on. A single score is a snapshot. Maturity only becomes visible as a trend. Commit to quarterly scoring before you run it the first time.
-3
-Treating low scores as a problem rather than a diagnosis. A low score is not a failure -- it is information. The value of this tool is in knowing where the pressure is leaking before it compounds into a crisis.
-Continue to Assessment →
-MOSei
-© 2026 Norman Applegate. All rights reserved. · MOSei.org
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MOS Assessment -- MOSei</title>
+  <meta name="description" content="Assess your Management Operating System maturity. Score your MOS elements and receive your IMI level and priority recommendations." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #1a2744;
+      --navy-deep: #111c33;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --cream: #f8f5ef;
+      --cream-dark: #ede9e1;
+      --text: #1a1a1a;
+      --text-mid: #444;
+      --text-muted: #777;
+      --border: rgba(26,39,68,0.12);
+      --serif: 'EB Garamond', Georgia, serif;
+      --sans: 'Inter', system-ui, sans-serif;
+      --radius: 10px;
+      --radius-lg: 14px;
+      --green: #1D9E75;
+      --amber: #BA7517;
+      --red: #993C1D;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--cream); color: var(--text); line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    nav { position: sticky; top: 0; z-index: 100; background: var(--navy); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 56px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .nav-logo { font-family: var(--serif); font-size: 1.35rem; color: #fff; letter-spacing: 0.01em; }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 1.75rem; }
+    .nav-links a { font-size: 0.8rem; color: rgba(255,255,255,0.6); letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .hero { background: var(--navy); padding: 3.5rem 2rem 3rem; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%); pointer-events: none; }
+    .hero h1 { font-family: var(--serif); font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 400; color: #fff; line-height: 1.2; margin-bottom: 0.6rem; }
+    .hero-sub { font-size: 0.9rem; color: rgba(255,255,255,0.5); max-width: 520px; margin: 0 auto; line-height: 1.7; }
+    .progress-bar-wrap { background: rgba(255,255,255,0.08); height: 3px; }
+    .progress-bar-fill { height: 3px; background: var(--gold); transition: width 0.4s ease; }
+    .main { max-width: 820px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .steps { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cream-dark); flex-shrink: 0; }
+    .step-dot.active { background: var(--gold); }
+    .step-dot.done { background: var(--navy); }
+    .section-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem; }
+    .section-header { background: var(--navy); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .section-header-left { display: flex; align-items: center; gap: 0.75rem; }
+    .section-pillar-badge { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(201,168,76,0.4); padding: 2px 8px; border-radius: 20px; }
+    .section-title { font-family: var(--serif); font-size: 1.1rem; color: #fff; }
+    .section-score-badge { font-size: 0.78rem; font-weight: 500; color: var(--navy); background: var(--gold); padding: 3px 10px; border-radius: 20px; min-width: 48px; text-align: center; }
+    .section-body { padding: 1.25rem 1.5rem; }
+    .element-block { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .element-block:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .element-name { font-size: 0.88rem; font-weight: 500; color: var(--navy); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px; }
+    .element-score-pill { font-size: 0.68rem; font-weight: 500; padding: 2px 8px; border-radius: 20px; background: var(--cream-dark); color: var(--text-muted); }
+    .q-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.6rem; }
+    .q-label { font-size: 0.78rem; color: var(--text-mid); flex: 1; line-height: 1.4; }
+    .q-num { font-size: 0.68rem; font-weight: 500; color: var(--text-muted); width: 14px; flex-shrink: 0; }
+    .q-options { display: flex; gap: 4px; flex-shrink: 0; }
+    .q-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); background: var(--cream); font-size: 0.72rem; font-weight: 500; color: var(--text-muted); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+    .q-btn:hover { border-color: var(--navy); color: var(--navy); }
+    .q-btn.selected-1, .q-btn.selected-2 { background: #993C1D; border-color: #993C1D; color: #fff; }
+    .q-btn.selected-3 { background: #BA7517; border-color: #BA7517; color: #fff; }
+    .q-btn.selected-4, .q-btn.selected-5 { background: #1D9E75; border-color: #1D9E75; color: #fff; }
+    .nav-btns { display: flex; gap: 0.75rem; margin-top: 2rem; }
+    .btn-back { font-size: 0.82rem; font-weight: 500; padding: 10px 20px; border-radius: var(--radius); border: 1px solid rgba(26,39,68,0.25); background: transparent; color: var(--text-mid); cursor: pointer; font-family: var(--sans); transition: background 0.2s; }
+    .btn-back:hover { background: var(--cream-dark); }
+    .btn-next { font-size: 0.82rem; font-weight: 500; padding: 10px 24px; border-radius: var(--radius); border: none; background: var(--navy); color: #fff; cursor: pointer; font-family: var(--sans); transition: background 0.2s; }
+    .btn-next:hover { background: var(--navy-deep); }
+    .teaser-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .teaser-header { background: var(--navy-deep); padding: 2rem; text-align: center; }
+    .teaser-imi-label { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; }
+    .teaser-imi-level { font-family: var(--serif); font-size: 2.5rem; color: #fff; margin-bottom: 0.25rem; }
+    .teaser-imi-score { font-size: 0.85rem; color: rgba(255,255,255,0.45); margin-bottom: 1.5rem; }
+    .teaser-locked { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 1rem 1.5rem; margin: 0 auto; max-width: 420px; }
+    .teaser-locked-title { font-size: 0.82rem; font-weight: 500; color: rgba(255,255,255,0.7); margin-bottom: 0.4rem; }
+    .teaser-locked-items { display: flex; flex-direction: column; gap: 0.3rem; }
+    .teaser-locked-item { font-size: 0.75rem; color: rgba(255,255,255,0.4); display: flex; align-items: center; gap: 6px; }
+    .teaser-locked-item::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+    .teaser-body { padding: 2rem; }
+    .teaser-body-title { font-family: var(--serif); font-size: 1.3rem; color: var(--navy); margin-bottom: 0.4rem; }
+    .teaser-body-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
+    .email-field { margin-bottom: 1rem; }
+    .email-label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--navy); margin-bottom: 0.4rem; }
+    .email-input { width: 100%; font-size: 0.875rem; font-family: var(--sans); padding: 10px 14px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--cream); color: var(--text); outline: none; transition: border-color 0.2s; max-width: 420px; display: block; }
+    .email-input:focus { border-color: var(--navy); }
+    .email-btn { font-size: 0.85rem; font-weight: 500; padding: 11px 28px; border-radius: var(--radius); border: none; background: var(--gold); color: var(--navy-deep); cursor: pointer; font-family: var(--sans); transition: background 0.2s; }
+    .email-btn:hover { background: var(--gold-light); }
+    .email-privacy { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.6rem; }
+    .results-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .results-header { background: var(--navy-deep); padding: 2rem; }
+    .results-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .results-imi-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 0.25rem; }
+    .results-imi-level { font-family: var(--serif); font-size: 2.2rem; color: #fff; line-height: 1; margin-bottom: 0.2rem; }
+    .results-imi-score { font-size: 0.82rem; color: rgba(255,255,255,0.45); }
+    .results-overall-bar { flex: 1; min-width: 200px; padding-top: 0.5rem; }
+    .results-bar-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 0.5rem; }
+    .results-bar-track { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-bottom: 0.3rem; }
+    .results-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+    .results-bar-pct { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+    .results-body { padding: 1.75rem; }
+    .results-section-title { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; margin-top: 1.5rem; }
+    .pillar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+    .pillar-card { background: var(--cream); border-radius: var(--radius); padding: 1rem; }
+    .pillar-card-name { font-size: 0.75rem; font-weight: 500; color: var(--navy); margin-bottom: 0.5rem; }
+    .pillar-card-bar-track { height: 5px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; margin-bottom: 0.4rem; }
+    .pillar-card-bar-fill { height: 100%; border-radius: 3px; }
+    .pillar-card-score { font-size: 0.72rem; color: var(--text-muted); }
+    .rec-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
+    .rec-item { display: flex; gap: 1rem; align-items: flex-start; background: var(--cream); border-radius: var(--radius); padding: 1rem 1.25rem; border-left: 3px solid var(--navy); }
+    .rec-num { width: 24px; height: 24px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 0.7rem; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .rec-text { font-size: 0.82rem; color: var(--text-mid); line-height: 1.6; }
+    .rec-text b { color: var(--navy); font-weight: 500; }
+    .bundle-rec { background: var(--navy); border-radius: var(--radius-lg); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+    .bundle-rec-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 0.3rem; }
+    .bundle-rec-name { font-family: var(--serif); font-size: 1.3rem; color: #fff; margin-bottom: 0.25rem; }
+    .bundle-rec-desc { font-size: 0.78rem; color: rgba(255,255,255,0.5); line-height: 1.6; max-width: 380px; }
+    .bundle-rec-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--navy-deep); font-size: 0.82rem; font-weight: 500; padding: 10px 22px; border-radius: var(--radius); transition: background 0.2s; white-space: nowrap; }
+    .bundle-rec-btn:hover { background: var(--gold-light); }
+    .intro-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); }
+    .intro-levels { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.6rem; margin-bottom: 2rem; }
+    .intro-level { background: var(--cream); border-radius: var(--radius); padding: 0.75rem 1rem; }
+    .intro-level-num { font-size: 0.65rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.2rem; }
+    .intro-level-name { font-size: 0.85rem; font-weight: 500; color: var(--navy); }
+    .intro-how { margin-bottom: 2rem; }
+    .intro-how-title { font-size: 0.82rem; font-weight: 500; color: var(--navy); margin-bottom: 0.75rem; }
+    .intro-how-row { display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.5rem; }
+    .intro-how-q { width: 20px; height: 20px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 0.65rem; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .intro-how-text { font-size: 0.8rem; color: var(--text-mid); line-height: 1.5; }
+    .btn-start { font-size: 0.9rem; font-weight: 500; padding: 12px 32px; border-radius: var(--radius); border: none; background: var(--navy); color: #fff; cursor: pointer; font-family: var(--sans); transition: background 0.2s; }
+    .btn-start:hover { background: var(--navy-deep); }
+    footer { background: var(--navy-deep); padding: 2rem; text-align: center; margin-top: 4rem; }
+    .footer-logo { font-family: var(--serif); font-size: 1.2rem; color: #fff; margin-bottom: 0.3rem; }
+    .footer-logo span { color: var(--gold); }
+    .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.2); }
+    @media (max-width: 640px) { .nav-links { display: none; } .q-row { flex-wrap: wrap; } .q-options { margin-top: 0.25rem; } }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">MOS<span>ei</span></a>
+  <div class="nav-links">
+    <a href="index.html#start-here">Start Here</a>
+    <a href="index.html#framework">Framework</a>
+    <a href="knowledge.html">Knowledge</a>
+    <a href="tools.html">Tools</a>
+    <a href="index.html#ask-mosei">Ask MOSei</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+</nav>
+<div class="hero">
+  <h1>MOS Assessment Tool</h1>
+  <p class="hero-sub">Score your Management Operating System across 12 elements. Receive your maturity level and a prioritized action plan.</p>
+</div>
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+</div>
+<div class="main">
+  <div id="screen-intro">
+    <div class="intro-card" style="padding:0;overflow:hidden;">
+      <div style="display:flex;border-bottom:1px solid var(--border);">
+        <div id="tab-readme" onclick="showIntroTab('readme')" style="font-size:0.82rem;font-weight:500;padding:0.85rem 1.5rem;cursor:pointer;color:var(--navy);border-bottom:2px solid var(--navy);margin-bottom:-1px;">Read Me</div>
+        <div id="tab-start" onclick="showIntroTab('start')" style="font-size:0.82rem;font-weight:500;padding:0.85rem 1.5rem;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-1px;">Start Assessment</div>
+      </div>
+      <div id="intro-tab-readme" style="padding:2rem;">
+        <div style="background:var(--navy-deep);border-radius:var(--radius-lg);padding:1.75rem;margin-bottom:1.5rem;">
+          <div style="font-family:var(--serif);font-size:1.25rem;color:#fff;margin-bottom:0.5rem;">MOS<span style="color:var(--gold);">ei</span> -- MOS Assessment Tool</div>
+          <div style="font-size:0.82rem;color:rgba(255,255,255,0.55);line-height:1.7;">Built on The Norman System. Designed for plant managers, operations leaders, and CI leads who want to know where their Management Operating System actually stands -- not where they think it stands.</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div style="background:var(--cream);border-radius:var(--radius);padding:1.1rem 1.25rem;"><div style="font-size:0.68rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;">WHY</div><div style="font-size:0.8rem;color:var(--text-mid);line-height:1.65;">Most organizations believe their MOS is more mature than it is. Elements exist on paper but are not owned, not practiced, and not changing behavior. This tool surfaces that gap before pressure does.</div></div>
+          <div style="background:var(--cream);border-radius:var(--radius);padding:1.1rem 1.25rem;"><div style="font-size:0.68rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;">Purpose</div><div style="font-size:0.8rem;color:var(--text-mid);line-height:1.65;">Score 12 MOS elements across four pillars. Receive a maturity level, a pillar breakdown, and a prioritized action plan that tells you exactly where to focus first.</div></div>
+          <div style="background:var(--cream);border-radius:var(--radius);padding:1.1rem 1.25rem;"><div style="font-size:0.68rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;">Inputs</div><div style="font-size:0.8rem;color:var(--text-mid);line-height:1.65;">Your honest assessment of each element. Score what is actually happening on the floor -- not what is intended, documented, or planned. This tool produces accurate results only when scored accurately.</div></div>
+          <div style="background:var(--cream);border-radius:var(--radius);padding:1.1rem 1.25rem;"><div style="font-size:0.68rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;">Outputs</div><div style="font-size:0.8rem;color:var(--text-mid);line-height:1.65;">A maturity level (Dark through Compounding), pillar scores across Governance, Execution, Performance, and Health, your weakest element, three priority recommendations, and a bundle recommendation.</div></div>
+          <div style="background:var(--cream);border-radius:var(--radius);padding:1.1rem 1.25rem;"><div style="font-size:0.68rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;">Cadence</div><div style="font-size:0.8rem;color:var(--text-mid);line-height:1.65;">Run quarterly. MOS maturity is not static -- it degrades under pressure, leadership change, and organizational disruption. A quarterly score tracks whether you are advancing or regressing.</div></div>
+          <div style="background:var(--cream);border-radius:var(--radius);padding:1.1rem 1.25rem;"><div style="font-size:0.68rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;">Escalation Path</div><div style="font-size:0.8rem;color:var(--text-mid);line-height:1.65;">Results below Level 3 (Compliant) indicate structural risk. Share the pillar breakdown with your leadership team and treat the weakest element as a priority action item in your next tiered meeting.</div></div>
+        </div>
+        <div style="background:var(--cream);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1rem;">
+          <div style="font-size:0.68rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;">Supporting Documents</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+            <span style="font-size:0.75rem;color:var(--text-mid);background:#fff;border:1px solid var(--border);border-radius:6px;padding:3px 10px;">Gap Index Scorer</span>
+            <span style="font-size:0.75rem;color:var(--text-mid);background:#fff;border:1px solid var(--border);border-radius:6px;padding:3px 10px;">Plant Health Score</span>
+            <span style="font-size:0.75rem;color:var(--text-mid);background:#fff;border:1px solid var(--border);border-radius:6px;padding:3px 10px;">Signal Flow Index</span>
+            <span style="font-size:0.75rem;color:var(--text-mid);background:#fff;border:1px solid var(--border);border-radius:6px;padding:3px 10px;">IMI Tool (XLSX)</span>
+            <span style="font-size:0.75rem;color:var(--text-mid);background:#fff;border:1px solid var(--border);border-radius:6px;padding:3px 10px;">The Norman System White Paper</span>
+          </div>
+        </div>
+        <div style="background:var(--cream);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1.5rem;">
+          <div style="font-size:0.68rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;">Three Things Most Likely to Fail in Year One</div>
+          <div style="display:flex;flex-direction:column;gap:0.6rem;">
+            <div style="display:flex;gap:0.75rem;align-items:flex-start;"><div style="width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;font-size:0.65rem;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">1</div><div style="font-size:0.8rem;color:var(--text-mid);line-height:1.6;"><b style="color:var(--navy);">Scoring what you wish were true.</b> The most common failure is rating elements by intent rather than reality. Score what is happening today, not what is planned or occasionally practiced.</div></div>
+            <div style="display:flex;gap:0.75rem;align-items:flex-start;"><div style="width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;font-size:0.65rem;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">2</div><div style="font-size:0.8rem;color:var(--text-mid);line-height:1.6;"><b style="color:var(--navy);">Running the assessment once and moving on.</b> A single score is a snapshot. Maturity only becomes visible as a trend. Commit to quarterly scoring before you run it the first time.</div></div>
+            <div style="display:flex;gap:0.75rem;align-items:flex-start;"><div style="width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;font-size:0.65rem;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">3</div><div style="font-size:0.8rem;color:var(--text-mid);line-height:1.6;"><b style="color:var(--navy);">Treating low scores as a problem rather than a diagnosis.</b> A low score is not a failure -- it is information. The value of this tool is in knowing where the pressure is leaking before it compounds into a crisis.</div></div>
+          </div>
+        </div>
+        <button class="btn-start" onclick="showIntroTab('start')">Continue to Assessment &rarr;</button>
+      </div>
+      <div id="intro-tab-start" style="padding:2rem;display:none;">
+        <div class="intro-how">
+          <div class="intro-how-title">Four questions per element</div>
+          <div class="intro-how-row"><div class="intro-how-q">1</div><div class="intro-how-text"><b>Does it exist?</b> -- Is this element formally in place at your site?</div></div>
+          <div class="intro-how-row"><div class="intro-how-q">2</div><div class="intro-how-text"><b>Is there a named owner?</b> -- Is a single person accountable for this element?</div></div>
+          <div class="intro-how-row"><div class="intro-how-q">3</div><div class="intro-how-text"><b>How well is it used?</b> -- Is it actively practiced, or just documented?</div></div>
+          <div class="intro-how-row"><div class="intro-how-q">4</div><div class="intro-how-text"><b>Does it change behavior?</b> -- Does this element visibly affect how people work and decide?</div></div>
+        </div>
+        <div style="margin-bottom:1.75rem;">
+          <div class="intro-how-title">Score each question 1 to 5</div>
+          <p style="font-size:0.8rem;color:var(--text-muted);line-height:1.6;">1 = Not at all &nbsp;&middot;&nbsp; 2 = Barely &nbsp;&middot;&nbsp; 3 = Partially &nbsp;&middot;&nbsp; 4 = Mostly &nbsp;&middot;&nbsp; 5 = Fully</p>
+        </div>
+        <div style="margin-bottom:1.75rem;">
+          <div class="intro-how-title">The seven maturity levels</div>
+          <div class="intro-levels">
+            <div class="intro-level"><div class="intro-level-num">Level 0</div><div class="intro-level-name">Dark</div></div>
+            <div class="intro-level"><div class="intro-level-num">Level 1</div><div class="intro-level-name">Named</div></div>
+            <div class="intro-level"><div class="intro-level-num">Level 2</div><div class="intro-level-name">Started</div></div>
+            <div class="intro-level"><div class="intro-level-num">Level 3</div><div class="intro-level-name">Compliant</div></div>
+            <div class="intro-level"><div class="intro-level-num">Level 4</div><div class="intro-level-name">Regulating</div></div>
+            <div class="intro-level"><div class="intro-level-num">Level 5</div><div class="intro-level-name">Embedded</div></div>
+            <div class="intro-level"><div class="intro-level-num">Level 6</div><div class="intro-level-name">Compounding</div></div>
+          </div>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1.5rem;">Takes approximately 10-12 minutes. Your full results are delivered after a brief email capture.</p>
+        <button class="btn-start" onclick="startAssessment()">Begin Assessment &rarr;</button>
+      </div>
+    </div>
+  </div>
+  <div id="screen-assessment" style="display:none;">
+    <div class="steps" id="step-dots"></div>
+    <div id="pillar-container"></div>
+    <div class="nav-btns">
+      <button class="btn-back" id="btn-back" onclick="prevPillar()">&#8592; Back</button>
+      <button class="btn-next" id="btn-next" onclick="nextPillar()">Continue &rarr;</button>
+    </div>
+  </div>
+  <div id="screen-teaser" style="display:none;">
+    <div class="teaser-card">
+      <div class="teaser-header">
+        <div class="teaser-imi-label">Your Maturity Level</div>
+        <div class="teaser-imi-level" id="teaser-level">--</div>
+        <div class="teaser-imi-score" id="teaser-score">Overall score: --</div>
+        <div class="teaser-locked">
+          <div class="teaser-locked-title">Your full results include:</div>
+          <div class="teaser-locked-items">
+            <div class="teaser-locked-item">Pillar breakdown -- Governance, Execution, Performance, Health</div>
+            <div class="teaser-locked-item">Your weakest element and why it matters</div>
+            <div class="teaser-locked-item">Top 3 priority recommendations</div>
+            <div class="teaser-locked-item">Bundle recommendation based on your gaps</div>
+          </div>
+        </div>
+      </div>
+      <div class="teaser-body">
+        <div class="teaser-body-title">Unlock your full results</div>
+        <p class="teaser-body-sub">Enter your email to receive your complete MOS Assessment -- pillar breakdown, priority recommendations, and the bundle that addresses your specific gaps.</p>
+        <div class="email-field">
+          <label class="email-label" for="email-input">Your email address</label>
+          <input class="email-input" type="email" id="email-input" placeholder="you@company.com" />
+        </div>
+        <button class="email-btn" onclick="unlockResults()">See My Full Results &rarr;</button>
+        <p class="email-privacy">Your results will be sent to advisor@mosei.org. No spam. No sharing.</p>
+      </div>
+    </div>
+  </div>
+  <div id="screen-results" style="display:none;">
+    <div class="results-card">
+      <div class="results-header">
+        <div class="results-top">
+          <div>
+            <div class="results-imi-label">MOS Maturity Level</div>
+            <div class="results-imi-level" id="results-level">--</div>
+            <div class="results-imi-score" id="results-score">--</div>
+          </div>
+          <div class="results-overall-bar">
+            <div class="results-bar-label">Overall MOS maturity</div>
+            <div class="results-bar-track"><div class="results-bar-fill" id="results-bar" style="width:0%;background:var(--gold);"></div></div>
+            <div class="results-bar-pct" id="results-pct">--</div>
+          </div>
+        </div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.6;" id="results-summary"></div>
+      </div>
+      <div class="results-body">
+        <div class="results-section-title">Pillar Breakdown</div>
+        <div class="pillar-grid" id="pillar-grid"></div>
+        <div class="results-section-title">Priority Recommendations</div>
+        <div class="rec-list" id="rec-list"></div>
+        <div class="results-section-title">Recommended Bundle</div>
+        <div class="bundle-rec" id="bundle-rec"></div>
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+          <p style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;">A copy of these results has been sent to advisor@mosei.org on your behalf. Norman Applegate reviews all MOS assessments personally and may reach out with additional observations.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="footer-logo">MOS<span>ei</span></div>
+  <div class="footer-copy">&copy; 2026 Norman Applegate. All rights reserved. &middot; MOSei.org</div>
+</footer>
+<script>
+var pillars = [
+  { id: 'governance', name: 'Governance', elements: [
+    { id: 'raci', name: 'RACI Matrix', questions: ['A RACI matrix exists and formally assigns ownership across key functions','There is a single named owner responsible for maintaining and enforcing the RACI','The RACI is actively referenced when decisions are made or escalations occur','The RACI has visibly reduced confusion about who owns what'] },
+    { id: 'lsw', name: 'Leader Standard Work', questions: ['Leader Standard Work is documented and assigned to each leadership role','There is a single named owner accountable for LSW compliance at each tier','Leaders consistently complete their standard work routines','Leader Standard Work has changed how leaders spend their time on the floor'] },
+    { id: 'tier', name: 'Tier Meeting Structure', questions: ['A tiered meeting structure exists (shift, daily, weekly, monthly)','Each tier has a single named owner responsible for cadence and agenda','Meetings run on schedule with defined agendas and active participation','The tiered meeting structure is where real operational decisions get made'] }
+  ]},
+  { id: 'execution', name: 'Execution', elements: [
+    { id: 'hourly', name: 'Hourly Boards', questions: ['Hourly production boards exist on the floor','There is a single named owner responsible for each board and its accuracy','Boards are updated every hour by operators or team leads','Hourly boards drive real-time conversations and immediate corrective action'] },
+    { id: 'escalation', name: 'Escalation & Action Signal', questions: ['A formal escalation process exists with defined triggers and pathways','There is a single named owner for each escalation tier and resolution pathway','Issues escalate through tiers rather than jumping directly to senior leaders','The escalation system has measurably improved response time to floor-level problems'] },
+    { id: 'gemba', name: 'Daily Gemba', questions: ['A daily Gemba walk routine is formally in place','There is a single named owner responsible for the Gemba schedule and log','Leaders conduct Gemba walks consistently using a structured log','Gemba walks generate action items that are tracked and resolved'] }
+  ]},
+  { id: 'performance', name: 'Performance', elements: [
+    { id: 'kpi', name: 'KPI Register', questions: ['A KPI register exists that documents all key metrics, owners, and targets','Each KPI has a single named owner accountable for accuracy and action','KPIs are reviewed regularly in tiered meetings with trend data','KPIs reflect operational reality rather than a managed or cosmetic view'] },
+    { id: 'cascade', name: 'KPI Cascade', questions: ['KPIs cascade from strategic goals down to floor-level metrics','There is a single named owner responsible for maintaining cascade alignment','Floor-level teams understand how their metrics connect to plant-level goals','The KPI cascade has aligned team behavior with organizational priorities'] },
+    { id: 'imi', name: 'IMI Tracking', questions: ['MOS implementation maturity is formally tracked across elements','There is a single named owner responsible for IMI tracking and reporting','IMI scores are reviewed regularly and drive improvement priorities','IMI tracking has created visible accountability for MOS implementation'] }
+  ]},
+  { id: 'health', name: 'Health', elements: [
+    { id: 'safety', name: 'Safety Signal Assessment', questions: ['Safety signals are formally captured and tracked beyond lagging indicators','There is a single named owner responsible for safety signal review and escalation','Safety signal data is reviewed in tiered meetings and acted upon','Safety signal assessment has changed how near-misses and precursors are managed'] },
+    { id: 'planthealth', name: 'Plant Health Score', questions: ['A composite plant health score is calculated from multiple input tools','There is a single named owner responsible for generating and presenting the score','Plant health scores are tracked over time and reviewed by leadership','The Plant Health Score drives prioritization of improvement resources'] },
+    { id: 'sfi', name: 'Signal Flow Index', questions: ['Signal flow -- how well information travels from floor to leadership -- is measured','There is a single named owner responsible for monitoring and improving signal flow','Signal flow data is used to identify where information is being compressed or lost','Improvements to signal flow have resulted in faster and better decisions'] }
+  ]}
+];
+var scores = {};
+var currentPillar = 0;
+var userEmail = '';
+function showIntroTab(tab) {
+  document.getElementById('intro-tab-readme').style.display = tab==='readme'?'block':'none';
+  document.getElementById('intro-tab-start').style.display = tab==='start'?'block':'none';
+  document.getElementById('tab-readme').style.color = tab==='readme'?'var(--navy)':'var(--text-muted)';
+  document.getElementById('tab-readme').style.borderBottomColor = tab==='readme'?'var(--navy)':'transparent';
+  document.getElementById('tab-start').style.color = tab==='start'?'var(--navy)':'var(--text-muted)';
+  document.getElementById('tab-start').style.borderBottomColor = tab==='start'?'var(--navy)':'transparent';
+}
+function startAssessment() {
+  document.getElementById('screen-intro').style.display='none';
+  document.getElementById('screen-assessment').style.display='block';
+  renderPillar(); updateProgress();
+}
+function renderPillar() {
+  var pillar=pillars[currentPillar];
+  var container=document.getElementById('pillar-container');
+  var html='<div class="section-card"><div class="section-header"><div class="section-header-left"><span class="section-pillar-badge">Pillar '+(currentPillar+1)+' of 4</span><span class="section-title">'+pillar.name+'</span></div><span class="section-score-badge" id="pillar-score-badge">--</span></div><div class="section-body">';
+  pillar.elements.forEach(function(el){
+    html+='<div class="element-block"><div class="element-name">'+el.name+' <span class="element-score-pill" id="el-score-'+el.id+'">--/20</span></div>';
+    el.questions.forEach(function(q,qi){
+      var key=el.id+'_'+qi;
+      var locked=isLocked(el.id,qi);
+      var lockNote=locked?'<span style="font-size:0.68rem;color:#993C1D;margin-left:6px;">Locked -- element does not exist</span>':'';
+      html+='<div class="q-row" style="'+(locked?'opacity:0.45;':'')+'"><span class="q-num">'+(qi+1)+'</span><span class="q-label">'+q+lockNote+'</span><div class="q-options">';
+      for(var v=1;v<=5;v++){
+        var sel=scores[key]===v?' selected selected-'+v:'';
+        var dis=locked?' style="cursor:not-allowed;"':'';
+        html+='<button class="q-btn'+sel+'"'+dis+' onclick="setScore(\''+key+'\','+v+',\''+el.id+'\')">'+v+'</button>';
+      }
+      html+='</div></div>';
+    });
+    html+='</div>';
+  });
+  html+='</div></div>';
+  container.innerHTML=html;
+  updatePillarScore(); updateStepDots();
+  document.getElementById('btn-back').style.display='inline-flex';
+}
+function isLocked(elId,qi){ return qi>0&&scores[elId+'_0']===1; }
+function setScore(key,val,elId){
+  var qi=parseInt(key.split('_').pop());
+  if(isLocked(elId,qi))return;
+  scores[key]=val;
+  if(key===elId+'_0'&&val===1){scores[elId+'_1']=1;scores[elId+'_2']=1;scores[elId+'_3']=1;}
+  if(key===elId+'_0'&&val>1){if(scores[elId+'_1']===1)delete scores[elId+'_1'];if(scores[elId+'_2']===1)delete scores[elId+'_2'];if(scores[elId+'_3']===1)delete scores[elId+'_3'];}
+  renderPillar(); updateProgress();
+}
+function getElementScore(elId){ var t=0; for(var i=0;i<4;i++){t+=scores[elId+'_'+i]||0;} return t; }
+function getPillarScore(idx){ var t=0; pillars[idx].elements.forEach(function(el){t+=getElementScore(el.id);}); return t; }
+function updatePillarScore(){
+  var s=getPillarScore(currentPillar);
+  var b=document.getElementById('pillar-score-badge');
+  if(b)b.textContent=Math.round((s/60)*100)+'%';
+  pillars[currentPillar].elements.forEach(function(el){var eb=document.getElementById('el-score-'+el.id);if(eb)eb.textContent=getElementScore(el.id)+'/20';});
+}
+function updateStepDots(){
+  var h='';
+  for(var i=0;i<4;i++){var c=i<currentPillar?'done':(i===currentPillar?'active':'');h+='<div class="step-dot '+c+'"></div>';}
+  document.getElementById('step-dots').innerHTML=h;
+}
+function updateProgress(){
+  var f=Object.keys(scores).length;
+  document.getElementById('progress-bar').style.width=Math.min(100,Math.round((f/48)*100))+'%';
+}
+function prevPillar(){
+  if(currentPillar>0){currentPillar--;renderPillar();updateProgress();window.scrollTo(0,0);}
+  else{document.getElementById('screen-assessment').style.display='none';document.getElementById('screen-intro').style.display='block';window.scrollTo(0,0);}
+}
+function nextPillar(){
+  if(currentPillar<pillars.length-1){currentPillar++;renderPillar();updateProgress();window.scrollTo(0,0);}
+  else{showTeaser();}
+}
+function getTotalScore(){ var t=0; pillars.forEach(function(p,i){t+=getPillarScore(i);}); return t; }
+function getTotalPct(){ return Math.round((getTotalScore()/240)*100); }
+function getIMILevel(pct){
+  if(pct<=20)return{level:'Dark',num:0,color:'#777'};
+  if(pct<=35)return{level:'Named',num:1,color:'#BA7517'};
+  if(pct<=50)return{level:'Started',num:2,color:'#BA7517'};
+  if(pct<=65)return{level:'Compliant',num:3,color:'#1D9E75'};
+  if(pct<=80)return{level:'Regulating',num:4,color:'#1D9E75'};
+  if(pct<=90)return{level:'Embedded',num:5,color:'#c9a84c'};
+  return{level:'Compounding',num:6,color:'#c9a84c'};
+}
+function showTeaser(){
+  document.getElementById('screen-assessment').style.display='none';
+  document.getElementById('screen-teaser').style.display='block';
+  var pct=getTotalPct(); var imi=getIMILevel(pct);
+  document.getElementById('teaser-level').textContent='Level '+imi.num+' -- '+imi.level;
+  document.getElementById('teaser-level').style.color=imi.color;
+  document.getElementById('teaser-score').textContent='Overall score: '+getTotalScore()+' / 240 ('+pct+'%)';
+  document.getElementById('progress-bar').style.width='90%';
+  window.scrollTo(0,0);
+}
+function unlockResults(){
+  var email=document.getElementById('email-input').value.trim();
+  if(!email||!email.includes('@')){alert('Please enter a valid email address.');return;}
+  userEmail=email; sendResultsEmail(email); showFullResults();
+}
+function sendResultsEmail(email){
+  var pct=getTotalPct(); var imi=getIMILevel(pct);
+  var body='MOS Assessment\n\nEmail: '+email+'\nLevel: '+imi.level+' ('+imi.num+')\nScore: '+getTotalScore()+'/240 ('+pct+'%)\n\nPillars:\n';
+  pillars.forEach(function(p,i){var ps=getPillarScore(i);body+=p.name+': '+ps+'/60 ('+Math.round((ps/60)*100)+'%)\n';});
+  fetch('/.netlify/functions/advisor',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:'MOS Assessment submitted. Acknowledge only. '+body}],assessment_notification:true,assessment_email:email,assessment_body:body})}).catch(function(){});
+}
+function showFullResults(){
+  document.getElementById('screen-teaser').style.display='none';
+  document.getElementById('screen-results').style.display='block';
+  document.getElementById('progress-bar').style.width='100%';
+  var pct=getTotalPct(); var imi=getIMILevel(pct);
+  document.getElementById('results-level').textContent='Level '+imi.num+' -- '+imi.level;
+  document.getElementById('results-level').style.color=imi.color;
+  document.getElementById('results-score').textContent=getTotalScore()+' / 240 points';
+  document.getElementById('results-pct').textContent=pct+'% overall maturity';
+  document.getElementById('results-bar').style.width=pct+'%';
+  document.getElementById('results-bar').style.background=imi.color;
+  var summaries={'Dark':'Your MOS is not yet formally in place. The priority is establishing the foundational elements before attempting to optimize any individual dimension.','Named':'Your MOS elements are identified but not yet consistently implemented. Focus on getting the basics operational before measuring effectiveness.','Started':'Your MOS is partially implemented. Some elements exist but are not yet consistently used. The gap between existence and practice is your primary focus.','Compliant':'Your MOS meets a basic standard of compliance. Elements exist and are used, but they are not yet driving meaningful behavior change across the organization.','Regulating':'Your MOS is regulating -- elements exist, are used, and are beginning to change behavior. This is the critical threshold. The goal now is to embed and sustain.','Embedded':'Your MOS is embedded in the organization. The elements are part of how work gets done. The opportunity is to generate compounding returns from the system.','Compounding':'Your MOS is compounding. The system is generating returns beyond its individual components. Focus on protecting and extending the system under pressure.'};
+  document.getElementById('results-summary').textContent=summaries[imi.level]||'';
+  var ph='';
+  pillars.forEach(function(p,i){var ps=getPillarScore(i);var pp=Math.round((ps/60)*100);var c=pp>=66?'#1D9E75':pp>=36?'#BA7517':'#993C1D';ph+='<div class="pillar-card"><div class="pillar-card-name">'+p.name+'</div><div class="pillar-card-bar-track"><div class="pillar-card-bar-fill" style="width:'+pp+'%;background:'+c+';"></div></div><div class="pillar-card-score">'+ps+'/60 &middot; '+pp+'%</div></div>';});
+  document.getElementById('pillar-grid').innerHTML=ph;
+  var weakest=null,weakestScore=999;
+  pillars.forEach(function(p){p.elements.forEach(function(el){var s=getElementScore(el.id);if(s<weakestScore){weakestScore=s;weakest=el;}});});
+  var recs=[];
+  if(weakest)recs.push('<b>'+weakest.name+'</b> is your lowest-scoring element with '+weakestScore+'/20. This is where pressure is most likely leaking through your system. Address this first.');
+  if(pct<50)recs.push('Focus on existence before effectiveness. Get each element formally established before measuring how well it is used.');
+  if(pct>=50&&pct<70)recs.push('Your elements exist but are not yet changing behavior. The gap between compliance and regulation is the most critical to close. Run the Signal Flow Index to identify where signals are being lost.');
+  if(pct>=70)recs.push('Your system is regulating. The priority now is consistency under pressure. Run the Gap Scoring Tool to verify your external pressure is not outpacing your internal regulation capacity.');
+  recs.push('Reassess quarterly. Maturity is not static -- pressure changes, leadership changes, and systems degrade without active maintenance.');
+  var rh='';recs.forEach(function(r,i){rh+='<div class="rec-item"><div class="rec-num">'+(i+1)+'</div><div class="rec-text">'+r+'</div></div>';});
+  document.getElementById('rec-list').innerHTML=rh;
+  var bundle,bundleDesc,bundleLink;
+  if(pct<35){bundle='Foundation Toolkit -- $29';bundleDesc='Your MOS is in early stages. The Foundation Toolkit gives you the five core tools to establish the basics -- charter, meeting structure, scorecard, Gemba, and handover log.';bundleLink='index.html#tools';}
+  else if(pct<70){bundle='MOS Bundle -- $99';bundleDesc='Your MOS is partially implemented. The MOS Bundle gives you all 17 tools across Governance, Execution, Performance, and Health -- everything needed to reach the Regulating level.';bundleLink='index.html#tools';}
+  else{bundle='Enterprise / Consultant Bundle -- $249';bundleDesc='Your MOS is mature. The Enterprise Bundle adds the Gap Scoring Tool and MOS Pressure Test -- the two instruments that verify your system can hold under sustained external pressure.';bundleLink='index.html#tools';}
+  document.getElementById('bundle-rec').innerHTML='<div><div class="bundle-rec-label">Recommended for your maturity level</div><div class="bundle-rec-name">'+bundle+'</div><div class="bundle-rec-desc">'+bundleDesc+'</div></div><a href="'+bundleLink+'" class="bundle-rec-btn">Get the Bundle &rarr;</a>';
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
