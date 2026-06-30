@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MOSei Gap Scoring Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy: #1a2744; --navy-deep: #111c33; --gold: #c9a84c; --gold-light: #e8c97a;
+    --cream: #f8f5ef; --cream-dark: #ede9e1; --text: #1a1a1a; --text-mid: #444; --text-muted: #777;
+    --border: rgba(26,39,68,0.12); --serif: 'EB Garamond', Georgia, serif; --sans: 'Inter', system-ui, sans-serif;
+    --radius: 10px; --radius-lg: 14px; --red: #993C1D; --amber: #BA7517; --green: #1D9E75;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--sans);background:var(--cream);color:var(--text);line-height:1.6;}
+  a{color:inherit;text-decoration:none;}
+  nav { position: sticky; top: 0; z-index: 100; background: var(--navy); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 56px; }
+  .nav-logo { font-family: var(--serif); font-size: 1.35rem; color: #fff; }
+  .nav-logo span { color: var(--gold); }
+  .hero { background: var(--navy); padding: 3rem 2rem 2.5rem; text-align: center; }
+  .hero h1 { font-family: var(--serif); font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 400; color: #fff; margin-bottom: 0.6rem; }
+  .hero-sub { font-size: 0.9rem; color: rgba(255,255,255,0.55); max-width: 560px; margin: 0 auto; line-height: 1.7; }
+  .hero-badge { display: inline-block; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(201,168,76,0.4); padding: 4px 14px; border-radius: 20px; margin-bottom: 1rem; }
+  .main { max-width: 820px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem; }
+  .tabs { display: flex; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .tab { font-size: 0.8rem; font-weight: 500; padding: 0.85rem 1.25rem; cursor: pointer; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+  .tab-body { padding: 2rem; }
+  .label-gold { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
+  .box { background: var(--cream); border-radius: var(--radius); padding: 1.1rem 1.25rem; margin-bottom: 1rem; }
+  .box p { font-size: 0.8rem; color: var(--text-mid); line-height: 1.65; }
+  .navy-box { background: var(--navy-deep); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 1.5rem; }
+  .navy-box-title { font-family: var(--serif); font-size: 1.2rem; color: #fff; margin-bottom: 0.5rem; }
+  .navy-box-title span { color: var(--gold); }
+  .navy-box-sub { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.7; }
+  .step-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 0.75rem; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 0.7rem; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-text { font-size: 0.8rem; color: var(--text-mid); line-height: 1.6; }
+  .step-text b { color: var(--navy); }
+  .btn { font-size: 0.85rem; font-weight: 500; padding: 11px 26px; border-radius: var(--radius); border: none; background: var(--navy); color: #fff; cursor: pointer; font-family: var(--sans); }
+  .btn:hover { background: var(--navy-deep); }
+  .btn-secondary { font-size: 0.85rem; font-weight: 500; padding: 11px 22px; border-radius: var(--radius); border: 1px solid rgba(26,39,68,0.25); background: transparent; color: var(--text-mid); cursor: pointer; font-family: var(--sans); }
+  .meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+  .meta-field { display: flex; flex-direction: column; gap: 4px; }
+  .meta-field.full { grid-column: 1/-1; }
+  .meta-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .meta-field input, .meta-field select { font-size: 0.82rem; padding: 8px 10px; border-radius: 7px; border: 1px solid var(--border); background: var(--cream); color: var(--text); }
+  .section-title { font-size: 0.95rem; font-weight: 500; color: var(--navy); margin: 1.5rem 0 0.85rem; }
+  .section-title:first-child { margin-top: 0; }
+  .q-block { background: var(--cream); border-radius: var(--radius); padding: 1.1rem 1.25rem; margin-bottom: 0.85rem; }
+  .q-title { font-size: 0.88rem; font-weight: 500; color: var(--navy); margin-bottom: 0.25rem; }
+  .q-sub { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.85rem; line-height: 1.5; }
+  .q-options { display: flex; gap: 5px; flex-wrap: wrap; }
+  .q-btn { flex: 1; min-width: 36px; padding: 9px 4px; border-radius: 7px; border: 1px solid var(--border); background: #fff; cursor: pointer; text-align: center; font-family: var(--sans); transition: all 0.15s; font-size: 0.82rem; font-weight: 600; color: var(--text); }
+  .q-btn:hover { border-color: var(--navy); }
+  .q-btn.sel-low { background: #993C1D; border-color: #993C1D; color: #fff; }
+  .q-btn.sel-mid { background: #BA7517; border-color: #BA7517; color: #fff; }
+  .q-btn.sel-high { background: #1D9E75; border-color: #1D9E75; color: #fff; }
+  .nav-btns { display: flex; gap: 10px; margin-top: 1.5rem; }
+  .results-header { background: var(--navy-deep); padding: 2rem; }
+  .results-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .results-score-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 0.4rem; }
+  .results-score-num { font-family: var(--serif); font-size: 2.4rem; color: #fff; line-height: 1; }
+  .results-score-sub { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-top: 4px; }
+  .results-verdict { display: inline-block; font-size: 0.82rem; font-weight: 500; padding: 5px 14px; border-radius: 20px; margin-top: 0.5rem; }
+  .results-summary-text { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.7; }
+  .results-body { padding: 1.75rem 2rem; }
+  .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .metric-card { background: var(--cream); border-radius: var(--radius); padding: 0.9rem 1rem; }
+  .metric-label { font-size: 0.68rem; color: var(--text-muted); margin-bottom: 4px; }
+  .metric-val { font-size: 1.3rem; font-weight: 500; color: var(--navy); font-family: var(--serif); }
+  .metric-sub { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+  .dim-row { display: flex; align-items: center; gap: 12px; margin-bottom: 0.7rem; }
+  .dim-label { font-size: 0.8rem; color: var(--text-mid); width: 175px; flex-shrink: 0; }
+  .dim-track { flex: 1; height: 6px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; }
+  .dim-fill { height: 100%; border-radius: 3px; }
+  .dim-val { font-size: 0.8rem; font-weight: 500; width: 32px; text-align: right; }
+  .insight-box { margin-top: 1.5rem; padding: 1rem 1.25rem; border-radius: var(--radius); border-left: 3px solid var(--navy); background: var(--cream); }
+  .insight-box p { font-size: 0.82rem; color: var(--text-mid); line-height: 1.65; }
+  .summary-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  .summary-table th { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  .summary-table td { font-size: 0.8rem; color: var(--text-mid); padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  footer { background: var(--navy-deep); padding: 2rem; text-align: center; margin-top: 3rem; }
+  .footer-logo { font-family: var(--serif); font-size: 1.2rem; color: #fff; }
+  .footer-logo span { color: var(--gold); }
+  .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.2); margin-top: 0.4rem; }
+  @media print { nav, .hero, .tabs, .nav-btns, .btn, .btn-secondary { display: none !important; } #screen-readme, #screen-form { display: none !important; } #screen-results { display: block !important; } body { background: #fff; } .main { padding: 0; max-width: 100%; } }
+  @media (max-width: 600px) { .meta-row { grid-template-columns: 1fr; } .q-options { flex-wrap: wrap; } .results-top { flex-direction: column; } .metric-grid { grid-template-columns: 1fr; } .dim-label { width: 110px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">MOS<span>ei</span></a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">For Consultants &middot; Observer-Verified</div>
+  <h1>Gap Scoring Tool</h1>
+  <p class="hero-sub">Score a client's Norman's Gap with evidence-based precision. Produces Gap Index, Gap Score, Gap Severity, and Effectiveness % -- with a one-page summary ready to leave behind.</p>
+</div>
+
+<div class="main">
+
+  <div id="screen-readme">
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="tabs">
+        <div class="tab active" id="tab-readme" onclick="showIntroTab('readme')">Read Me</div>
+        <div class="tab" id="tab-start" onclick="showIntroTab('start')">Start Scoring</div>
+      </div>
+
+      <div id="intro-readme" class="tab-body">
+        <div class="navy-box">
+          <div class="navy-box-title">MOS<span>ei</span> -- Gap Scoring Tool</div>
+          <div class="navy-box-sub">An observer-verified diagnostic instrument for consultants deploying the Norman System with clients. Score external pressure against internal regulation across four dimensions, with evidence-based scoring discipline at every question.</div>
+        </div>
+
+        <div class="box"><div class="label-gold">WHY</div><p>Self-assessments are useful but biased -- a plant manager scoring their own system tends toward optimism. This tool is built for an outside observer to score what the evidence actually shows, producing a defensible, client-ready Gap Score.</p></div>
+        <div class="box"><div class="label-gold">Purpose</div><p>Score 16 questions across four dimensions of Norman's Gap -- External Pressure, Leadership &amp; Ownership, Signal Quality, and Operational Systems. Produces a Gap Index, Gap Score, Gap Severity band, and Effectiveness %.</p></div>
+        <div class="box"><div class="label-gold">Inputs</div><p>Observer scoring based on direct evidence -- Gemba observations, document review, interviews, and KPI data. Not a self-report. Each question requires a cited observation, not an impression.</p></div>
+        <div class="box"><div class="label-gold">Outputs</div><p>Gap Index (0-10 scale), Gap Score (External minus Internal), Gap Severity band (Stable / Early Strain / High Risk / Critical), Effectiveness % (Internal capacity as a percentage of pressure), dimension breakdown, and a printable one-page client summary.</p></div>
+        <div class="box"><div class="label-gold">Cadence</div><p>Run at engagement start as the baseline, then quarterly or at major milestones to show trend. A single score is a diagnosis -- a series of scores is evidence of whether the engagement is working.</p></div>
+        <div class="box"><div class="label-gold">Escalation Path</div><p>Gap Score above +2.0 (High Risk or Critical) warrants immediate executive briefing. Don't wait for the full engagement report -- a Gap this wide is already producing operational failures somewhere in the system.</p></div>
+
+        <div class="box">
+          <div class="label-gold">Supporting Documents</div>
+          <p>Pairs with the MOS Pressure Test for stress-scenario modeling, and the MOS Assessment Tool if the client wants a self-assessment baseline to compare against your observer score.</p>
+        </div>
+
+        <div class="box">
+          <div class="label-gold">Three Things Most Likely to Fail in Year One</div>
+          <div class="step-row"><div class="step-num">1</div><div class="step-text"><b>Scoring from impression, not evidence.</b> Every score should trace to something you saw, read, or heard directly -- not a general sense of how the plant feels.</div></div>
+          <div class="step-row"><div class="step-num">2</div><div class="step-text"><b>Letting the client see the score before the evidence.</b> Walk through what you observed first. The number should feel inevitable, not surprising.</div></div>
+          <div class="step-row"><div class="step-num">3</div><div class="step-text"><b>Treating one score as the whole engagement.</b> The Gap Score opens the conversation. The dimension breakdown and recommendations are where the value is.</div></div>
+        </div>
+
+        <button class="btn" onclick="showIntroTab('start')" style="margin-top:0.5rem;">Continue to Scoring &rarr;</button>
+      </div>
+
+      <div id="intro-start" class="tab-body" style="display:none;">
+        <p class="label-gold">Four dimensions, 16 questions</p>
+        <div class="step-row"><div class="step-num">1</div><div class="step-text"><b>External Pressure</b> -- market, regulatory, competitive, and supply chain forces on this site.</div></div>
+        <div class="step-row"><div class="step-num">2</div><div class="step-text"><b>Leadership &amp; Ownership</b> -- clarity of accountability and decision authority.</div></div>
+        <div class="step-row"><div class="step-num">3</div><div class="step-text"><b>Signal Quality</b> -- how cleanly information travels from floor to leadership.</div></div>
+        <div class="step-row"><div class="step-num">4</div><div class="step-text"><b>Operational Systems</b> -- standard work, routines, and the plant's capacity to absorb change.</div></div>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin:1.25rem 0 1.5rem;">Score each question 1-10 based on direct observation. Takes approximately 20-30 minutes including evidence review.</p>
+        <button class="btn" onclick="startScoring()">Begin Scoring &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-form" style="display:none;">
+    <div class="card">
+      <div class="tab-body">
+        <p class="label-gold">Engagement details</p>
+        <div class="meta-row">
+          <div class="meta-field"><span class="meta-label">Client / Site Name</span><input type="text" id="m-client" placeholder="e.g. Dayton Assembly Plant"></div>
+          <div class="meta-field"><span class="meta-label">Date of Observation</span><input type="date" id="m-date"></div>
+          <div class="meta-field"><span class="meta-label">Consultant / Observer</span><input type="text" id="m-observer" placeholder="Your name"></div>
+          <div class="meta-field"><span class="meta-label">Engagement Stage</span><select id="m-stage"><option>Baseline</option><option>Quarterly Review</option><option>Mid-Engagement</option><option>Final Assessment</option></select></div>
+        </div>
+
+        <div id="q-container"></div>
+
+        <div class="nav-btns">
+          <button class="btn-secondary" onclick="backToIntro()">&larr; Back</button>
+          <button class="btn" onclick="showResults()">See Gap Score &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-results" style="display:none;">
+    <div class="card">
+      <div class="results-header">
+        <div class="results-top">
+          <div>
+            <div class="results-score-label">Gap Score</div>
+            <div class="results-score-num" id="r-gapscore">--</div>
+            <div class="results-score-sub" id="r-gapscore-sub">External minus internal regulation</div>
+            <div class="results-verdict" id="r-verdict">--</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="results-score-label">Client</div>
+            <div style="font-size:1rem;color:#fff;font-weight:500;" id="r-client-name">--</div>
+            <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);" id="r-client-meta">--</div>
+          </div>
+        </div>
+        <p class="results-summary-text" id="r-summary"></p>
+      </div>
+      <div class="results-body">
+        <div class="metric-grid">
+          <div class="metric-card"><div class="metric-label">Gap Index</div><div class="metric-val" id="r-gapindex">--</div><div class="metric-sub">0-10 scale</div></div>
+          <div class="metric-card"><div class="metric-label">External Pressure</div><div class="metric-val" id="r-extpressure">--</div><div class="metric-sub">Avg of dimension 1</div></div>
+          <div class="metric-card"><div class="metric-label">Effectiveness %</div><div class="metric-val" id="r-effectiveness">--</div><div class="metric-sub">Internal capacity vs. pressure</div></div>
+        </div>
+
+        <p class="label-gold" style="margin-bottom:1rem;">Dimension breakdown</p>
+        <div id="r-dims"></div>
+
+        <div class="insight-box"><p id="r-insight"></p></div>
+
+        <p class="label-gold" style="margin-top:1.75rem;margin-bottom:0.75rem;">Client summary</p>
+        <table class="summary-table">
+          <tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr>
+          <tr><td>Gap Index</td><td id="t-gapindex">--</td><td>Composite 0-10 instability measure</td></tr>
+          <tr><td>Gap Score</td><td id="t-gapscore">--</td><td>Positive = strain, the wider the higher the risk</td></tr>
+          <tr><td>Gap Severity</td><td id="t-severity">--</td><td id="t-severity-desc">--</td></tr>
+          <tr><td>Effectiveness %</td><td id="t-effectiveness">--</td><td>Internal regulation as % of external pressure</td></tr>
+        </table>
+
+        <div class="nav-btns">
+          <button class="btn-secondary" onclick="backToForm()">&larr; Edit scoring</button>
+          <button class="btn" onclick="window.print()">Print / Save Client Summary</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">MOS<span>ei</span></div>
+  <div class="footer-copy">&copy; 2026 Norman Applegate. All rights reserved. &middot; MOSei.org</div>
+</footer>
+
+<script>
+var dimensions = [
+  {
+    id: 'pressure', name: 'External Pressure', color: '#993C1D',
+    questions: [
+      'Customer demand volatility over the past 12 months',
+      'Regulatory or compliance pressure intensity (safety, environmental, labor)',
+      'Competitive or supply chain disruption intensity',
+      'Rate of change in market or customer requirements'
+    ]
+  },
+  {
+    id: 'leadership', name: 'Leadership & Ownership', color: '#1D9E75',
+    questions: [
+      'Decision ownership is clear and undisputed at the point of escalation',
+      'Leaders are visibly present on the floor, not just in meetings',
+      'Decisions observed were made at the right tier, not escalated unnecessarily',
+      'Accountability for outcomes is traceable to a named individual'
+    ]
+  },
+  {
+    id: 'signal', name: 'Signal Quality', color: '#7F77DD',
+    questions: [
+      'KPI data observed reflects operational reality, not a managed view',
+      'Information from the floor reaches leadership with minimal delay or distortion',
+      'Red or at-risk items are surfaced and discussed openly, not minimized',
+      'Meeting structures observed produce decisions, not just status updates'
+    ]
+  },
+  {
+    id: 'systems', name: 'Operational Systems', color: '#BA7517',
+    questions: [
+      'Standard work and SOPs observed are current and actively followed',
+      'Continuous improvement activity is embedded in routine work, not episodic',
+      'The plant demonstrated capacity to absorb a recent change without destabilizing',
+      'Escalation pathways observed are used as designed, not bypassed'
+    ]
+  }
+];
+var scores = {};
+
+function showIntroTab(tab) {
+  document.getElementById('intro-readme').style.display = tab === 'readme' ? 'block' : 'none';
+  document.getElementById('intro-start').style.display = tab === 'start' ? 'block' : 'none';
+  document.getElementById('tab-readme').classList.toggle('active', tab === 'readme');
+  document.getElementById('tab-start').classList.toggle('active', tab === 'start');
+}
+
+function startScoring() {
+  document.getElementById('screen-readme').style.display = 'none';
+  document.getElementById('screen-form').style.display = 'block';
+  renderQuestions();
+  window.scrollTo(0,0);
+}
+
+function backToIntro() {
+  document.getElementById('screen-form').style.display = 'none';
+  document.getElementById('screen-readme').style.display = 'block';
+  showIntroTab('start');
+  window.scrollTo(0,0);
+}
+
+function backToForm() {
+  document.getElementById('screen-results').style.display = 'none';
+  document.getElementById('screen-form').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function scoreClass(v) {
+  if (v <= 4) return 'sel-low';
+  if (v <= 7) return 'sel-mid';
+  return 'sel-high';
+}
+
+function renderQuestions() {
+  var html = '';
+  dimensions.forEach(function(d) {
+    html += '<div class="section-title">' + d.name + '</div>';
+    d.questions.forEach(function(q, qi) {
+      var key = d.id + '_' + qi;
+      html += '<div class="q-block"><div class="q-title">' + (qi+1) + '. ' + q + '</div><div class="q-options">';
+      for (var v = 1; v <= 10; v++) {
+        var sel = scores[key] === v ? ' ' + scoreClass(v) : '';
+        html += '<div class="q-btn' + sel + '" onclick="setScore(\'' + key + '\',' + v + ')">' + v + '</div>';
+      }
+      html += '</div></div>';
+    });
+  });
+  document.getElementById('q-container').innerHTML = html;
+}
+
+function setScore(key, val) {
+  scores[key] = val;
+  renderQuestions();
+}
+
+function dimAvg(dimId) {
+  var d = dimensions.find(function(x) { return x.id === dimId; });
+  var total = 0, count = 0;
+  d.questions.forEach(function(q, qi) {
+    var key = dimId + '_' + qi;
+    if (scores[key]) { total += scores[key]; count++; }
+  });
+  return count > 0 ? total / count : 0;
+}
+
+function showResults() {
+  var allAnswered = true;
+  dimensions.forEach(function(d) {
+    d.questions.forEach(function(q, qi) {
+      if (!scores[d.id + '_' + qi]) allAnswered = false;
+    });
+  });
+  if (!allAnswered) { alert('Please score all 16 questions before continuing.'); return; }
+
+  document.getElementById('screen-form').style.display = 'none';
+  document.getElementById('screen-results').style.display = 'block';
+  window.scrollTo(0,0);
+
+  var pressureAvg = dimAvg('pressure');
+  var leadershipAvg = dimAvg('leadership');
+  var signalAvg = dimAvg('signal');
+  var systemsAvg = dimAvg('systems');
+  var internalAvg = (leadershipAvg + signalAvg + systemsAvg) / 3;
+
+  var gapScore = pressureAvg - internalAvg;
+  var gapIndex = ((pressureAvg + (10 - internalAvg)) / 2);
+  var effectiveness = Math.round((internalAvg / pressureAvg) * 100);
+  if (!isFinite(effectiveness)) effectiveness = 100;
+  effectiveness = Math.max(0, Math.min(200, effectiveness));
+
+  var severity, severityColor, severityDesc, summaryText;
+  if (gapScore <= 0) {
+    severity = 'Stable'; severityColor = '#1D9E75';
+    severityDesc = 'Internal capacity meets or exceeds pressure';
+    summaryText = 'Internal regulation matches or exceeds external pressure. This site has capacity to absorb and lead change effectively. Focus engagement on sustaining current practice and stress-testing against escalating scenarios.';
+  } else if (gapScore <= 2) {
+    severity = 'Early Strain'; severityColor = '#BA7517';
+    severityDesc = 'Pressure beginning to outpace regulation';
+    summaryText = 'External pressure is beginning to outpace internal regulation. Targeted strengthening of the weakest dimension is needed before strain compounds into operational failure.';
+  } else if (gapScore <= 4) {
+    severity = 'High Risk'; severityColor = '#993C1D';
+    severityDesc = 'Change initiatives likely stalling';
+    summaryText = 'A meaningful gap exists between pressure and capacity. Change initiatives are likely stalling or creating instability. Structured intervention is required, not incremental adjustment.';
+  } else {
+    severity = 'Critical'; severityColor = '#791F1F';
+    severityDesc = 'Immediate structural action required';
+    summaryText = 'External pressure far exceeds this site\'s ability to self-regulate. Without immediate structural intervention, operations are vulnerable to failure. This finding should be escalated to executive leadership before the full engagement report.';
+  }
+
+  document.getElementById('r-gapscore').textContent = (gapScore > 0 ? '+' : '') + gapScore.toFixed(1);
+  document.getElementById('r-verdict').textContent = severity;
+  document.getElementById('r-verdict').style.background = severityColor;
+  document.getElementById('r-verdict').style.color = '#fff';
+  document.getElementById('r-summary').textContent = summaryText;
+
+  var client = document.getElementById('m-client').value.trim() || 'Unnamed site';
+  var dateVal = document.getElementById('m-date').value;
+  var observer = document.getElementById('m-observer').value.trim();
+  var stage = document.getElementById('m-stage').value;
+  var formatted = '';
+  if (dateVal) { var dd = new Date(dateVal+'T00:00:00'); formatted = dd.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}); }
+  document.getElementById('r-client-name').textContent = client;
+  document.getElementById('r-client-meta').textContent = [stage, formatted, observer ? 'Observed by ' + observer : ''].filter(Boolean).join(' \u00b7 ');
+
+  document.getElementById('r-gapindex').textContent = gapIndex.toFixed(1);
+  document.getElementById('r-extpressure').textContent = pressureAvg.toFixed(1);
+  document.getElementById('r-effectiveness').textContent = effectiveness + '%';
+
+  var dimHtml = '';
+  var dimList = [
+    { name: 'External Pressure', val: pressureAvg, color: '#993C1D' },
+    { name: 'Leadership & Ownership', val: leadershipAvg, color: '#1D9E75' },
+    { name: 'Signal Quality', val: signalAvg, color: '#7F77DD' },
+    { name: 'Operational Systems', val: systemsAvg, color: '#BA7517' }
+  ];
+  dimList.forEach(function(d) {
+    var pct = (d.val/10)*100;
+    dimHtml += '<div class="dim-row"><span class="dim-label">' + d.name + '</span><div class="dim-track"><div class="dim-fill" style="width:' + pct + '%;background:' + d.color + ';"></div></div><span class="dim-val">' + d.val.toFixed(1) + '</span></div>';
+  });
+  document.getElementById('r-dims').innerHTML = dimHtml;
+
+  var weakest = dimList.slice(1).sort(function(a,b) { return a.val - b.val; })[0];
+  var insight = '<b style="color:#1a2744;">' + weakest.name + '</b> is the weakest internal dimension at ' + weakest.val.toFixed(1) + '/10, against external pressure scored at ' + pressureAvg.toFixed(1) + '/10. ';
+  if (gapScore > 2) {
+    insight += 'Prioritize this dimension in the recommendations -- it is most likely where the system is failing to absorb pressure.';
+  } else if (gapScore > 0) {
+    insight += 'Strengthening this dimension first will close the Gap fastest.';
+  } else {
+    insight += 'The system is regulating well overall; this dimension is the highest-leverage area for continued investment.';
+  }
+  document.getElementById('r-insight').innerHTML = insight;
+
+  document.getElementById('t-gapindex').textContent = gapIndex.toFixed(1) + ' / 10';
+  document.getElementById('t-gapscore').textContent = (gapScore > 0 ? '+' : '') + gapScore.toFixed(1);
+  document.getElementById('t-severity').textContent = severity;
+  document.getElementById('t-severity-desc').textContent = severityDesc;
+  document.getElementById('t-effectiveness').textContent = effectiveness + '%';
+}
+
+document.getElementById('m-date').value = new Date().toISOString().split('T')[0];
+</script>
+
+</body>
+</html>
