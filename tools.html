@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --navy: #0D1B2A; --navy-mid: #1a2744; --gold: #C9A84C; --gold-light: #e8c97a;
+    --navy: #1a2744; --navy-deep: #111c33; --gold: #C9A84C; --gold-light: #e8c97a;
     --ink: #1d2230; --text: #2d3142; --text-muted: #5a6072; --hint: #8b91a0;
     --border: #e3e6ec; --cream: #f8f5ef; --cream-dark: #eeebe3;
     --surface: #ffffff; --radius: 10px; --radius-lg: 14px;
@@ -19,27 +19,23 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--cream); color: var(--ink); font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
 
-  /* Nav */
   .site-nav { background: var(--navy); padding: 14px 2rem; display: flex; align-items: center; justify-content: space-between; }
   .nav-logo { font-family: var(--serif); font-size: 1.2rem; color: #fff; text-decoration: none; }
   .nav-logo span { color: var(--gold); }
   .nav-back { font-size: 0.78rem; color: rgba(255,255,255,0.55); text-decoration: none; border: 0.5px solid rgba(255,255,255,0.2); padding: 5px 14px; border-radius: 20px; transition: color 0.2s; }
   .nav-back:hover { color: #fff; }
 
-  /* Hero */
   .page-hero { background: var(--navy); padding: 3.5rem 2rem 3rem; text-align: center; border-bottom: 3px solid var(--gold); }
   .hero-eyebrow { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
   .hero-title { font-family: var(--serif); font-size: 2.4rem; color: #fff; margin-bottom: 0.75rem; line-height: 1.2; }
   .hero-sub { font-size: 0.95rem; color: rgba(255,255,255,0.55); max-width: 540px; margin: 0 auto; line-height: 1.7; }
 
-  /* Layout */
-  .wrap { max-width: 860px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
 
-  /* Section label */
   .section-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; margin-top: 2.5rem; }
   .section-label:first-child { margin-top: 0; }
+  .section-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; max-width: 600px; line-height: 1.6; }
 
-  /* Tool rows */
   .tool-table { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1rem; }
   .tool-row { display: grid; grid-template-columns: 2fr 3fr 1fr; gap: 0; border-bottom: 1px solid var(--border); }
   .tool-row:last-child { border-bottom: none; }
@@ -56,16 +52,16 @@
   .tool-btn.outline { background: transparent; color: var(--navy); border: 1px solid rgba(26,39,68,0.3); }
   .tool-btn.outline:hover { background: var(--cream-dark); }
 
-  /* Consultant strip */
   .consultant-band { background: var(--navy); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
   .consultant-band-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
   .consultant-band-title { font-family: var(--serif); font-size: 1.1rem; color: #fff; }
   .consultant-band-sub { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-top: 2px; }
 
-  /* Bundle row */
-  .bundle-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-  .bundle-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; }
+  .bundle-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; align-items: start; }
+  .bundle-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; position: relative; }
   .bundle-card.featured { background: var(--navy); border-color: var(--navy); }
+  .bundle-card.outline-gold { border: 2px solid var(--gold); }
+  .bundle-popular { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); background: var(--gold); padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
   .bundle-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.3rem; }
   .bundle-card.featured .bundle-label { color: rgba(255,255,255,0.4); }
   .bundle-price { font-family: var(--serif); font-size: 1.8rem; color: var(--navy); line-height: 1; margin-bottom: 0.2rem; }
@@ -74,16 +70,19 @@
   .bundle-card.featured .bundle-sub { color: rgba(255,255,255,0.4); }
   .bundle-tools { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.25rem; border-top: 1px solid var(--border); padding-top: 0.9rem; }
   .bundle-card.featured .bundle-tools { border-top-color: rgba(255,255,255,0.1); }
-  .bundle-tool-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text); }
+  .bundle-tool-item { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--text); }
   .bundle-card.featured .bundle-tool-item { color: rgba(255,255,255,0.8); }
+  .bundle-tool-group { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.5rem; }
+  .bundle-card.featured .bundle-tool-group { color: rgba(255,255,255,0.35); }
   .bundle-check { color: #27500a; font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
   .bundle-card.featured .bundle-check { color: #7fd9bb; }
   .bundle-plus { color: var(--gold); font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
   .fmt-badge { margin-left: auto; font-size: 0.63rem; font-weight: 500; background: var(--cream-dark); color: var(--text-muted); padding: 2px 6px; border-radius: 3px; flex-shrink: 0; }
   .bundle-card.featured .fmt-badge { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
   .fmt-badge.plus { background: rgba(201,168,76,0.15); color: var(--gold); }
+  .bundle-roi { font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 0.6rem; line-height: 1.5; }
+  .bundle-card.featured .bundle-roi { color: rgba(255,255,255,0.4); }
 
-  /* How to use */
   .how-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-top: 2.5rem; }
   .how-title { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
   .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
@@ -92,16 +91,17 @@
   .how-text { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
   .how-text b { color: var(--ink); font-weight: 500; display: block; margin-bottom: 2px; }
 
-  /* Footer */
   .page-footer { background: var(--navy); padding: 1.5rem 2rem; text-align: center; }
   .footer-text { font-size: 0.75rem; color: rgba(255,255,255,0.35); }
   .footer-text a { color: var(--gold); text-decoration: none; }
 
+  @media (max-width: 760px) {
+    .bundle-row { grid-template-columns: 1fr; }
+  }
   @media (max-width: 640px) {
     .tool-row { grid-template-columns: 1fr; }
     .tool-row.header { display: none; }
     .cell { padding: 0.9rem 1rem; }
-    .bundle-row { grid-template-columns: 1fr; }
     .hero-title { font-size: 1.8rem; }
     .consultant-band { flex-direction: column; align-items: flex-start; }
   }
@@ -109,34 +109,29 @@
 </head>
 <body>
 
-<!-- Nav -->
 <nav class="site-nav">
   <a href="index.html" class="nav-logo">MOS<span>ei</span></a>
   <a href="index.html" class="nav-back">&larr; Back to MOSei</a>
 </nav>
 
-<!-- Hero -->
 <div class="page-hero">
   <p class="hero-eyebrow">MOS Tools</p>
   <h1 class="hero-title">What problem are you solving?</h1>
   <p class="hero-sub">Every tool on MOSei is built around the problem it answers. Find your problem, use the tool.</p>
 </div>
 
-<!-- Main content -->
 <div class="wrap">
 
-  <!-- HOW TO USE -->
   <div class="how-box" style="margin-top:0;margin-bottom:2.5rem;">
     <p class="how-title">How to use this page</p>
     <div class="how-grid">
       <div class="how-item"><div class="how-num">1</div><div class="how-text"><b>Find your problem</b>Read the problem column. If it sounds like your situation, that's your tool.</div></div>
-      <div class="how-item"><div class="how-num">2</div><div class="how-text"><b>Start free</b>All diagnostic tools are free. Run them first to understand where you are.</div></div>
-      <div class="how-item"><div class="how-num">3</div><div class="how-text"><b>Go deeper</b>The Consultant Pack and tool bundles are for professional deployment and operational build-out.</div></div>
-      <div class="how-item"><div class="how-num">4</div><div class="how-text"><b>Ask the Advisor</b>Not sure which tool fits? Ask the MOSei Advisor — it's trained on the full framework.</div></div>
+      <div class="how-item"><div class="how-num">2</div><div class="how-text"><b>Start free</b>All diagnostic tools and the MOS Assessment are free. Run them first to understand where you are.</div></div>
+      <div class="how-item"><div class="how-num">3</div><div class="how-text"><b>Pick your bundle</b>Foundation, MOS Bundle, or Enterprise -- sized to how much of the system you need to deploy.</div></div>
+      <div class="how-item"><div class="how-num">4</div><div class="how-text"><b>Ask the Advisor</b>Not sure which tool fits? Ask MOSei -- it's trained on the full framework.</div></div>
     </div>
   </div>
 
-  <!-- FREE DIAGNOSTIC TOOLS -->
   <p class="section-label">Free Diagnostic Tools</p>
   <div class="tool-table">
     <div class="tool-row header">
@@ -147,8 +142,34 @@
 
     <div class="tool-row">
       <div class="cell">
+        <div class="cell-name">MOS Assessment Tool</div>
+        <span class="cell-format">HTML &middot; Interactive</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How mature is my Management Operating System? Self-score 12 MOS elements across four pillars. Receive your maturity level, pillar breakdown, and a prioritized action plan.</div>
+      </div>
+      <div class="cell cell-action">
+        <a href="mos-assessment.html" class="tool-btn">Take Assessment &rarr;</a>
+      </div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Plant Change Readiness Assessment</div>
+        <span class="cell-format">HTML &middot; Interactive</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Am I ready to lead change at this plant? Site-level diagnostic across five dimensions. Produces a Gap Score, dimension breakdown, and printable PDF report.</div>
+      </div>
+      <div class="cell cell-action">
+        <a href="index.html#plant-assessment" class="tool-btn">Use Tool &rarr;</a>
+      </div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
         <div class="cell-name">Gap Index Scorer</div>
-        <span class="cell-format">HTML · Interactive</span>
+        <span class="cell-format">HTML &middot; Interactive</span>
       </div>
       <div class="cell">
         <div class="cell-problem">How wide is my Gap right now? Leader-level quick diagnostic. Score external pressure vs. system and leader regulation in ten minutes.</div>
@@ -161,7 +182,7 @@
     <div class="tool-row">
       <div class="cell">
         <div class="cell-name">Full Gap Diagnostic</div>
-        <span class="cell-format">HTML · Interactive</span>
+        <span class="cell-format">HTML &middot; Interactive</span>
       </div>
       <div class="cell">
         <div class="cell-problem">Where exactly is my organization breaking down? Deep precision instrument. Slider-based scoring across external pressure, system regulation, and leader regulation.</div>
@@ -171,111 +192,74 @@
       </div>
     </div>
 
-    <div class="tool-row">
-      <div class="cell">
-        <div class="cell-name">Plant Change Readiness Assessment</div>
-        <span class="cell-format">HTML · Interactive</span>
-      </div>
-      <div class="cell">
-        <div class="cell-problem">Am I ready to lead change at this plant? Site-level diagnostic across five dimensions. Produces a Gap Score, dimension breakdown, and printable PDF report.</div>
-      </div>
-      <div class="cell cell-action">
-        <a href="index.html#plant-assessment" class="tool-btn">Use Tool &rarr;</a>
-      </div>
-    </div>
-
   </div>
 
-  <!-- CONSULTANT PACK -->
-  <p class="section-label" style="margin-top:2rem;">Consultant Pack — $49.00</p>
-  <div class="consultant-band">
-    <div>
-      <div class="consultant-band-label">For Consultants</div>
-      <div class="consultant-band-title">Professional Deployment Kit</div>
-      <div class="consultant-band-sub">Observer-verified &middot; Client-ready &middot; Built on The Norman System</div>
-    </div>
-    <a href="#contact" class="tool-btn gold">Get Consultant Pack &rarr;</a>
-  </div>
+  <p class="section-label" style="margin-top:2rem;">Tool Bundles</p>
+  <p class="section-sub">A single consultant day to diagnose your Gap costs $2,500&ndash;$5,000. The tools that let you do it yourself start at $29.</p>
 
-  <div class="tool-table">
-    <div class="tool-row header">
-      <div class="cell">Tool</div>
-      <div class="cell">Problem it solves</div>
-      <div class="cell"></div>
-    </div>
-
-    <div class="tool-row">
-      <div class="cell">
-        <div class="cell-name">MOSei Gap Scoring Tool</div>
-        <span class="cell-format">XLSX</span>
-      </div>
-      <div class="cell">
-        <div class="cell-problem">What is the evidence-based Gap Score for this client? Observer-verified scoring with auto-scoring dashboard, Gap Index, Gap Severity, Effectiveness %, and a one-page client summary.</div>
-      </div>
-      <div class="cell cell-action">
-        <a href="#contact" class="tool-btn outline">Get Pack &rarr;</a>
-      </div>
-    </div>
-
-    <div class="tool-row">
-      <div class="cell">
-        <div class="cell-name">MOS Pressure Test Tool</div>
-        <span class="cell-format">XLSX</span>
-      </div>
-      <div class="cell">
-        <div class="cell-problem">Can this system absorb the pressure it&rsquo;s under? 12-dimension pressure-to-regulation scoring with scenario stress tests for demand spikes, supplier failure, staffing loss, and system outage.</div>
-      </div>
-      <div class="cell cell-action">
-        <a href="#contact" class="tool-btn outline">Get Pack &rarr;</a>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- TOOL BUNDLES -->
-  <p class="section-label" style="margin-top:2rem;">Operational Tool Bundles</p>
   <div class="bundle-row">
 
-    <!-- Starter -->
     <div class="bundle-card">
-      <div class="bundle-label">Starter</div>
-      <div class="bundle-price">$29.95</div>
-      <div class="bundle-sub">5 tools &middot; immediate use</div>
+      <div class="bundle-label">Foundation Toolkit</div>
+      <div class="bundle-price">$29</div>
+      <div class="bundle-sub">5 tools &middot; immediate download</div>
       <div class="bundle-tools">
         <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> MOS Charter <span class="fmt-badge">PPTX</span></div>
         <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> TOR &mdash; Meeting Structure <span class="fmt-badge">PPTX</span></div>
-        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Simple Gemba <span class="fmt-badge">XLSX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Meeting Scorecard <span class="fmt-badge">HTML</span></div>
+        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Simple Gemba Log <span class="fmt-badge">XLSX</span></div>
         <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Shift Handover Log <span class="fmt-badge">XLSX</span></div>
-        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Meeting Scorecard <span class="fmt-badge">XLSX</span></div>
       </div>
-      <a href="#contact" class="tool-btn outline" style="display:block;text-align:center;padding:10px;">Get Starter &mdash; $29.95 &rarr;</a>
+      <a href="#contact" class="tool-btn outline" style="display:block;text-align:center;padding:10px;">Get Foundation &mdash; $29 &rarr;</a>
+      <p class="bundle-roi">If one meeting runs 30 minutes shorter every week, this pays for itself in the first hour.</p>
     </div>
 
-    <!-- Complete -->
     <div class="bundle-card featured">
-      <div class="bundle-label">Complete &nbsp;<span style="font-size:0.65rem;background:var(--gold);color:var(--navy);padding:2px 8px;border-radius:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;">Most Complete</span></div>
-      <div class="bundle-price">$79.95</div>
-      <div class="bundle-sub">Starter Kit plus 9 additional tools &middot; future tools free</div>
+      <div class="bundle-popular">Most Popular</div>
+      <div class="bundle-label" style="margin-top:0.5rem;">MOS Bundle</div>
+      <div class="bundle-price">$99</div>
+      <div class="bundle-sub">18 tools &middot; immediate download</div>
       <div class="bundle-tools">
-        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Everything in Starter (5 tools)</div>
-        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Daily Gemba Log <span class="fmt-badge plus">XLSX</span></div>
-        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Hourly Boards <span class="fmt-badge plus">XLSX</span></div>
-        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Safety Assessment <span class="fmt-badge plus">XLSX</span></div>
-        <div class="bundle-tool-item"><span class="bundle-plus">+</span> KPI Register <span class="fmt-badge plus">XLSX</span></div>
-        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Leader Standard Work <span class="fmt-badge plus">XLSX</span></div>
-        <div class="bundle-tool-item"><span class="bundle-plus">+</span> IMI Status Tracker <span class="fmt-badge plus">XLSX</span></div>
-        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Internal Meeting Review Tracker <span class="fmt-badge plus">XLSX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Everything in Foundation (5 tools)</div>
+        <div class="bundle-tool-group">Governance</div>
         <div class="bundle-tool-item"><span class="bundle-plus">+</span> RACI Matrix <span class="fmt-badge plus">XLSX</span></div>
-        <div class="bundle-tool-item"><span class="bundle-plus">+</span> KPI Cascade Tree Workshop <span class="fmt-badge plus">PPTX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Leader Standard Work <span class="fmt-badge plus">XLSX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Tier Meeting Diagnostic <span class="fmt-badge plus">PPTX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Meeting Quality Score <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-group">Execution</div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Hourly Boards <span class="fmt-badge plus">XLSX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Escalation &amp; Action Signal <span class="fmt-badge plus">XLSX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Daily Full Gemba <span class="fmt-badge plus">XLSX</span></div>
+        <div class="bundle-tool-group">Performance</div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> KPI Register <span class="fmt-badge plus">XLSX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> KPI Cascade Workshop <span class="fmt-badge plus">PPTX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> IMI Tool <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-group">Health</div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Plant Health Score <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Signal Flow Index <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Safety Signal Assessment <span class="fmt-badge plus">HTML</span></div>
       </div>
-      <a href="#contact" class="tool-btn gold" style="display:block;text-align:center;padding:10px;">Get Complete &mdash; $79.95 &rarr;</a>
-      <p style="text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:0.6rem;">Saves $39.90 vs. buying separately</p>
+      <a href="#contact" class="tool-btn gold" style="display:block;text-align:center;padding:10px;">Get MOS Bundle &mdash; $99 &rarr;</a>
+      <p class="bundle-roi">Saves $50 vs. Foundation + individual tools<br>One prevented escalation failure covers the cost 50 times over.</p>
+    </div>
+
+    <div class="bundle-card outline-gold">
+      <div class="bundle-label" style="color:var(--gold);">Enterprise / Consultant</div>
+      <div class="bundle-price">$249</div>
+      <div class="bundle-sub">20 tools &middot; client-ready &middot; immediate download</div>
+      <div class="bundle-tools">
+        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Everything in MOS Bundle (18 tools)</div>
+        <div class="bundle-tool-group">Consultant Diagnostics</div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Gap Scoring Tool <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> MOS Pressure Test <span class="fmt-badge plus">HTML</span></div>
+      </div>
+      <a href="#contact" class="tool-btn outline" style="display:block;text-align:center;padding:10px;border-color:var(--gold);color:var(--navy);">Get Enterprise &mdash; $249 &rarr;</a>
+      <p class="bundle-roi">Live, interactive diagnostics -- not spreadsheets. Deploy with one client and the tools pay for themselves before the engagement ends.</p>
     </div>
 
   </div>
 
-  <!-- WHAT EACH BUNDLE TOOL SOLVES -->
-  <p class="section-label" style="margin-top:2rem;">What each bundle tool solves</p>
+  <p class="section-label" style="margin-top:2.5rem;">What each tool solves</p>
   <div class="tool-table">
     <div class="tool-row header">
       <div class="cell">Tool</div>
@@ -286,7 +270,7 @@
     <div class="tool-row">
       <div class="cell">
         <div class="cell-name">MOS Charter</div>
-        <span class="cell-format">PPTX · Starter</span>
+        <span class="cell-format">PPTX &middot; Foundation</span>
       </div>
       <div class="cell">
         <div class="cell-problem">How do we align leadership on what the MOS is, why it exists, and what we are committing to build? Executive-facing charter template for launching or relaunching an MOS.</div>
@@ -297,7 +281,7 @@
     <div class="tool-row">
       <div class="cell">
         <div class="cell-name">TOR &mdash; Meeting Structure</div>
-        <span class="cell-format">PPTX · Starter</span>
+        <span class="cell-format">PPTX &middot; Foundation</span>
       </div>
       <div class="cell">
         <div class="cell-problem">Our meetings produce status updates, not decisions. How do we build a tiered meeting system that keeps signal flowing and decisions grounded at the right level?</div>
@@ -307,8 +291,19 @@
 
     <div class="tool-row">
       <div class="cell">
-        <div class="cell-name">Simple Gemba</div>
-        <span class="cell-format">XLSX · Starter</span>
+        <div class="cell-name">Meeting Scorecard</div>
+        <span class="cell-format">HTML &middot; Foundation</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do we know if our tiered meetings are actually working? Any participant can rotate in as the observer and score the meeting live across 9 sections and 27 questions, with a maturity classification and trend tracking over time.</div>
+      </div>
+      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Simple Gemba Log</div>
+        <span class="cell-format">XLSX &middot; Foundation</span>
       </div>
       <div class="cell">
         <div class="cell-problem">I need a quick floor observation record that doesn&rsquo;t require a full log. What&rsquo;s the lightest tool for capturing what I see?</div>
@@ -319,7 +314,7 @@
     <div class="tool-row">
       <div class="cell">
         <div class="cell-name">Shift Handover Log</div>
-        <span class="cell-format">XLSX · Starter</span>
+        <span class="cell-format">XLSX &middot; Foundation</span>
       </div>
       <div class="cell">
         <div class="cell-problem">Critical information is getting lost between shifts. How do we ensure every handover transfers the right signal without compression or omission?</div>
@@ -329,96 +324,8 @@
 
     <div class="tool-row">
       <div class="cell">
-        <div class="cell-name">Meeting Scorecard</div>
-        <span class="cell-format">XLSX · Starter</span>
-      </div>
-      <div class="cell">
-        <div class="cell-problem">How do we know if our tiered meetings are actually working? Structured scorecard for tracking meeting quality, decision output, and action follow-through over time.</div>
-      </div>
-      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
-    </div>
-
-    <div class="tool-row">
-      <div class="cell">
-        <div class="cell-name">Daily Gemba Log</div>
-        <span class="cell-format">XLSX · Complete</span>
-      </div>
-      <div class="cell">
-        <div class="cell-problem">How do I capture and track what I see on the floor without it disappearing into notes? Structured Gemba observation log with owner, action, and follow-up tracking.</div>
-      </div>
-      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
-    </div>
-
-    <div class="tool-row">
-      <div class="cell">
-        <div class="cell-name">Hourly Boards</div>
-        <span class="cell-format">XLSX · Complete</span>
-      </div>
-      <div class="cell">
-        <div class="cell-problem">How do I track production performance hour by hour so problems surface in real time instead of at end of shift?</div>
-      </div>
-      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
-    </div>
-
-    <div class="tool-row">
-      <div class="cell">
-        <div class="cell-name">Safety Assessment</div>
-        <span class="cell-format">XLSX · Complete</span>
-      </div>
-      <div class="cell">
-        <div class="cell-problem">How do I assess whether our safety practices are keeping pace with operational pressure?</div>
-      </div>
-      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
-    </div>
-
-    <div class="tool-row">
-      <div class="cell">
-        <div class="cell-name">KPI Register</div>
-        <span class="cell-format">XLSX · Complete</span>
-      </div>
-      <div class="cell">
-        <div class="cell-problem">We have too many metrics and no one agrees on which ones matter. How do we build a single source of KPI truth?</div>
-      </div>
-      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
-    </div>
-
-    <div class="tool-row">
-      <div class="cell">
-        <div class="cell-name">Leader Standard Work</div>
-        <span class="cell-format">XLSX · Complete</span>
-      </div>
-      <div class="cell">
-        <div class="cell-problem">How do I structure my day as a leader so floor presence and signal review are built in, not reactive?</div>
-      </div>
-      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
-    </div>
-
-    <div class="tool-row">
-      <div class="cell">
-        <div class="cell-name">IMI Status Tracker</div>
-        <span class="cell-format">XLSX · Complete</span>
-      </div>
-      <div class="cell">
-        <div class="cell-problem">How do we track MOS implementation progress across the site without it becoming another spreadsheet no one updates?</div>
-      </div>
-      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
-    </div>
-
-    <div class="tool-row">
-      <div class="cell">
-        <div class="cell-name">Internal Meeting Review Tracker</div>
-        <span class="cell-format">XLSX · Complete</span>
-      </div>
-      <div class="cell">
-        <div class="cell-problem">How do we know if our internal meetings are improving over time or just consuming hours?</div>
-      </div>
-      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
-    </div>
-
-    <div class="tool-row">
-      <div class="cell">
         <div class="cell-name">RACI Matrix</div>
-        <span class="cell-format">XLSX · Complete</span>
+        <span class="cell-format">XLSX &middot; MOS Bundle</span>
       </div>
       <div class="cell">
         <div class="cell-problem">Accountability keeps falling through the cracks. How do we assign and track ownership across every function?</div>
@@ -428,8 +335,85 @@
 
     <div class="tool-row">
       <div class="cell">
-        <div class="cell-name">KPI Cascade Tree Workshop</div>
-        <span class="cell-format">PPTX · Complete</span>
+        <div class="cell-name">Leader Standard Work</div>
+        <span class="cell-format">XLSX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do I structure my day as a leader so floor presence and signal review are built in, not reactive?</div>
+      </div>
+      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Tier Meeting Diagnostic</div>
+        <span class="cell-format">PPTX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Our tier meetings happen, but are they regulating? Full T1&ndash;T4 reference covering agendas, decision rights, and escalation thresholds, plus the Norman Condition Flags that quietly break installed meetings.</div>
+      </div>
+      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Meeting Quality Score</div>
+        <span class="cell-format">HTML &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Did that meeting regulate, or did it just occur? The chair self-scores six dimensions in two minutes, immediately after the meeting, and tracks the trend across weeks.</div>
+      </div>
+      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Hourly Boards</div>
+        <span class="cell-format">XLSX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do I track production performance hour by hour so problems surface in real time instead of at end of shift?</div>
+      </div>
+      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Escalation &amp; Action Signal</div>
+        <span class="cell-format">XLSX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Issues get raised but never resolved, or they get hoarded until they explode. How do we track escalation from trigger to closure with a named owner at every step?</div>
+      </div>
+      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Daily Full Gemba</div>
+        <span class="cell-format">XLSX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do I capture and track what I see on the floor every day without it disappearing into notes? Structured Gemba observation log with owner, action, and follow-up tracking.</div>
+      </div>
+      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">KPI Register</div>
+        <span class="cell-format">XLSX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">We have too many metrics and no one agrees on which ones matter. How do we build a single source of KPI truth?</div>
+      </div>
+      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">KPI Cascade Workshop</div>
+        <span class="cell-format">PPTX &middot; MOS Bundle</span>
       </div>
       <div class="cell">
         <div class="cell-problem">How do we connect plant-level KPIs to team-level metrics so everyone is pulling in the same direction?</div>
@@ -437,18 +421,82 @@
       <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
     </div>
 
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">IMI Tool</div>
+        <span class="cell-format">HTML &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do we track MOS implementation maturity across the site without it becoming another spreadsheet no one updates?</div>
+      </div>
+      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Plant Health Score</div>
+        <span class="cell-format">HTML &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How healthy is this plant right now, in one composite number? Aggregates Gap Index, Pressure Test, Signal Flow Index, Meeting Scorecard, Meeting Quality Score, and Leader Standard Work into a single T4 system health indicator.</div>
+      </div>
+      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Signal Flow Index</div>
+        <span class="cell-format">HTML &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Is information traveling cleanly from the floor to leadership, or getting compressed and distorted along the way? Measures signal flow quality across the tier structure.</div>
+      </div>
+      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Safety Signal Assessment</div>
+        <span class="cell-format">HTML &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do I assess whether our safety practices are keeping pace with operational pressure?</div>
+      </div>
+      <div class="cell cell-action"><a href="#contact" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Gap Scoring Tool</div>
+        <span class="cell-format">HTML &middot; Enterprise</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">What is the evidence-based Gap Score for this client? Live, observer-verified scoring with auto-calculated Gap Index, Gap Severity, Effectiveness %, and a printable one-page client summary.</div>
+      </div>
+      <div class="cell cell-action"><a href="gap-scoring-tool.html" class="tool-btn outline">Try Tool &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">MOS Pressure Test</div>
+        <span class="cell-format">HTML &middot; Enterprise</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Can this system absorb the pressure it&rsquo;s under? Live 12-dimension pressure-to-regulation scoring with weighted scenario stress tests for demand spikes, supplier failure, staffing loss, and system outage.</div>
+      </div>
+      <div class="cell cell-action"><a href="mos-pressure-test.html" class="tool-btn outline">Try Tool &rarr;</a></div>
+    </div>
+
   </div>
 
-  <!-- ADVISOR CTA -->
   <div style="margin-top:2.5rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;text-align:center;">
     <p style="font-family:var(--serif);font-size:1.25rem;color:var(--navy);margin-bottom:0.5rem;">Not sure which tool fits your situation?</p>
-    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">The MOSei Advisor is trained on the full Norman System framework. Describe what you&rsquo;re dealing with and it will point you to the right tool.</p>
-    <a href="index.html#advisor" class="tool-btn" style="display:inline-block;padding:10px 24px;font-size:0.85rem;">Ask the Advisor &rarr;</a>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">Ask MOSei is trained on the full Norman System framework. Describe what you&rsquo;re dealing with and it will point you to the right tool.</p>
+    <a href="index.html#ask-mosei" class="tool-btn" style="display:inline-block;padding:10px 24px;font-size:0.85rem;">Ask MOSei &rarr;</a>
   </div>
 
 </div>
 
-<!-- Footer -->
 <footer class="page-footer">
   <p class="footer-text">MOSei.org &middot; <a href="https://temperedsignal.com" target="_blank">The Tempered Signal</a> &middot; &copy; Norman Applegate</p>
 </footer>
