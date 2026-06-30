@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MOSei MOS Pressure Test</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy: #1a2744; --navy-deep: #111c33; --gold: #c9a84c; --gold-light: #e8c97a;
+    --cream: #f8f5ef; --cream-dark: #ede9e1; --text: #1a1a1a; --text-mid: #444; --text-muted: #777;
+    --border: rgba(26,39,68,0.12); --serif: 'EB Garamond', Georgia, serif; --sans: 'Inter', system-ui, sans-serif;
+    --radius: 10px; --radius-lg: 14px; --red: #993C1D; --amber: #BA7517; --green: #1D9E75;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--sans);background:var(--cream);color:var(--text);line-height:1.6;}
+  a{color:inherit;text-decoration:none;}
+  nav { position: sticky; top: 0; z-index: 100; background: var(--navy); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 56px; }
+  .nav-logo { font-family: var(--serif); font-size: 1.35rem; color: #fff; }
+  .nav-logo span { color: var(--gold); }
+  .hero { background: var(--navy); padding: 3rem 2rem 2.5rem; text-align: center; }
+  .hero h1 { font-family: var(--serif); font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 400; color: #fff; margin-bottom: 0.6rem; }
+  .hero-sub { font-size: 0.9rem; color: rgba(255,255,255,0.55); max-width: 580px; margin: 0 auto; line-height: 1.7; }
+  .hero-badge { display: inline-block; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(201,168,76,0.4); padding: 4px 14px; border-radius: 20px; margin-bottom: 1rem; }
+  .main { max-width: 820px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem; }
+  .tabs { display: flex; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .tab { font-size: 0.8rem; font-weight: 500; padding: 0.85rem 1.25rem; cursor: pointer; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+  .tab-body { padding: 2rem; }
+  .label-gold { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
+  .box { background: var(--cream); border-radius: var(--radius); padding: 1.1rem 1.25rem; margin-bottom: 1rem; }
+  .box p { font-size: 0.8rem; color: var(--text-mid); line-height: 1.65; }
+  .navy-box { background: var(--navy-deep); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 1.5rem; }
+  .navy-box-title { font-family: var(--serif); font-size: 1.2rem; color: #fff; margin-bottom: 0.5rem; }
+  .navy-box-title span { color: var(--gold); }
+  .navy-box-sub { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.7; }
+  .step-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 0.75rem; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 0.7rem; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-text { font-size: 0.8rem; color: var(--text-mid); line-height: 1.6; }
+  .step-text b { color: var(--navy); }
+  .btn { font-size: 0.85rem; font-weight: 500; padding: 11px 26px; border-radius: var(--radius); border: none; background: var(--navy); color: #fff; cursor: pointer; font-family: var(--sans); }
+  .btn:hover { background: var(--navy-deep); }
+  .btn-secondary { font-size: 0.85rem; font-weight: 500; padding: 11px 22px; border-radius: var(--radius); border: 1px solid rgba(26,39,68,0.25); background: transparent; color: var(--text-mid); cursor: pointer; font-family: var(--sans); }
+  .meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+  .meta-field { display: flex; flex-direction: column; gap: 4px; }
+  .meta-field.full { grid-column: 1/-1; }
+  .meta-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .meta-field input, .meta-field select { font-size: 0.82rem; padding: 8px 10px; border-radius: 7px; border: 1px solid var(--border); background: var(--cream); color: var(--text); }
+  .scenario-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .scenario-tab { font-size: 0.75rem; font-weight: 500; padding: 7px 14px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-mid); cursor: pointer; background: #fff; }
+  .scenario-tab.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .q-block { background: var(--cream); border-radius: var(--radius); padding: 1.1rem 1.25rem; margin-bottom: 0.85rem; }
+  .q-title { font-size: 0.88rem; font-weight: 500; color: var(--navy); margin-bottom: 0.25rem; }
+  .q-sub { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.85rem; line-height: 1.5; }
+  .q-options { display: flex; gap: 5px; flex-wrap: wrap; }
+  .q-btn { flex: 1; min-width: 36px; padding: 9px 4px; border-radius: 7px; border: 1px solid var(--border); background: #fff; cursor: pointer; text-align: center; font-family: var(--sans); transition: all 0.15s; font-size: 0.82rem; font-weight: 600; color: var(--text); }
+  .q-btn:hover { border-color: var(--navy); }
+  .q-btn.sel-low { background: #993C1D; border-color: #993C1D; color: #fff; }
+  .q-btn.sel-mid { background: #BA7517; border-color: #BA7517; color: #fff; }
+  .q-btn.sel-high { background: #1D9E75; border-color: #1D9E75; color: #fff; }
+  .nav-btns { display: flex; gap: 10px; margin-top: 1.5rem; }
+  .results-header { background: var(--navy-deep); padding: 2rem; }
+  .results-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .results-score-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 0.4rem; }
+  .results-score-num { font-family: var(--serif); font-size: 2.4rem; color: #fff; line-height: 1; }
+  .results-score-sub { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-top: 4px; }
+  .results-verdict { display: inline-block; font-size: 0.82rem; font-weight: 500; padding: 5px 14px; border-radius: 20px; margin-top: 0.5rem; }
+  .results-summary-text { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.7; }
+  .results-body { padding: 1.75rem 2rem; }
+  .metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .metric-card { background: var(--cream); border-radius: var(--radius); padding: 0.9rem 1rem; }
+  .metric-label { font-size: 0.68rem; color: var(--text-muted); margin-bottom: 4px; }
+  .metric-val { font-size: 1.3rem; font-weight: 500; color: var(--navy); font-family: var(--serif); }
+  .metric-sub { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+  .dim-row { display: flex; align-items: center; gap: 12px; margin-bottom: 0.6rem; }
+  .dim-label { font-size: 0.78rem; color: var(--text-mid); width: 190px; flex-shrink: 0; }
+  .dim-track { flex: 1; height: 6px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; }
+  .dim-fill { height: 100%; border-radius: 3px; }
+  .dim-val { font-size: 0.78rem; font-weight: 500; width: 32px; text-align: right; }
+  .insight-box { margin-top: 1.5rem; padding: 1rem 1.25rem; border-radius: var(--radius); border-left: 3px solid var(--navy); background: var(--cream); }
+  .insight-box p { font-size: 0.82rem; color: var(--text-mid); line-height: 1.65; }
+  .scenario-result-card { background: var(--cream); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 0.75rem; border-left: 3px solid; }
+  .scenario-result-title { font-size: 0.85rem; font-weight: 500; color: var(--navy); margin-bottom: 4px; }
+  .scenario-result-text { font-size: 0.8rem; color: var(--text-mid); line-height: 1.6; }
+  .scenario-result-band { display: inline-block; font-size: 0.68rem; font-weight: 500; padding: 2px 10px; border-radius: 12px; margin-left: 8px; }
+  footer { background: var(--navy-deep); padding: 2rem; text-align: center; margin-top: 3rem; }
+  .footer-logo { font-family: var(--serif); font-size: 1.2rem; color: #fff; }
+  .footer-logo span { color: var(--gold); }
+  .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.2); margin-top: 0.4rem; }
+  @media print { nav, .hero, .tabs, .nav-btns, .btn, .btn-secondary { display: none !important; } #screen-readme, #screen-form { display: none !important; } #screen-results { display: block !important; } body { background: #fff; } .main { padding: 0; max-width: 100%; } }
+  @media (max-width: 600px) { .meta-row { grid-template-columns: 1fr; } .q-options { flex-wrap: wrap; } .results-top { flex-direction: column; } .metric-grid { grid-template-columns: 1fr; } .dim-label { width: 130px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">MOS<span>ei</span></a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">For Consultants &middot; Stress-Test Diagnostic</div>
+  <h1>MOS Pressure Test</h1>
+  <p class="hero-sub">Can this system absorb the pressure it's under? Score 12 dimensions of pressure-to-regulation capacity, then run scenario stress tests for demand spikes, supplier failure, staffing loss, and system outage.</p>
+</div>
+
+<div class="main">
+
+  <div id="screen-readme">
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="tabs">
+        <div class="tab active" id="tab-readme" onclick="showIntroTab('readme')">Read Me</div>
+        <div class="tab" id="tab-start" onclick="showIntroTab('start')">Start Test</div>
+      </div>
+
+      <div id="intro-readme" class="tab-body">
+        <div class="navy-box">
+          <div class="navy-box-title">MOS<span>ei</span> -- MOS Pressure Test</div>
+          <div class="navy-box-sub">A stress-test diagnostic for consultants who need to know not just where a system stands today, but whether it will hold when pressure spikes. Scores baseline capacity, then models four common failure scenarios.</div>
+        </div>
+
+        <div class="box"><div class="label-gold">WHY</div><p>A Gap Score tells you where a system stands right now. It doesn't tell you what happens when demand spikes, a key supplier fails, staffing drops, or a critical system goes down. This tool answers that question directly.</p></div>
+        <div class="box"><div class="label-gold">Purpose</div><p>Score 12 dimensions of pressure-to-regulation capacity, then apply four pre-built stress scenarios to see how each dimension would likely perform under that specific pressure event.</p></div>
+        <div class="box"><div class="label-gold">Inputs</div><p>Observer scoring based on direct evidence, same standard as the Gap Scoring Tool. For best results, run both tools in the same engagement -- the Gap Score gives current state, the Pressure Test gives resilience.</p></div>
+        <div class="box"><div class="label-gold">Outputs</div><p>A baseline Pressure Capacity score, a 12-dimension breakdown, and a stress-test projection for each of four scenarios showing which dimensions are most likely to fail first under that specific pressure type.</p></div>
+        <div class="box"><div class="label-gold">Cadence</div><p>Run once per engagement as a structural assessment, or before/after a major operational change to verify resilience improved. Less frequent than the Gap Score -- this measures structural capacity, not week-to-week performance.</p></div>
+        <div class="box"><div class="label-gold">Escalation Path</div><p>Any dimension scoring below 4/10 against a likely scenario (demand spike, supplier failure, staffing loss, system outage) should be flagged as a single point of failure and escalated immediately, regardless of overall score.</p></div>
+
+        <div class="box">
+          <div class="label-gold">Supporting Documents</div>
+          <p>Pairs with the Gap Scoring Tool for current-state diagnosis. The two together give a consultant both where the system stands and how it will hold under pressure.</p>
+        </div>
+
+        <div class="box">
+          <div class="label-gold">Three Things Most Likely to Fail in Year One</div>
+          <div class="step-row"><div class="step-num">1</div><div class="step-text"><b>Scoring resilience the system hasn't actually demonstrated.</b> If you haven't observed the system under real pressure, score conservatively -- untested capacity isn't capacity.</div></div>
+          <div class="step-row"><div class="step-num">2</div><div class="step-text"><b>Treating all four scenarios as equally likely.</b> Weight your narrative toward the scenario most relevant to this client's actual risk profile, not a generic list.</div></div>
+          <div class="step-row"><div class="step-num">3</div><div class="step-text"><b>Presenting the stress test without the baseline Gap Score.</b> Resilience numbers mean little without current-state context. Always pair the two.</div></div>
+        </div>
+
+        <button class="btn" onclick="showIntroTab('start')" style="margin-top:0.5rem;">Continue to Test &rarr;</button>
+      </div>
+
+      <div id="intro-start" class="tab-body" style="display:none;">
+        <p class="label-gold">12 dimensions of pressure capacity</p>
+        <div class="step-row"><div class="step-num">1</div><div class="step-text"><b>Capacity Flex</b> -- can output scale up or down without breaking process discipline?</div></div>
+        <div class="step-row"><div class="step-num">2</div><div class="step-text"><b>Decision Speed</b> -- how quickly can this system make a high-stakes call under pressure?</div></div>
+        <div class="step-row"><div class="step-num">3</div><div class="step-text"><b>Supplier Redundancy</b> -- is there a viable backup if a key supplier fails?</div></div>
+        <div class="step-row"><div class="step-num">4</div><div class="step-text"><b>Cross-Training Depth</b> -- can roles be covered if key staff are unavailable?</div></div>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin:1.25rem 0 1.5rem;">All 12 dimensions visible below. Score each 1-10 based on direct observation. Takes approximately 25-35 minutes.</p>
+        <button class="btn" onclick="startScoring()">Begin Test &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-form" style="display:none;">
+    <div class="card">
+      <div class="tab-body">
+        <p class="label-gold">Engagement details</p>
+        <div class="meta-row">
+          <div class="meta-field"><span class="meta-label">Client / Site Name</span><input type="text" id="m-client" placeholder="e.g. Dayton Assembly Plant"></div>
+          <div class="meta-field"><span class="meta-label">Date of Observation</span><input type="date" id="m-date"></div>
+          <div class="meta-field"><span class="meta-label">Consultant / Observer</span><input type="text" id="m-observer" placeholder="Your name"></div>
+          <div class="meta-field"><span class="meta-label">Primary Risk Concern</span><select id="m-risk"><option>Demand Spike</option><option>Supplier Failure</option><option>Staffing Loss</option><option>System Outage</option></select></div>
+        </div>
+
+        <p class="label-gold" style="margin-bottom:1rem;">Score 12 dimensions of baseline pressure capacity</p>
+        <div id="q-container"></div>
+
+        <div class="nav-btns">
+          <button class="btn-secondary" onclick="backToIntro()">&larr; Back</button>
+          <button class="btn" onclick="showResults()">Run Stress Test &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-results" style="display:none;">
+    <div class="card">
+      <div class="results-header">
+        <div class="results-top">
+          <div>
+            <div class="results-score-label">Pressure Capacity</div>
+            <div class="results-score-num" id="r-capacity">--</div>
+            <div class="results-score-sub">out of 10, baseline average across 12 dimensions</div>
+            <div class="results-verdict" id="r-verdict">--</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="results-score-label">Client</div>
+            <div style="font-size:1rem;color:#fff;font-weight:500;" id="r-client-name">--</div>
+            <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);" id="r-client-meta">--</div>
+          </div>
+        </div>
+        <p class="results-summary-text" id="r-summary"></p>
+      </div>
+      <div class="results-body">
+        <p class="label-gold" style="margin-bottom:1rem;">12-dimension breakdown</p>
+        <div id="r-dims"></div>
+
+        <div class="insight-box"><p id="r-insight"></p></div>
+
+        <p class="label-gold" style="margin-top:1.75rem;margin-bottom:1rem;">Stress scenario projections</p>
+        <div id="r-scenarios"></div>
+
+        <div class="nav-btns">
+          <button class="btn-secondary" onclick="backToForm()">&larr; Edit scoring</button>
+          <button class="btn" onclick="window.print()">Print / Save Client Summary</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">MOS<span>ei</span></div>
+  <div class="footer-copy">&copy; 2026 Norman Applegate. All rights reserved. &middot; MOSei.org</div>
+</footer>
+
+<script>
+var dims = [
+  { id: 'capacity_flex', name: 'Capacity Flex', q: 'Can output scale up or down without breaking process discipline?', weights: { demand: 3, supplier: 1, staffing: 2, outage: 1 } },
+  { id: 'decision_speed', name: 'Decision Speed', q: 'How quickly can this system make a high-stakes call under pressure?', weights: { demand: 2, supplier: 3, staffing: 2, outage: 3 } },
+  { id: 'supplier_redundancy', name: 'Supplier Redundancy', q: 'Is there a viable backup if a key supplier fails?', weights: { demand: 1, supplier: 3, staffing: 0, outage: 1 } },
+  { id: 'cross_training', name: 'Cross-Training Depth', q: 'Can roles be covered if key staff are unavailable?', weights: { demand: 1, supplier: 0, staffing: 3, outage: 1 } },
+  { id: 'escalation_clarity', name: 'Escalation Clarity', q: 'Is it clear who decides what when a crisis hits?', weights: { demand: 2, supplier: 3, staffing: 2, outage: 3 } },
+  { id: 'inventory_buffer', name: 'Inventory / Buffer Stock', q: 'Is there buffer to absorb a short-term disruption?', weights: { demand: 2, supplier: 3, staffing: 0, outage: 1 } },
+  { id: 'communication_speed', name: 'Communication Speed', q: 'How fast does critical information reach the right people?', weights: { demand: 2, supplier: 2, staffing: 2, outage: 3 } },
+  { id: 'system_redundancy', name: 'System / Equipment Redundancy', q: 'Is there backup capacity if a critical system fails?', weights: { demand: 1, supplier: 1, staffing: 0, outage: 3 } },
+  { id: 'leadership_bench', name: 'Leadership Bench Strength', q: 'Could a second-tier leader run this site for a week?', weights: { demand: 1, supplier: 1, staffing: 3, outage: 1 } },
+  { id: 'standard_work_resilience', name: 'Standard Work Resilience', q: 'Does standard work hold up when conditions deviate from normal?', weights: { demand: 3, supplier: 1, staffing: 2, outage: 1 } },
+  { id: 'customer_communication', name: 'Customer Communication Protocol', q: 'Is there a clear protocol for managing customer expectations under stress?', weights: { demand: 3, supplier: 2, staffing: 0, outage: 2 } },
+  { id: 'recovery_planning', name: 'Recovery Planning', q: 'Is there a documented plan for returning to normal after disruption?', weights: { demand: 1, supplier: 2, staffing: 1, outage: 3 } }
+];
+var scores = {};
+
+var scenarios = [
+  { id: 'demand', name: 'Demand Spike', desc: 'A sudden 40% increase in customer demand with two weeks notice.' },
+  { id: 'supplier', name: 'Supplier Failure', desc: 'A primary supplier fails to deliver with no advance warning.' },
+  { id: 'staffing', name: 'Staffing Loss', desc: '20% of the workforce is unexpectedly unavailable for two weeks.' },
+  { id: 'outage', name: 'System Outage', desc: 'A critical operational system goes down for 48+ hours.' }
+];
+
+function showIntroTab(tab) {
+  document.getElementById('intro-readme').style.display = tab === 'readme' ? 'block' : 'none';
+  document.getElementById('intro-start').style.display = tab === 'start' ? 'block' : 'none';
+  document.getElementById('tab-readme').classList.toggle('active', tab === 'readme');
+  document.getElementById('tab-start').classList.toggle('active', tab === 'start');
+}
+
+function startScoring() {
+  document.getElementById('screen-readme').style.display = 'none';
+  document.getElementById('screen-form').style.display = 'block';
+  renderQuestions();
+  window.scrollTo(0,0);
+}
+
+function backToIntro() {
+  document.getElementById('screen-form').style.display = 'none';
+  document.getElementById('screen-readme').style.display = 'block';
+  showIntroTab('start');
+  window.scrollTo(0,0);
+}
+
+function backToForm() {
+  document.getElementById('screen-results').style.display = 'none';
+  document.getElementById('screen-form').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function scoreClass(v) {
+  if (v <= 4) return 'sel-low';
+  if (v <= 7) return 'sel-mid';
+  return 'sel-high';
+}
+
+function renderQuestions() {
+  var html = '';
+  dims.forEach(function(d, i) {
+    var sel = scores[d.id];
+    html += '<div class="q-block"><div class="q-title">' + (i+1) + '. ' + d.name + '</div><div class="q-sub">' + d.q + '</div><div class="q-options">';
+    for (var v = 1; v <= 10; v++) {
+      var cls = sel === v ? ' ' + scoreClass(v) : '';
+      html += '<div class="q-btn' + cls + '" onclick="setScore(\'' + d.id + '\',' + v + ')">' + v + '</div>';
+    }
+    html += '</div></div>';
+  });
+  document.getElementById('q-container').innerHTML = html;
+}
+
+function setScore(id, val) {
+  scores[id] = val;
+  renderQuestions();
+}
+
+function showResults() {
+  var allAnswered = dims.every(function(d) { return scores[d.id]; });
+  if (!allAnswered) { alert('Please score all 12 dimensions before continuing.'); return; }
+
+  document.getElementById('screen-form').style.display = 'none';
+  document.getElementById('screen-results').style.display = 'block';
+  window.scrollTo(0,0);
+
+  var total = 0;
+  dims.forEach(function(d) { total += scores[d.id]; });
+  var capacity = total / dims.length;
+
+  var verdict, vColor, summaryText;
+  if (capacity >= 7.5) {
+    verdict = 'Resilient'; vColor = '#1D9E75';
+    summaryText = 'This system demonstrates strong baseline capacity to absorb pressure across most dimensions. Focus on the lowest-scoring dimensions below to close remaining gaps before they become single points of failure.';
+  } else if (capacity >= 5.5) {
+    verdict = 'Adequate'; vColor = '#BA7517';
+    summaryText = 'This system can absorb moderate pressure but has meaningful gaps. The scenario projections below show where those gaps are most likely to surface under specific stress events.';
+  } else {
+    verdict = 'Fragile'; vColor = '#993C1D';
+    summaryText = 'This system has limited capacity to absorb pressure beyond current operating conditions. Multiple dimensions scored low enough to represent real structural risk. Treat the scenario projections as priority findings.';
+  }
+
+  document.getElementById('r-capacity').textContent = capacity.toFixed(1);
+  document.getElementById('r-verdict').textContent = verdict;
+  document.getElementById('r-verdict').style.background = vColor;
+  document.getElementById('r-verdict').style.color = '#fff';
+  document.getElementById('r-summary').textContent = summaryText;
+
+  var client = document.getElementById('m-client').value.trim() || 'Unnamed site';
+  var dateVal = document.getElementById('m-date').value;
+  var observer = document.getElementById('m-observer').value.trim();
+  var risk = document.getElementById('m-risk').value;
+  var formatted = '';
+  if (dateVal) { var dd = new Date(dateVal+'T00:00:00'); formatted = dd.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}); }
+  document.getElementById('r-client-name').textContent = client;
+  document.getElementById('r-client-meta').textContent = ['Primary risk: ' + risk, formatted, observer ? 'Observed by ' + observer : ''].filter(Boolean).join(' \u00b7 ');
+
+  var dimHtml = '';
+  var sortedDims = dims.slice().sort(function(a,b) { return scores[a.id] - scores[b.id]; });
+  dims.forEach(function(d) {
+    var v = scores[d.id];
+    var pct = (v/10)*100;
+    var color = v >= 7.5 ? '#1D9E75' : v >= 5 ? '#BA7517' : '#993C1D';
+    dimHtml += '<div class="dim-row"><span class="dim-label">' + d.name + '</span><div class="dim-track"><div class="dim-fill" style="width:' + pct + '%;background:' + color + ';"></div></div><span class="dim-val">' + v + '/10</span></div>';
+  });
+  document.getElementById('r-dims').innerHTML = dimHtml;
+
+  var weakest = sortedDims[0];
+  document.getElementById('r-insight').innerHTML = '<b style="color:#1a2744;">' + weakest.name + '</b> is the weakest dimension at ' + scores[weakest.id] + '/10. This is the highest-leverage single fix to improve overall resilience across every stress scenario below.';
+
+  var scenarioHtml = '';
+  scenarios.forEach(function(s) {
+    var weightedTotal = 0, weightSum = 0;
+    dims.forEach(function(d) {
+      var w = d.weights[s.id];
+      weightedTotal += scores[d.id] * w;
+      weightSum += w;
+    });
+    var scenarioScore = weightSum > 0 ? weightedTotal / weightSum : 0;
+
+    var failingDims = dims.filter(function(d) { return d.weights[s.id] >= 2 && scores[d.id] <= 5; })
+      .sort(function(a,b) { return scores[a.id] - scores[b.id]; });
+
+    var band, bandColor;
+    if (scenarioScore >= 7) { band = 'Likely Holds'; bandColor = '#1D9E75'; }
+    else if (scenarioScore >= 5) { band = 'At Risk'; bandColor = '#BA7517'; }
+    else { band = 'Likely Fails'; bandColor = '#993C1D'; }
+
+    var text = 'Weighted resilience score: ' + scenarioScore.toFixed(1) + '/10. ';
+    if (failingDims.length > 0) {
+      text += 'Most exposed: ' + failingDims.slice(0,2).map(function(d) { return d.name + ' (' + scores[d.id] + '/10)'; }).join(', ') + '.';
+    } else {
+      text += 'No critical single points of failure identified for this scenario.';
+    }
+
+    scenarioHtml += '<div class="scenario-result-card" style="border-left-color:' + bandColor + ';">';
+    scenarioHtml += '<div class="scenario-result-title">' + s.name + '<span class="scenario-result-band" style="background:' + bandColor + ';color:#fff;">' + band + '</span></div>';
+    scenarioHtml += '<div class="scenario-result-text">' + s.desc + '<br>' + text + '</div>';
+    scenarioHtml += '</div>';
+  });
+  document.getElementById('r-scenarios').innerHTML = scenarioHtml;
+}
+
+document.getElementById('m-date').value = new Date().toISOString().split('T')[0];
+</script>
+
+</body>
+</html>
