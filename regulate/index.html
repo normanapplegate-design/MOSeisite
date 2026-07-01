@@ -136,6 +136,29 @@
     padding:16px 20px; font-size:13px; opacity:.75; text-align:center; max-width:52ch; margin-left:auto; margin-right:auto;
   }
 
+  /* ---- QR transfer box ---- */
+  .qr-transfer{
+    margin-top:40px; background:var(--navy-deep); border:1px solid var(--line); border-radius:14px;
+    padding:28px 32px; display:flex; align-items:center; justify-content:space-between; gap:28px; flex-wrap:wrap;
+  }
+  .qr-transfer-text{flex:1; min-width:240px;}
+  .qr-link-row{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  #qrLinkText{
+    font-family:'Inter',monospace; font-size:13px; background:var(--navy); border:1px solid var(--line);
+    border-radius:8px; padding:9px 14px; color:var(--gold-soft);
+  }
+  .qr-copy-btn{
+    background:transparent; border:1px solid var(--line); color:var(--cream); border-radius:8px;
+    padding:9px 14px; font-size:13px; font-weight:600; cursor:pointer; opacity:.85; transition:opacity .15s ease;
+  }
+  .qr-copy-btn:active{opacity:1;}
+  .qr-img{border-radius:8px; flex-shrink:0;}
+  @media (max-width:760px){
+    .qr-transfer{display:none;}
+  }
+
   /* ---- book section ---- */
   .book-section{}
   .book-grid{
@@ -280,8 +303,8 @@
     <div class="install-steps">
       <div class="step">
         <div class="step-num">1</div>
-        <div class="step-title">Open in Safari</div>
-        <div class="step-desc">On your iPhone, open this page in Safari — not Chrome or another browser. Add to Home Screen only works from Safari on iOS.</div>
+        <div class="step-title">Open the app in Safari</div>
+        <div class="step-desc">Tap "Open Regulate" above, in Safari on your iPhone — not Chrome or another browser. Add to Home Screen only works from Safari on iOS, and only from the app itself, not this page.</div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
@@ -293,6 +316,17 @@
         <div class="step-title">Tap Add</div>
         <div class="step-desc">The icon lands on your home screen. Open it from there for the full-screen experience — no browser bar, works offline.</div>
       </div>
+    </div>
+    <div class="qr-transfer">
+      <div class="qr-transfer-text">
+        <div class="step-title" style="margin-bottom:6px;">On your computer? Scan to open on your phone.</div>
+        <div class="step-desc" style="margin-bottom:14px;">Point your iPhone camera at this code, then tap the banner that appears — it opens the app directly in Safari.</div>
+        <div class="qr-link-row">
+          <span id="qrLinkText">mosei.org/regulate/app/</span>
+          <button class="qr-copy-btn" onclick="copyRegulateLink()" id="qrCopyBtn">Copy link</button>
+        </div>
+      </div>
+      <img class="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=1a2744&bgcolor=F8F5EF&margin=10&data=https%3A%2F%2Fmosei.org%2Fregulate%2Fapp%2F" alt="QR code to open Regulate on your phone" width="140" height="140">
     </div>
     <p class="note-box">On a Mac or Android, Regulate works the same way in Chrome — look for the install icon in the address bar.</p>
   </div>
@@ -340,6 +374,20 @@
   }
   field.innerHTML = html;
 })();
+
+function copyRegulateLink(){
+  const url = 'https://mosei.org/regulate/app/';
+  const btn = document.getElementById('qrCopyBtn');
+  navigator.clipboard.writeText(url).then(()=>{
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(()=>{ btn.textContent = original; }, 1800);
+  }).catch(()=>{
+    const original = btn.textContent;
+    btn.textContent = 'Copy failed';
+    setTimeout(()=>{ btn.textContent = original; }, 1800);
+  });
+}
 </script>
 
 </body>
