@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regulate — Usage</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#001543; --navy:#1a2744; --gold:#C9A84C; --gold-soft:#E4C97A;
+    --cream:#F8F5EF; --ember:#B5654A; --sage:#6FA37E; --line:rgba(248,245,239,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--navy-deep); color:var(--cream);
+    font-family:'Inter',sans-serif; min-height:100vh; padding:32px 20px;
+  }
+  .wrap{max-width:760px; margin:0 auto;}
+  h1{font-family:'EB Garamond',serif; font-weight:500; font-size:32px; margin:0 0 4px;}
+  .sub{opacity:.6; font-size:14px; margin-bottom:28px;}
+  .gate{
+    background:var(--navy); border:1px solid var(--line); border-radius:14px;
+    padding:24px; margin-bottom:24px; display:flex; gap:10px; flex-wrap:wrap;
+  }
+  input{
+    flex:1; min-width:180px; background:var(--navy-deep); border:1px solid var(--line);
+    border-radius:8px; padding:11px 14px; color:var(--cream); font-size:14px; font-family:'Inter',sans-serif;
+  }
+  button{
+    background:var(--gold); color:var(--navy-deep); border:none; border-radius:8px;
+    padding:11px 20px; font-weight:600; font-size:14px; cursor:pointer;
+  }
+  .totals{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:28px;}
+  .stat{background:var(--navy); border:1px solid var(--line); border-radius:12px; padding:16px;}
+  .stat-label{font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--gold-soft); opacity:.8; margin-bottom:6px;}
+  .stat-value{font-family:'EB Garamond',serif; font-size:26px;}
+  .funnel{background:var(--navy); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:24px;}
+  .funnel-row{display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--line); font-size:14px;}
+  .funnel-row:last-child{border-bottom:none;}
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line);}
+  th{opacity:.6; font-weight:600; text-transform:uppercase; font-size:11px; letter-spacing:.05em;}
+  .error{color:var(--ember); font-size:14px; margin-top:8px;}
+  .empty{opacity:.5; text-align:center; padding:40px 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Regulate — Usage</h1>
+  <p class="sub">Anonymous, aggregate counts only.</p>
+
+  <div class="gate">
+    <input type="password" id="keyInput" placeholder="Passphrase">
+    <input type="number" id="daysInput" placeholder="Days" value="30" style="max-width:90px;">
+    <button onclick="loadStats()">Load</button>
+  </div>
+  <div id="errorBox" class="error"></div>
+
+  <div id="content"></div>
+</div>
+
+<script>
+async function loadStats(){
+  const key = document.getElementById('keyInput').value.trim();
+  const days = document.getElementById('daysInput').value || 30;
+  const errorBox = document.getElementById('errorBox');
+  const content = document.getElementById('content');
+  errorBox.textContent = '';
+  content.innerHTML = '<div class="empty">Loading…</div>';
+
+  if(!key){ errorBox.textContent = 'Enter your passphrase.'; content.innerHTML=''; return; }
+
+  try{
+    const res = await fetch(`/.netlify/functions/stats?key=${encodeURIComponent(key)}&days=${days}`);
+    if(res.status === 401){ errorBox.textContent = 'Wrong passphrase.'; content.innerHTML=''; return; }
+    const data = await res.json();
+    localStorage.setItem('regulateStatsKey', key);
+    render(data);
+  } catch(e){
+    errorBox.textContent = 'Could not load stats.';
+    content.innerHTML = '';
+  }
+}
+
+function render(data){
+  const days = Object.keys(data).sort();
+  const totals = {};
+  days.forEach(day=>{
+    Object.entries(data[day]).forEach(([k,v])=>{ totals[k] = (totals[k]||0) + v; });
+  });
+
+  if(days.length === 0){
+    document.getElementById('content').innerHTML = '<div class="empty">No data yet for this range.</div>';
+    return;
+  }
+
+  const opens = (totals.page_view||0) + (totals.app_open_standalone||0);
+  const starts = totals.session_start || 0;
+  const justBreathe = totals.just_breathe || 0;
+  const goDeeper = totals.go_deeper || 0;
+  const fullComplete = totals.full_session_complete || 0;
+  const breathComplete = totals.breath_only_complete || 0;
+  const installedOpens = totals.app_open_standalone || 0;
+
+  const pct = (n, d) => d ? Math.round((n/d)*100) + '%' : '—';
+
+  let html = `
+    <div class="totals">
+      <div class="stat"><div class="stat-label">Page opens</div><div class="stat-value">${opens}</div></div>
+      <div class="stat"><div class="stat-label">From installed icon</div><div class="stat-value">${installedOpens}</div></div>
+      <div class="stat"><div class="stat-label">Sessions started</div><div class="stat-value">${starts}</div></div>
+      <div class="stat"><div class="stat-label">Full sessions completed</div><div class="stat-value">${fullComplete}</div></div>
+    </div>
+
+    <div class="funnel">
+      <div class="funnel-row"><span>Just the breathing</span><span>${justBreathe} (${pct(justBreathe, starts)} of starts)</span></div>
+      <div class="funnel-row"><span>Go deeper</span><span>${goDeeper} (${pct(goDeeper, starts)} of starts)</span></div>
+      <div class="funnel-row"><span>Breath-only completed</span><span>${breathComplete}</span></div>
+      <div class="funnel-row"><span>Full sessions completed</span><span>${fullComplete} (${pct(fullComplete, goDeeper)} of go-deeper taps)</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Day</th><th>Opens</th><th>Starts</th><th>Just Breathe</th><th>Go Deeper</th></tr></thead>
+      <tbody>
+        ${days.slice().reverse().map(day=>{
+          const d = data[day];
+          const o = (d.page_view||0)+(d.app_open_standalone||0);
+          return `<tr><td>${day}</td><td>${o}</td><td>${d.session_start||0}</td><td>${d.just_breathe||0}</td><td>${d.go_deeper||0}</td></tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+  document.getElementById('content').innerHTML = html;
+}
+
+window.addEventListener('load', ()=>{
+  const saved = localStorage.getItem('regulateStatsKey');
+  if(saved){
+    document.getElementById('keyInput').value = saved;
+    loadStats();
+  }
+});
+</script>
+</body>
+</html>

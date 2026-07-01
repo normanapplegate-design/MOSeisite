@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Regulate</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#001543">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Regulate">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#001543;
+    --navy:#1a2744;
+    --navy-light:#2a3a5c;
+    --gold:#C9A84C;
+    --gold-soft:#E4C97A;
+    --cream:#F8F5EF;
+    --ember:#B5654A;
+    --ember-soft:#d98a6c;
+    --sage:#6FA37E;
+    --sage-soft:#8fbf9c;
+    --ink:#0A1226;
+    --line:rgba(248,245,239,0.14);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{
+    height:100%; margin:0; padding:0;
+    background:var(--navy-deep);
+    color:var(--cream);
+    font-family:'Inter',sans-serif;
+    overscroll-behavior:none;
+    -webkit-user-select:none; user-select:none;
+  }
+  #app{
+    position:fixed; inset:0;
+    display:flex; flex-direction:column;
+    max-width:480px; margin:0 auto;
+    background:radial-gradient(120% 90% at 50% 0%, var(--navy) 0%, var(--navy-deep) 60%);
+  }
+  .screen{
+    flex:1; display:none;
+    flex-direction:column;
+    padding:28px 24px calc(28px + env(safe-area-inset-bottom));
+    padding-top:calc(28px + env(safe-area-inset-top));
+    animation:fadeIn .35s ease;
+  }
+  .screen.active{display:flex;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .eyebrow{
+    font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--gold-soft); opacity:.8; font-weight:600;
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'EB Garamond',serif; font-weight:500;
+    font-size:34px; line-height:1.15; margin:0 0 10px;
+    color:var(--cream);
+  }
+  h1 i{font-style:italic; color:var(--gold);}
+  p.sub{
+    font-size:15px; line-height:1.55; color:var(--cream); opacity:.72;
+    margin:0 0 20px; max-width:38ch;
+  }
+  .spacer{flex:1;}
+
+  /* ---- buttons ---- */
+  .btn{
+    display:flex; align-items:center; justify-content:center;
+    width:100%; padding:18px 20px; border-radius:14px;
+    border:none; font-family:'Inter',sans-serif; font-size:16px; font-weight:600;
+    cursor:pointer; transition:transform .12s ease, opacity .12s ease;
+    letter-spacing:.01em;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--gold); color:var(--ink);}
+  .btn-ghost{
+    background:transparent; color:var(--cream); opacity:.75;
+    border:1px solid var(--line);
+  }
+  .btn-row{display:flex; gap:10px;}
+  .btn-row .btn{flex:1;}
+  .link-btn{
+    background:none; border:none; color:var(--gold-soft);
+    font-size:14px; font-family:'Inter',sans-serif; font-weight:600;
+    padding:10px; cursor:pointer; opacity:.85;
+  }
+
+  /* ---- progress dots ---- */
+  .progress{display:flex; gap:6px; margin-bottom:22px;}
+  .dot{width:7px; height:7px; border-radius:50%; background:var(--line);}
+  .dot.done{background:var(--gold);}
+  .dot.now{background:var(--cream);}
+
+  /* ---- landing ---- */
+  .wordmark{
+    font-family:'EB Garamond',serif; font-size:44px; font-weight:500;
+    letter-spacing:.01em; margin-bottom:2px;
+  }
+  .tagline{font-size:13px; opacity:.55; letter-spacing:.04em; margin-bottom:0;}
+  .clarity-line{
+    font-family:'EB Garamond',serif; font-style:italic; font-size:15px;
+    color:var(--gold-soft); opacity:.75; margin:14px auto 0; max-width:26ch;
+    line-height:1.4;
+  }
+  .begin-wrap{display:flex; flex-direction:column; align-items:center; gap:18px; margin-top:22px;}
+  .begin-btn{
+    width:168px; height:168px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--gold-soft), var(--gold) 70%);
+    border:none; color:var(--ink); font-family:'Inter',sans-serif;
+    font-weight:700; font-size:17px; letter-spacing:.02em;
+    box-shadow:0 0 0 1px rgba(201,168,76,.25), 0 20px 60px -10px rgba(201,168,76,.45);
+    cursor:pointer; transition:transform .15s ease;
+  }
+  .begin-btn:active{transform:scale(.96);}
+
+  /* ---- breathing ---- */
+  .breathe-stage{
+    flex:1; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:26px;
+  }
+  .circle-wrap{position:relative; width:280px; height:280px; display:flex; align-items:center; justify-content:center;}
+  .starfield{position:absolute; inset:0; border-radius:50%; overflow:visible;}
+  .starfield span{
+    position:absolute; border-radius:50%; background:var(--cream);
+    animation:twinkle 3.4s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:.15;}
+    50%{opacity:.9;}
+  }
+  .orbit-ring{
+    position:absolute; border-radius:50%; border:1px solid var(--line);
+    animation:driftRotate 90s linear infinite;
+  }
+  .orbit-outer{width:280px; height:280px;}
+  .orbit-mid{width:220px; height:220px; opacity:.55; animation-duration:70s; animation-direction:reverse;}
+  @keyframes driftRotate{from{transform:rotate(0deg);} to{transform:rotate(360deg);}}
+
+  .breath-circle{
+    position:relative; width:130px; height:130px; border-radius:50%;
+    transform:scale(0.6);
+    transition:transform 4s cubic-bezier(.37,0,.63,1);
+  }
+  .breath-circle.exhaling{transition:transform 7s cubic-bezier(.37,0,.63,1);}
+  .breath-circle.inhale-state{transform:scale(1);}
+  .breath-circle.exhale-state{transform:scale(0.6);}
+
+  .corona{
+    position:absolute; inset:-14px; border-radius:50%;
+    box-shadow:
+      0 0 40px 8px rgba(228,201,122,.5),
+      0 0 100px 26px rgba(201,168,76,.3),
+      0 0 170px 55px rgba(181,101,74,.16);
+    transition:box-shadow 4s ease;
+  }
+  .breath-circle.exhaling .corona{transition:box-shadow 7s ease;}
+  .breath-circle.exhale-state .corona{
+    box-shadow:
+      0 0 20px 4px rgba(228,201,122,.3),
+      0 0 55px 14px rgba(201,168,76,.18),
+      0 0 90px 28px rgba(181,101,74,.1);
+  }
+  .nebula-svg{
+    position:absolute; inset:0; width:100%; height:100%;
+    border-radius:50%; overflow:hidden;
+  }
+  .breath-label{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    text-align:center; font-family:'Inter',sans-serif;
+    font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    color:#fff; pointer-events:none; z-index:2;
+    text-shadow:0 1px 6px rgba(0,0,0,.6);
+  }
+  .breath-count{font-size:15px; opacity:.5; margin-top:2px;}
+  .round-label{font-size:13px; opacity:.55; letter-spacing:.04em;}
+
+  @media (prefers-reduced-motion: reduce){
+    .starfield span{animation:none; opacity:.5;}
+    .orbit-ring{animation:none;}
+  }
+
+  /* ---- questions ---- */
+  .q-card{
+    background:var(--navy); border:1px solid var(--line); border-radius:16px;
+    padding:22px; margin-bottom:14px;
+  }
+  .q-label{font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:var(--gold-soft); font-weight:700; margin-bottom:8px;}
+  .q-text{font-family:'EB Garamond',serif; font-size:22px; font-style:italic; line-height:1.35; color:var(--cream);}
+
+  /* ---- distortion cards ---- */
+  .dist-name{font-size:17px; font-weight:700; margin-bottom:4px;}
+  .dist-desc{font-size:14px; opacity:.7; line-height:1.5; margin-bottom:22px;}
+
+  /* ---- history ---- */
+  .hist-item{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:16px 0; border-bottom:1px solid var(--line);
+  }
+  .hist-date{font-size:13px; opacity:.55;}
+  .hist-tags{font-size:13px; color:var(--gold-soft); margin-top:3px;}
+  .empty-state{opacity:.55; font-size:14px; text-align:center; margin-top:60px; line-height:1.6;}
+  .pattern-box{
+    background:var(--navy); border:1px solid var(--line); border-radius:14px;
+    padding:18px 20px; margin-bottom:22px;
+  }
+  .pattern-label{font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--gold-soft); font-weight:700; margin-bottom:6px;}
+  .pattern-value{font-family:'EB Garamond',serif; font-size:20px; font-style:italic;}
+
+  .top-row{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+  .back-btn{background:none; border:none; color:var(--cream); opacity:.6; font-size:22px; cursor:pointer; padding:4px 8px; margin-left:-8px;}
+
+  .chip-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;}
+  .chip{
+    padding:11px 18px; border-radius:999px; border:1px solid var(--line);
+    background:transparent; color:var(--cream); font-size:14px; font-weight:600;
+    cursor:pointer; transition:all .15s ease; opacity:.85;
+  }
+  .chip.selected{background:var(--gold); border-color:var(--gold); color:var(--ink); opacity:1;}
+
+  .summary-line{display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line); font-size:14px;}
+  .summary-line span:first-child{opacity:.6;}
+  .summary-line span:last-child{font-weight:600; color:var(--gold-soft);}
+
+  /* ---- choice screen ---- */
+  .option-card{
+    display:block; width:100%; text-align:left;
+    background:var(--navy); border:1px solid var(--line); border-radius:16px;
+    padding:22px; margin-bottom:14px; cursor:pointer; font-family:'Inter',sans-serif;
+    transition:transform .12s ease, border-color .15s ease, background .15s ease;
+  }
+  .option-card:active{transform:scale(.98);}
+  .option-card:hover{border-color:rgba(201,168,76,.4);}
+  .option-title{font-family:'EB Garamond',serif; font-size:21px; font-style:italic; color:var(--cream); margin-bottom:6px;}
+  .option-desc{font-size:14px; opacity:.65; line-height:1.55;}
+
+  /* ---- reflection bars ---- */
+  .reflect-section{margin-top:8px; margin-bottom:4px;}
+  .reflect-heading{
+    font-size:11px; text-transform:uppercase; letter-spacing:.12em;
+    color:var(--gold-soft); opacity:.7; font-weight:700; margin:18px 0 8px;
+  }
+  .reflect-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:9px 0; border-bottom:1px solid var(--line);
+  }
+  .reflect-label{font-size:14px; opacity:.85;}
+  .reflect-status{display:flex; align-items:center; gap:9px;}
+  .reflect-word{font-size:11px; opacity:.55; text-transform:uppercase; letter-spacing:.06em; min-width:52px; text-align:right;}
+  .reflect-bar{width:38px; height:7px; border-radius:4px; flex-shrink:0;}
+  .reflect-bar.green{background:var(--sage);}
+  .reflect-bar.red{background:var(--ember);}
+  .reflect-callout{
+    background:var(--navy); border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; font-size:13px; opacity:.85; line-height:1.5; margin-top:16px;
+  }
+
+  /* ---- book link ---- */
+  .book-link{
+    display:block; text-align:center; font-family:'EB Garamond',serif; font-style:italic;
+    font-size:14px; color:var(--gold-soft); opacity:.75; text-decoration:none;
+    padding:10px 0; letter-spacing:.01em;
+  }
+  .book-link:active{opacity:1;}
+  .history-footer{
+    text-align:center; padding-top:14px; border-top:1px solid var(--line); margin-top:10px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- LANDING -->
+  <section class="screen active" id="screen-landing">
+    <div class="spacer"></div>
+    <div style="text-align:center;">
+      <div class="wordmark">Regulate</div>
+      <p class="tagline">Judgment formed under pressure</p>
+      <p class="clarity-line">The tool's job is to clear the fog, not make the call.</p>
+      <div class="begin-wrap">
+        <button class="begin-btn" onclick="startSession()">Regulate<br>Now</button>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <button class="link-btn" style="align-self:center;" onclick="goTo('history')">Past Sessions</button>
+  </section>
+
+  <!-- BREATHING -->
+  <section class="screen" id="screen-breathe">
+    <div class="top-row">
+      <button class="back-btn" onclick="cancelSession()">&#8592;</button>
+      <div style="display:flex; align-items:center; gap:4px;">
+        <button class="back-btn" id="soundToggle" onclick="toggleSound()" style="font-size:17px;">&#128266;</button>
+        <button class="link-btn" onclick="goToQuestions()">Skip</button>
+      </div>
+    </div>
+    <div class="breathe-stage">
+      <div class="round-label" id="roundLabel">Round 1 of 4</div>
+      <div class="circle-wrap" id="circleWrap">
+        <div class="orbit-ring orbit-outer"></div>
+        <div class="orbit-ring orbit-mid"></div>
+        <div class="starfield" id="starfield"></div>
+        <div class="breath-circle" id="breathCircle">
+          <div class="corona"></div>
+          <svg class="nebula-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="warmCloud" x="-40%" y="-40%" width="180%" height="180%">
+                <feTurbulence id="warmTurb" type="fractalNoise" baseFrequency="0.014 0.02" numOctaves="4" seed="12" result="n"/>
+                <feColorMatrix in="n" type="matrix" result="warmColored" values="
+                  0 0 0 0 0.79
+                  0 0 0 0 0.60
+                  0 0 0 0 0.29
+                  0 0 0 0.9 0"/>
+                <feComposite in="warmColored" in2="SourceGraphic" operator="in"/>
+              </filter>
+              <filter id="coolCloud" x="-40%" y="-40%" width="180%" height="180%">
+                <feTurbulence id="coolTurb" type="fractalNoise" baseFrequency="0.02 0.03" numOctaves="3" seed="47" result="n2"/>
+                <feColorMatrix in="n2" type="matrix" result="coolColored" values="
+                  0 0 0 0 0.16
+                  0 0 0 0 0.22
+                  0 0 0 0 0.42
+                  0 0 0 0.55 0"/>
+                <feComposite in="coolColored" in2="SourceGraphic" operator="in"/>
+              </filter>
+              <radialGradient id="coreGlow" cx="46%" cy="42%" r="55%">
+                <stop offset="0%" stop-color="#FFFFFF"/>
+                <stop offset="16%" stop-color="#F3E3B8"/>
+                <stop offset="40%" stop-color="#E4C97A"/>
+                <stop offset="68%" stop-color="#C9A84C" stop-opacity="0.75"/>
+                <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="edgeFade" cx="50%" cy="50%" r="50%">
+                <stop offset="72%" stop-color="#000" stop-opacity="0"/>
+                <stop offset="100%" stop-color="#000" stop-opacity="1"/>
+              </radialGradient>
+              <mask id="circleMask">
+                <circle cx="100" cy="100" r="100" fill="#fff"/>
+              </mask>
+            </defs>
+            <g mask="url(#circleMask)">
+              <circle cx="100" cy="100" r="100" fill="#0A1226"/>
+              <circle cx="100" cy="100" r="100" fill="#0A1226" filter="url(#coolCloud)" style="mix-blend-mode:screen" opacity="0.8"/>
+              <circle cx="100" cy="100" r="100" fill="#0A1226" filter="url(#warmCloud)" style="mix-blend-mode:screen" opacity="0.85"/>
+              <circle cx="94" cy="88" r="62" fill="url(#coreGlow)" style="mix-blend-mode:screen"/>
+              <circle cx="100" cy="100" r="100" fill="url(#edgeFade)"/>
+            </g>
+          </svg>
+          <div class="breath-label" id="breathLabel">Ready</div>
+        </div>
+      </div>
+      <p class="sub" style="text-align:center; max-width:30ch;">Follow the circle. In as it expands. Out as it settles.</p>
+    </div>
+  </section>
+
+  <!-- CHOICE -->
+  <section class="screen" id="screen-choice">
+    <div class="top-row">
+      <button class="back-btn" onclick="goTo('breathe')">&#8592;</button>
+    </div>
+    <div class="eyebrow">Where to next</div>
+    <h1>How much do<br>you need?</h1>
+    <p class="sub">Both are enough. Choose what this moment calls for.</p>
+    <div class="spacer"></div>
+    <button class="option-card" onclick="chooseJustBreathe()">
+      <div class="option-title">Just the breathing</div>
+      <div class="option-desc">Close it out here. Sometimes regulation is the whole job.</div>
+    </button>
+    <button class="option-card" onclick="chooseGoDeeper()">
+      <div class="option-title">Go deeper</div>
+      <div class="option-desc">Separate the threats and check for distortions before you decide.</div>
+    </button>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- QUESTIONS -->
+  <section class="screen" id="screen-questions">
+    <div class="top-row">
+      <button class="back-btn" onclick="goTo('breathe')">&#8592;</button>
+      <div class="progress" id="qProgress"></div>
+    </div>
+    <div class="eyebrow">Separate the threats</div>
+    <h1 id="qHeadline">What's the operational reality?</h1>
+    <p class="sub" id="qSub">The problem itself. Not who it makes look bad. Not what it might cost. Just the constraint.</p>
+    <div class="spacer"></div>
+    <p class="sub" style="opacity:.5; font-size:13px; margin-bottom:10px;">Is this clear to you right now?</p>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="answerQuestion(false)">Not yet clear</button>
+      <button class="btn btn-primary" onclick="answerQuestion(true)">Clear</button>
+    </div>
+  </section>
+
+  <!-- DISTORTIONS -->
+  <section class="screen" id="screen-distortions">
+    <div class="top-row">
+      <button class="back-btn" onclick="goTo('questions')">&#8592;</button>
+      <div class="progress" id="dProgress"></div>
+    </div>
+    <div class="eyebrow">Five Distortions check</div>
+    <div id="dCardWrap">
+      <div class="dist-name" id="dName">Tunnel Vision</div>
+      <p class="dist-desc" id="dDesc">Attention narrows to the loudest threat, not the most solvable one.</p>
+    </div>
+    <div class="spacer"></div>
+    <p class="sub" style="opacity:.5; font-size:13px; margin-bottom:10px;">Is this happening right now?</p>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="answerDistortion(false)">No</button>
+      <button class="btn btn-primary" style="background:var(--ember); color:var(--cream);" onclick="answerDistortion(true)">Yes</button>
+    </div>
+  </section>
+
+  <!-- DECISION -->
+  <section class="screen" id="screen-decision">
+    <div class="top-row">
+      <button class="back-btn" onclick="goTo('distortions')">&#8592;</button>
+    </div>
+    <div class="eyebrow">Next action</div>
+    <h1>What happens <i>next</i>?</h1>
+    <p class="sub">One action. One owner. Nothing else needs deciding right now.</p>
+    <p class="sub" style="opacity:.5; font-size:13px; margin:16px 0 8px;">Action</p>
+    <div class="chip-row" id="actionChips">
+      <button class="chip" data-v="Act now" onclick="selectChip(this,'action')">Act now</button>
+      <button class="chip" data-v="Escalate" onclick="selectChip(this,'action')">Escalate</button>
+      <button class="chip" data-v="Need more info" onclick="selectChip(this,'action')">Need more info</button>
+    </div>
+    <p class="sub" style="opacity:.5; font-size:13px; margin:22px 0 8px;">Owner</p>
+    <div class="chip-row" id="ownerChips">
+      <button class="chip" data-v="Me" onclick="selectChip(this,'owner')">Me</button>
+      <button class="chip" data-v="Someone else" onclick="selectChip(this,'owner')">Someone else</button>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn btn-primary" id="saveBtn" onclick="finishSession()" disabled>Save & Close</button>
+  </section>
+
+  <!-- COMPLETE -->
+  <section class="screen" id="screen-complete" style="overflow-y:auto;">
+    <div style="text-align:center;">
+      <div class="eyebrow" style="text-align:center;">Session logged</div>
+      <h1 id="completeHeadline">Window<br>preserved.</h1>
+      <p class="sub" id="completeSub" style="margin:0 auto 24px; text-align:center;">You separated the signal from the reaction. That's the work.</p>
+    </div>
+    <div id="reflectContent"></div>
+    <div style="flex:1; min-height:20px;"></div>
+    <a class="book-link" href="https://a.co/d/05vESiHJ" target="_blank" rel="noopener">Want the full system behind this? Read Regulate &rarr;</a>
+    <button class="btn btn-primary" onclick="goTo('landing')" style="margin-top:10px;">Close Session</button>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="screen" id="screen-history">
+    <div class="top-row">
+      <button class="back-btn" onclick="goTo('landing')">&#8592;</button>
+    </div>
+    <div class="eyebrow">Decision Journal</div>
+    <h1 style="font-size:28px;">Your Sessions</h1>
+    <div id="patternBox"></div>
+    <div id="historyList" style="overflow-y:auto; flex:1;"></div>
+    <div class="history-footer">
+      <a class="book-link" href="https://a.co/d/05vESiHJ" target="_blank" rel="noopener">Read the book behind the practice &rarr;</a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ---------------- data ---------------- */
+const QUESTIONS = [
+  {key:'operational', headline:"What's actually happening?", sub:"Just the facts. Not who it makes look bad. Not what it might cost. What's the real problem, right now?"},
+  {key:'relational', headline:"Who does this affect?", sub:"Who's watching, who's involved, who you'll need to talk to. Answer this on its own — don't mix it with the money or the facts yet."},
+  {key:'financial', headline:"What could this cost?", sub:"The real number, if there is one. Not the worst-case story your head is telling you."}
+];
+
+const DISTORTIONS = [
+  {key:'tunnelVision', name:'Tunnel Vision', desc:"Attention narrows to the loudest threat, not the most solvable one."},
+  {key:'timeDistortion', name:'Time Distortion', desc:"The window feels shorter than it actually is."},
+  {key:'binaryCollapse', name:'Binary Collapse', desc:"Options are collapsing into either/or. The middle ground is disappearing."},
+  {key:'socialThreat', name:'Social Threat Compounding', desc:"Status or credibility risk is being treated as urgently as the operational risk."},
+  {key:'selectiveReception', name:'Selective Reception', desc:"You're not looking at this clearly. You're either making it sound worse than it is, or telling yourself it's fine when it might not be."}
+];
+
+let session = {};
+let qIndex = 0;
+let dIndex = 0;
+let breathRound = 0;
+const TOTAL_ROUNDS = 4;
+let breathTimer = null;
+
+/* ---------------- sound engine ---------------- */
+/* ---------------- usage tracking ---------------- */
+/* Anonymous, aggregate counts only. No personal data, no session content, ever leaves the device. */
+function trackEvent(name){
+  try{
+    fetch('/.netlify/functions/track', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({event: name}),
+      keepalive: true
+    }).catch(()=>{});
+  } catch(e){ /* tracking is best-effort only, never blocks the app */ }
+}
+
+(function(){
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  trackEvent(isStandalone ? 'app_open_standalone' : 'page_view');
+})();
+
+let audioCtx = null;
+let masterGain = null;
+let filterNode = null;
+let soundEnabled = localStorage.getItem('regulateSound') !== 'off';
+
+function updateSoundIcon(){
+  const btn = document.getElementById('soundToggle');
+  if(btn) btn.innerHTML = soundEnabled ? '&#128266;' : '&#128263;';
+}
+
+function initAudio(){
+  if(audioCtx) return;
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  if(!Ctx) return;
+  audioCtx = new Ctx();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0;
+  filterNode = audioCtx.createBiquadFilter();
+  filterNode.type = 'lowpass';
+  filterNode.frequency.value = 700;
+  masterGain.connect(filterNode);
+  filterNode.connect(audioCtx.destination);
+
+  // three sine layers - root, fifth, octave - a soft warm pad
+  const layers = [
+    {freq: 110, level: 0.55},
+    {freq: 165, level: 0.28},
+    {freq: 220, level: 0.18}
+  ];
+  layers.forEach(l=>{
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = l.freq;
+    const oscGain = audioCtx.createGain();
+    oscGain.gain.value = l.level;
+    osc.connect(oscGain);
+    oscGain.connect(masterGain);
+    osc.start();
+  });
+}
+
+function startTone(){
+  if(!soundEnabled) return;
+  initAudio();
+  if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function stopTone(){
+  if(!audioCtx || !masterGain) return;
+  const now = audioCtx.currentTime;
+  masterGain.gain.cancelScheduledValues(now);
+  masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+  masterGain.gain.linearRampToValueAtTime(0, now + 0.8);
+}
+
+function toneInhale(){
+  if(!soundEnabled || !audioCtx) return;
+  const now = audioCtx.currentTime;
+  masterGain.gain.cancelScheduledValues(now);
+  masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+  masterGain.gain.linearRampToValueAtTime(0.16, now + 4);
+  filterNode.frequency.cancelScheduledValues(now);
+  filterNode.frequency.setValueAtTime(filterNode.frequency.value, now);
+  filterNode.frequency.linearRampToValueAtTime(1500, now + 4);
+}
+
+function toneExhale(){
+  if(!soundEnabled || !audioCtx) return;
+  const now = audioCtx.currentTime;
+  masterGain.gain.cancelScheduledValues(now);
+  masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+  masterGain.gain.linearRampToValueAtTime(0.045, now + 7);
+  filterNode.frequency.cancelScheduledValues(now);
+  filterNode.frequency.setValueAtTime(filterNode.frequency.value, now);
+  filterNode.frequency.linearRampToValueAtTime(650, now + 7);
+}
+
+function toggleSound(){
+  soundEnabled = !soundEnabled;
+  localStorage.setItem('regulateSound', soundEnabled ? 'on' : 'off');
+  updateSoundIcon();
+  if(soundEnabled){
+    startTone();
+    const circle = document.getElementById('breathCircle');
+    if(circle && circle.classList.contains('inhale-state')) toneInhale();
+    else if(circle) toneExhale();
+  } else {
+    stopTone();
+  }
+}
+updateSoundIcon();
+
+/* ---------------- starfield ---------------- */
+function buildStarfield(){
+  const field = document.getElementById('starfield');
+  if(!field || field.dataset.built) return;
+  field.dataset.built = '1';
+  const count = 26;
+  let html = '';
+  for(let i=0;i<count;i++){
+    const angle = Math.random() * 2 * Math.PI;
+    const radius = 60 + Math.random() * 78; // spread across the ring area, outside the core
+    const x = 140 + Math.cos(angle) * radius;
+    const y = 140 + Math.sin(angle) * radius;
+    const size = 1 + Math.random() * 2.2;
+    const delay = (Math.random() * 3.4).toFixed(2);
+    const duration = (2.6 + Math.random() * 2.4).toFixed(2);
+    html += `<span style="left:${x}px; top:${y}px; width:${size}px; height:${size}px; animation-delay:${delay}s; animation-duration:${duration}s;"></span>`;
+  }
+  field.innerHTML = html;
+}
+buildStarfield();
+
+/* ---------------- nebula drift ---------------- */
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!prefersReducedMotion){
+  const warmTurb = document.getElementById('warmTurb');
+  const coolTurb = document.getElementById('coolTurb');
+  let t = 0;
+  function driftNebula(){
+    t += 0.0016;
+    if(warmTurb){
+      const fx = 0.014 + Math.sin(t) * 0.004;
+      const fy = 0.02 + Math.cos(t*0.8) * 0.005;
+      warmTurb.setAttribute('baseFrequency', `${fx.toFixed(4)} ${fy.toFixed(4)}`);
+    }
+    if(coolTurb){
+      const fx2 = 0.02 + Math.cos(t*0.6) * 0.006;
+      const fy2 = 0.03 + Math.sin(t*0.9) * 0.006;
+      coolTurb.setAttribute('baseFrequency', `${fx2.toFixed(4)} ${fy2.toFixed(4)}`);
+    }
+    requestAnimationFrame(driftNebula);
+  }
+  requestAnimationFrame(driftNebula);
+}
+
+/* ---------------- navigation ---------------- */
+function goTo(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  if(name==='history') renderHistory();
+}
+
+function startSession(){
+  session = {
+    id: Date.now(),
+    timestamp: new Date().toISOString(),
+    questions: {},
+    distortions: {},
+    action: null,
+    owner: null
+  };
+  qIndex = 0; dIndex = 0; breathRound = 0;
+  trackEvent('session_start');
+  startTone();
+  goTo('breathe');
+  renderBreathDots();
+  setTimeout(runBreathCycle, 500);
+}
+
+function cancelSession(){
+  clearTimeout(breathTimer);
+  stopTone();
+  goTo('landing');
+}
+
+/* ---------------- breathing ---------------- */
+function renderBreathDots(){
+  document.getElementById('roundLabel').textContent = `Round ${breathRound+1} of ${TOTAL_ROUNDS}`;
+}
+
+function runBreathCycle(){
+  if(breathRound >= TOTAL_ROUNDS){
+    stopTone();
+    goTo('choice');
+    return;
+  }
+  renderBreathDots();
+  const circle = document.getElementById('breathCircle');
+  const label = document.getElementById('breathLabel');
+
+  // inhale phase - 4s
+  circle.classList.remove('exhaling');
+  circle.classList.remove('exhale-state');
+  void circle.offsetWidth; // reflow
+  circle.classList.add('inhale-state');
+  label.textContent = 'Breathe In';
+  toneInhale();
+
+  breathTimer = setTimeout(()=>{
+    // exhale phase - 7s
+    circle.classList.add('exhaling');
+    circle.classList.remove('inhale-state');
+    void circle.offsetWidth;
+    circle.classList.add('exhale-state');
+    label.textContent = 'Breathe Out';
+    toneExhale();
+
+    breathTimer = setTimeout(()=>{
+      breathRound++;
+      runBreathCycle();
+    }, 7000);
+  }, 4000);
+}
+
+function goToQuestions(){
+  clearTimeout(breathTimer);
+  stopTone();
+  session.type = 'full';
+  trackEvent('go_deeper');
+  qIndex = 0;
+  goTo('questions');
+  renderQuestion();
+}
+
+/* ---------------- choice ---------------- */
+function chooseJustBreathe(){
+  session.type = 'breath';
+  session.action = 'Regulated only';
+  session.owner = null;
+  trackEvent('just_breathe');
+  trackEvent('breath_only_complete');
+  saveSession();
+  document.getElementById('completeHeadline').innerHTML = 'Breath<br>complete.';
+  document.getElementById('completeSub').textContent = "Thirty seconds of regulated breath keeps the window open. That's the mechanism.";
+  document.getElementById('reflectContent').innerHTML = '';
+  goTo('complete');
+}
+
+function chooseGoDeeper(){
+  session.type = 'full';
+  trackEvent('go_deeper');
+  qIndex = 0;
+  goTo('questions');
+  renderQuestion();
+}
+
+/* ---------------- questions ---------------- */
+function renderQuestion(){
+  const q = QUESTIONS[qIndex];
+  document.getElementById('qHeadline').textContent = q.headline;
+  document.getElementById('qSub').textContent = q.sub;
+  const prog = document.getElementById('qProgress');
+  prog.innerHTML = QUESTIONS.map((_,i)=>
+    `<div class="dot ${i<qIndex?'done':i===qIndex?'now':''}"></div>`
+  ).join('');
+}
+
+function answerQuestion(clear){
+  session.questions[QUESTIONS[qIndex].key] = clear;
+  qIndex++;
+  if(qIndex < QUESTIONS.length){
+    renderQuestion();
+  } else {
+    dIndex = 0;
+    goTo('distortions');
+    renderDistortion();
+  }
+}
+
+/* ---------------- distortions ---------------- */
+function renderDistortion(){
+  const d = DISTORTIONS[dIndex];
+  document.getElementById('dName').textContent = d.name;
+  document.getElementById('dDesc').textContent = d.desc;
+  const prog = document.getElementById('dProgress');
+  prog.innerHTML = DISTORTIONS.map((_,i)=>
+    `<div class="dot ${i<dIndex?'done':i===dIndex?'now':''}"></div>`
+  ).join('');
+}
+
+function answerDistortion(present){
+  session.distortions[DISTORTIONS[dIndex].key] = present;
+  dIndex++;
+  if(dIndex < DISTORTIONS.length){
+    renderDistortion();
+  } else {
+    goTo('decision');
+  }
+}
+
+/* ---------------- decision ---------------- */
+function selectChip(el, group){
+  const wrapId = group==='action' ? 'actionChips' : 'ownerChips';
+  document.querySelectorAll('#'+wrapId+' .chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  session[group] = el.dataset.v;
+  checkSaveEnabled();
+}
+
+function checkSaveEnabled(){
+  document.getElementById('saveBtn').disabled = !(session.action && session.owner);
+}
+
+function finishSession(){
+  session.type = 'full';
+  trackEvent('full_session_complete');
+  saveSession();
+  document.getElementById('completeHeadline').innerHTML = 'Window<br>preserved.';
+  document.getElementById('completeSub').textContent = "You separated the signal from the reaction. That's the work.";
+  renderReflection();
+  goTo('complete');
+}
+
+function renderReflection(){
+  const QLABELS = {operational:'Operational', relational:'Relational', financial:'Financial'};
+  const qRows = QUESTIONS.map(q=>{
+    const clear = session.questions[q.key];
+    return `<div class="reflect-row">
+      <span class="reflect-label">${QLABELS[q.key]}</span>
+      <span class="reflect-status">
+        <span class="reflect-word">${clear ? 'Clear' : 'Unclear'}</span>
+        <span class="reflect-bar ${clear ? 'green' : 'red'}"></span>
+      </span>
+    </div>`;
+  }).join('');
+
+  const dRows = DISTORTIONS.map(d=>{
+    const present = session.distortions[d.key];
+    return `<div class="reflect-row">
+      <span class="reflect-label">${d.name}</span>
+      <span class="reflect-status">
+        <span class="reflect-word">${present ? 'Active' : 'Clear'}</span>
+        <span class="reflect-bar ${present ? 'red' : 'green'}"></span>
+      </span>
+    </div>`;
+  }).join('');
+
+  const activeCount = Object.values(session.distortions).filter(Boolean).length;
+  const callout = activeCount >= 3
+    ? `<div class="reflect-callout">More than usual is active right now. Worth a second look before you act.</div>`
+    : '';
+
+  document.getElementById('reflectContent').innerHTML = `
+    <div class="reflect-section">
+      <div class="reflect-heading">What you separated</div>
+      ${qRows}
+    </div>
+    <div class="reflect-section">
+      <div class="reflect-heading">What's active</div>
+      ${dRows}
+    </div>
+    ${callout}
+  `;
+}
+
+function saveSession(){
+  const log = JSON.parse(localStorage.getItem('regulateLog') || '[]');
+  log.unshift(session);
+  localStorage.setItem('regulateLog', JSON.stringify(log));
+}
+
+/* ---------------- history ---------------- */
+function renderHistory(){
+  const log = JSON.parse(localStorage.getItem('regulateLog') || '[]');
+  const listEl = document.getElementById('historyList');
+  const patternEl = document.getElementById('patternBox');
+
+  if(log.length === 0){
+    patternEl.innerHTML = '';
+    listEl.innerHTML = '<div class="empty-state">No sessions yet.<br>Your patterns will surface here after a few.</div>';
+    return;
+  }
+
+  // compute most frequent distortion
+  const counts = {};
+  DISTORTIONS.forEach(d=>counts[d.key]=0);
+  log.forEach(s=>{
+    Object.entries(s.distortions||{}).forEach(([k,v])=>{ if(v) counts[k] = (counts[k]||0)+1; });
+  });
+  let topKey = null, topCount = 0;
+  Object.entries(counts).forEach(([k,c])=>{ if(c>topCount){topCount=c; topKey=k;} });
+  const topDist = DISTORTIONS.find(d=>d.key===topKey);
+
+  if(topDist && topCount > 0){
+    patternEl.innerHTML = `<div class="pattern-box">
+      <div class="pattern-label">Most common pattern</div>
+      <div class="pattern-value">${topDist.name} — ${topCount} of ${log.length} sessions</div>
+    </div>`;
+  } else {
+    patternEl.innerHTML = '';
+  }
+
+  listEl.innerHTML = log.map(s=>{
+    const flagged = Object.entries(s.distortions||{}).filter(([k,v])=>v).map(([k])=>DISTORTIONS.find(d=>d.key===k).name);
+    const date = new Date(s.timestamp);
+    const dateStr = date.toLocaleDateString(undefined,{month:'short', day:'numeric'}) + ' · ' + date.toLocaleTimeString(undefined,{hour:'numeric', minute:'2-digit'});
+    let tagsText;
+    if(s.type === 'breath'){
+      tagsText = 'Breathing only';
+    } else {
+      tagsText = flagged.length ? flagged.join(', ') : 'No distortions flagged';
+    }
+    return `<div class="hist-item">
+      <div>
+        <div class="hist-date">${dateStr}</div>
+        <div class="hist-tags">${tagsText}</div>
+      </div>
+      <div style="text-align:right; font-size:13px; opacity:.7;">${s.action || '—'}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------------- PWA install ---------------- */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>

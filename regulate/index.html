@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regulate — A 90-Second Reset for High-Stakes Decisions | The Tempered Signal</title>
+<meta name="description" content="A free tool for the moment before you decide. Breathe, separate the threats, check for distortion — built on the framework from Norman Applegate's book Regulate.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#001543;
+    --navy:#1a2744;
+    --navy-light:#2a3a5c;
+    --gold:#C9A84C;
+    --gold-soft:#E4C97A;
+    --cream:#F8F5EF;
+    --ember:#B5654A;
+    --sage:#6FA37E;
+    --line:rgba(248,245,239,0.12);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--navy-deep); color:var(--cream);
+    font-family:'Inter',sans-serif; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 24px;}
+  section{padding:88px 0;}
+  @media (max-width:640px){ section{padding:64px 0;} }
+
+  h1,h2,h3{font-family:'EB Garamond',serif; font-weight:500; line-height:1.1;}
+  .eyebrow{
+    font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--gold-soft); opacity:.85; font-weight:600; margin-bottom:14px;
+  }
+
+  /* ---- nav ---- */
+  header{
+    padding:22px 0; border-bottom:1px solid var(--line);
+  }
+  .nav-row{display:flex; justify-content:space-between; align-items:center;}
+  .nav-mark{font-family:'EB Garamond',serif; font-size:19px; letter-spacing:.02em;}
+  .nav-mark a{text-decoration:none; opacity:.9;}
+  .nav-links{display:flex; gap:24px; font-size:14px;}
+  .nav-links a{text-decoration:none; opacity:.65; transition:opacity .15s ease;}
+  .nav-links a:hover{opacity:1;}
+
+  /* ---- hero ---- */
+  .hero{
+    position:relative; overflow:hidden;
+    padding:96px 0 80px;
+    background:radial-gradient(120% 90% at 50% -10%, var(--navy) 0%, var(--navy-deep) 55%);
+  }
+  .hero-grid{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:center;
+  }
+  @media (max-width:860px){ .hero-grid{grid-template-columns:1fr; text-align:center;} }
+  .hero h1{font-size:52px; margin-bottom:18px;}
+  .hero h1 i{font-style:italic; color:var(--gold);}
+  @media (max-width:640px){ .hero h1{font-size:38px;} }
+  .hero-sub{font-size:17px; opacity:.75; max-width:44ch; margin-bottom:10px;}
+  @media (max-width:860px){ .hero-sub{margin-left:auto; margin-right:auto;} }
+  .clarity-line{
+    font-family:'EB Garamond',serif; font-style:italic; font-size:16px;
+    color:var(--gold-soft); opacity:.8; margin:18px 0 30px;
+  }
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap;}
+  @media (max-width:860px){ .cta-row{justify-content:center;} }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:15px 26px; border-radius:12px; font-weight:600; font-size:15px;
+    text-decoration:none; border:none; cursor:pointer; transition:transform .12s ease, opacity .12s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--gold); color:var(--navy-deep);}
+  .btn-ghost{background:transparent; color:var(--cream); border:1px solid var(--line); opacity:.85;}
+  .price-note{font-size:13px; opacity:.55; margin-top:14px;}
+
+  /* ---- hero nebula visual ---- */
+  .hero-visual{position:relative; display:flex; align-items:center; justify-content:center;}
+  .hv-wrap{position:relative; width:280px; height:280px;}
+  .hv-orbit{position:absolute; border-radius:50%; border:1px solid var(--line);}
+  .hv-orbit-outer{inset:0; animation:hvRotate 90s linear infinite;}
+  .hv-orbit-mid{inset:30px; opacity:.55; animation:hvRotate 70s linear infinite reverse;}
+  @keyframes hvRotate{from{transform:rotate(0deg);} to{transform:rotate(360deg);}}
+  #hvStars{position:absolute; inset:0;}
+  .hv-star{position:absolute; border-radius:50%; background:var(--cream); animation:hvTwinkle 3.4s ease-in-out infinite;}
+  @keyframes hvTwinkle{0%,100%{opacity:.12;} 50%{opacity:.85;}}
+  .hv-core{
+    position:absolute; inset:80px; border-radius:50%;
+    animation:hvBreathe 5.5s ease-in-out infinite;
+  }
+  @keyframes hvBreathe{
+    0%,100%{transform:scale(0.82);}
+    45%{transform:scale(1);}
+    75%{transform:scale(0.82);}
+  }
+  .hv-corona{
+    position:absolute; inset:-14px; border-radius:50%;
+    box-shadow:0 0 50px 10px rgba(228,201,122,.4), 0 0 110px 30px rgba(201,168,76,.22), 0 0 180px 60px rgba(181,101,74,.14);
+  }
+  .hv-svg{position:absolute; inset:0; width:100%; height:100%; border-radius:50%; overflow:hidden;}
+
+  /* ---- section: what it is ---- */
+  .what-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin-top:40px;}
+  @media (max-width:760px){ .what-grid{grid-template-columns:1fr;} }
+  .what-card{
+    background:var(--navy); border:1px solid var(--line); border-radius:16px; padding:26px;
+  }
+  .what-num{font-family:'EB Garamond',serif; font-style:italic; font-size:26px; color:var(--gold); margin-bottom:10px;}
+  .what-title{font-size:16px; font-weight:700; margin-bottom:8px;}
+  .what-desc{font-size:14px; opacity:.7; line-height:1.55;}
+
+  /* ---- install section ---- */
+  .install{background:var(--navy); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .install-steps{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:36px;
+  }
+  @media (max-width:760px){ .install-steps{grid-template-columns:1fr;} }
+  .step{text-align:center; padding:0 10px;}
+  .step-num{
+    width:36px; height:36px; border-radius:50%; background:var(--gold); color:var(--navy-deep);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px;
+    margin:0 auto 16px;
+  }
+  .step-title{font-weight:700; font-size:15px; margin-bottom:6px;}
+  .step-desc{font-size:13px; opacity:.65; line-height:1.5;}
+  .note-box{
+    margin-top:36px; background:var(--navy-deep); border:1px solid var(--line); border-radius:12px;
+    padding:16px 20px; font-size:13px; opacity:.75; text-align:center; max-width:52ch; margin-left:auto; margin-right:auto;
+  }
+
+  /* ---- book section ---- */
+  .book-section{}
+  .book-grid{
+    display:grid; grid-template-columns:0.6fr 1fr; gap:56px; align-items:center;
+  }
+  @media (max-width:760px){ .book-grid{grid-template-columns:1fr; text-align:center;} }
+  .book-cover-wrap{
+    position:relative; display:flex; justify-content:center;
+  }
+  .book-cover-wrap img{
+    max-width:280px; border-radius:6px;
+    box-shadow:0 30px 70px -18px rgba(0,0,0,.6), 0 0 0 1px rgba(201,168,76,.18);
+  }
+  .book-eyebrow{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-soft); opacity:.85; font-weight:600; margin-bottom:14px;}
+  .book-grid h2{font-size:32px; margin-bottom:16px;}
+  .book-desc{font-size:15px; opacity:.75; margin-bottom:26px; max-width:48ch;}
+  @media (max-width:760px){ .book-desc{margin-left:auto; margin-right:auto;} }
+
+  /* ---- footer ---- */
+  footer{border-top:1px solid var(--line); padding:40px 0; text-align:center;}
+  .footer-mark{font-family:'EB Garamond',serif; font-style:italic; font-size:14px; opacity:.5;}
+  .footer-links{margin-top:10px; font-size:13px; opacity:.5;}
+  .footer-links a{text-decoration:none; margin:0 8px;}
+  .footer-links a:hover{opacity:1;}
+
+  @media (prefers-reduced-motion: reduce){
+    .hv-orbit, .hv-star, .hv-core{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav-row">
+    <div class="nav-mark"><a href="/">The Tempered Signal</a></div>
+    <div class="nav-links">
+      <a href="/tools.html">Tools</a>
+      <a href="#install">Get the App</a>
+      <a href="#book">The Book</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Free · No account · Installs to your phone</div>
+      <h1>Regulate, <i>before</i><br>you decide.</h1>
+      <p class="hero-sub">A 90-second reset for the moment pressure hits — a guided breath, a way to separate the threats, and a check for the distortions that creep in under stress.</p>
+      <p class="clarity-line">The tool's job is to clear the fog, not make the call.</p>
+      <div class="cta-row">
+        <a href="app/index.html" class="btn btn-primary">Open Regulate</a>
+        <a href="#install" class="btn btn-ghost">How to install on iPhone</a>
+      </div>
+      <p class="price-note">Free to use. Built on the framework from <em>Regulate</em> by Norman Applegate.</p>
+    </div>
+    <div class="hero-visual">
+      <div class="hv-wrap">
+        <div class="hv-orbit hv-orbit-outer"></div>
+        <div class="hv-orbit hv-orbit-mid"></div>
+        <div id="hvStars"></div>
+        <div class="hv-core">
+          <div class="hv-corona"></div>
+          <svg class="hv-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="hvWarm" x="-40%" y="-40%" width="180%" height="180%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.014 0.02" numOctaves="4" seed="12" result="n"/>
+                <feColorMatrix in="n" type="matrix" result="c" values="
+                  0 0 0 0 0.79
+                  0 0 0 0 0.60
+                  0 0 0 0 0.29
+                  0 0 0 0.9 0"/>
+                <feComposite in="c" in2="SourceGraphic" operator="in"/>
+              </filter>
+              <filter id="hvCool" x="-40%" y="-40%" width="180%" height="180%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.02 0.03" numOctaves="3" seed="47" result="n2"/>
+                <feColorMatrix in="n2" type="matrix" result="c2" values="
+                  0 0 0 0 0.16
+                  0 0 0 0 0.22
+                  0 0 0 0 0.42
+                  0 0 0 0.55 0"/>
+                <feComposite in="c2" in2="SourceGraphic" operator="in"/>
+              </filter>
+              <radialGradient id="hvGlow" cx="46%" cy="42%" r="55%">
+                <stop offset="0%" stop-color="#FFFFFF"/>
+                <stop offset="16%" stop-color="#F3E3B8"/>
+                <stop offset="40%" stop-color="#E4C97A"/>
+                <stop offset="68%" stop-color="#C9A84C" stop-opacity="0.75"/>
+                <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="hvEdge" cx="50%" cy="50%" r="50%">
+                <stop offset="72%" stop-color="#000" stop-opacity="0"/>
+                <stop offset="100%" stop-color="#000" stop-opacity="1"/>
+              </radialGradient>
+              <mask id="hvMask"><circle cx="100" cy="100" r="100" fill="#fff"/></mask>
+            </defs>
+            <g mask="url(#hvMask)">
+              <circle cx="100" cy="100" r="100" fill="#0A1226"/>
+              <circle cx="100" cy="100" r="100" fill="#0A1226" filter="url(#hvCool)" style="mix-blend-mode:screen" opacity="0.8"/>
+              <circle cx="100" cy="100" r="100" fill="#0A1226" filter="url(#hvWarm)" style="mix-blend-mode:screen" opacity="0.85"/>
+              <circle cx="94" cy="88" r="62" fill="url(#hvGlow)" style="mix-blend-mode:screen"/>
+              <circle cx="100" cy="100" r="100" fill="url(#hvEdge)"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IT IS -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Three questions, five distortions, one action</div>
+    <h2 style="font-size:30px; max-width:22ch;">What happens when you tap "Regulate Now"</h2>
+    <div class="what-grid">
+      <div class="what-card">
+        <div class="what-num">01</div>
+        <div class="what-title">Breathe</div>
+        <div class="what-desc">Four rounds, guided — four counts in, six to eight counts out. Thirty seconds is enough to bring the prefrontal cortex back online.</div>
+      </div>
+      <div class="what-card">
+        <div class="what-num">02</div>
+        <div class="what-title">Separate the threats</div>
+        <div class="what-desc">What's actually happening, who it affects, and what it could cost — answered one at a time, so they stop fusing into one undifferentiated panic.</div>
+      </div>
+      <div class="what-card">
+        <div class="what-num">03</div>
+        <div class="what-title">Check for distortion</div>
+        <div class="what-desc">Five quick taps against the patterns that distort judgment under pressure. No score, no verdict — just a clear look at what's active right now.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<section class="install" id="install">
+  <div class="wrap">
+    <div class="eyebrow">Get it on your phone</div>
+    <h2 style="font-size:28px;">Installs like an app. No App Store required.</h2>
+    <div class="install-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Open in Safari</div>
+        <div class="step-desc">On your iPhone, open this page in Safari — not Chrome or another browser. Add to Home Screen only works from Safari on iOS.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Tap Share</div>
+        <div class="step-desc">Tap the Share icon in the toolbar, then scroll down and tap "Add to Home Screen."</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Tap Add</div>
+        <div class="step-desc">The icon lands on your home screen. Open it from there for the full-screen experience — no browser bar, works offline.</div>
+      </div>
+    </div>
+    <p class="note-box">On a Mac or Android, Regulate works the same way in Chrome — look for the install icon in the address bar.</p>
+  </div>
+</section>
+
+<!-- BOOK -->
+<section class="book-section" id="book">
+  <div class="wrap book-grid">
+    <div class="book-cover-wrap">
+      <img src="images/regulate-book-cover.jpg" alt="Regulate: The Leadership Operating System for Clarity, Composure, and Results, by Norman Applegate">
+    </div>
+    <div>
+      <div class="book-eyebrow">The full system</div>
+      <h2>The tool is the practice.<br>The book is the system.</h2>
+      <p class="book-desc">This app runs the mechanics of a single moment. <em>Regulate</em> lays out the complete framework behind it — Mind, Emotions, Actions, Relationships, and Results — for leading yourself before you try to lead anyone else.</p>
+      <a href="https://a.co/d/05vESiHJ" target="_blank" rel="noopener" class="btn btn-primary">Read Regulate on Amazon</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-mark">The Tempered Signal — Judgment Formed Under Pressure</div>
+    <div class="footer-links">
+      <a href="/">MOSei.org</a>
+      <a href="/tools.html">Tools</a>
+      <a href="https://a.co/d/05vESiHJ" target="_blank" rel="noopener">The Book</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const field = document.getElementById('hvStars');
+  let html = '';
+  for(let i=0;i<20;i++){
+    const angle = Math.random() * 2 * Math.PI;
+    const radius = 60 + Math.random() * 78;
+    const x = 140 + Math.cos(angle) * radius;
+    const y = 140 + Math.sin(angle) * radius;
+    const size = 1 + Math.random() * 2.2;
+    const delay = (Math.random() * 3.4).toFixed(2);
+    const duration = (2.6 + Math.random() * 2.4).toFixed(2);
+    html += `<span class="hv-star" style="left:${x}px; top:${y}px; width:${size}px; height:${size}px; animation-delay:${delay}s; animation-duration:${duration}s;"></span>`;
+  }
+  field.innerHTML = html;
+})();
+</script>
+
+</body>
+</html>
