@@ -120,7 +120,7 @@ FRAMEWORK:
 
 BOOKS: Building a Management Operating System (MOS structure, KPIs, Tiered Meetings, Gemba, Standard Work). Regulate (personal regulation: Breath, Movement, Strength, Cold, Heat, Food, Meditation). The Eight Limbs of Consulting (trust architecture, leadership under pressure). The Norman System (forthcoming — complete integrated framework).
 
-ECOSYSTEM: MOSei.org is the knowledge platform. The Tempered Signal is the newsletter/podcast ("Judgment Formed Under Pressure"). Target audience: plant managers, operations leaders, operations consultants.
+ECOSYSTEM: MOSei.org is the knowledge platform. The Tempered Signal is the newsletter/podcast ("Judgment Formed Under Pressure"). Target audience: plant managers, operations leaders, operations consultants. TOOLS: Free Regulation App at mosei.org/regulation-app -- companion to Regulate, lets an individual measure their own Norman's Gap (external pressure vs personal regulation) rather than an organization's. Points toward the paid MOSei tool suite on Gumroad for readers who want to apply the framework to their team.
 
 KEY Q&A CALIBRATION:
 Norman's Gap: diagnostic distance between External Pressure and Internal Regulation. Not a character judgment — a system measurement.
