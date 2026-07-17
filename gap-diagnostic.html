@@ -399,6 +399,14 @@
           <div class="comp"><p class="cl">Tier weight</p><p class="cv" id="r-tier">&mdash;</p></div>
         </div>
 
+        <div id="email-capture" style="background:var(--surface2);border-radius:8px;padding:1rem;margin-bottom:1rem;">
+  <p style="font-size:13px;font-weight:600;color:var(--ink);margin:0 0 8px;">Email me this result and where to focus first</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <input type="email" id="capture-email" placeholder="you@company.com" style="flex:1;min-width:180px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:14px;background:var(--surface);color:var(--ink);">
+    <button class="cta no-print" onclick="submitEmailCapture()" style="width:auto;margin-top:0;padding:10px 18px;">Send &rarr;</button>
+  </div>
+  <p id="capture-status" style="font-size:12px;color:var(--hint);margin-top:6px;min-height:16px;"></p>
+</div>
         <button class="ghost no-print" onclick="resetTool()">&#8635; &nbsp;Reset diagnostic</button>
       </div>
     </div>
@@ -419,7 +427,7 @@ function showTab(name) {
 var tierWeight = 1.0;
 var severity = 7.0;
 var srVal = 7, dcVal = 7, tdVal = 7;
-
+var lastGapScore = null, lastGapIndex = null, lastDimension = '';
 var sevDescs = {
   '6':   'Monitored — early signal present. 0 of 3 dimensions confirmed. Watch, not act.',
   '6.5': 'Elevated — signal visible. 1 of 3 confirmed. Pattern emerging, not yet structural.',
@@ -494,7 +502,9 @@ function calculate() {
   var gapScore = parseFloat((pressure - intReg).toFixed(2));
   var gapIndex = parseFloat((pressure / intReg).toFixed(2));
   var effectiveness = Math.round((intReg / pressure) * 100);
-
+  lastGapScore = gapScore;
+  lastGapIndex = gapIndex;
+  lastDimension = sysReg <= ldrReg ? 'System Regulation' : 'Leader Regulation';
   document.getElementById('r-pressure').textContent = pressure.toFixed(1);
   document.getElementById('r-pressure-sub').textContent = 'Severity ' + severity.toFixed(1) + ' × tier ' + tierWeight.toFixed(1);
   document.getElementById('r-regulation').textContent = intReg.toFixed(2);
@@ -563,6 +573,40 @@ function resetTool() {
 document.getElementById('sr-slider').addEventListener('input', function() { updateLeader('sr', this.value); });
 document.getElementById('dc-slider').addEventListener('input', function() { updateLeader('dc', this.value); });
 document.getElementById('td-slider').addEventListener('input', function() { updateLeader('td', this.value); });
-</script>
+  function submitEmailCapture() {
+  var emailEl = document.getElementById('capture-email');
+  var statusEl = document.getElementById('capture-status');
+  var email = emailEl.value.trim();
+
+  if (!email || email.indexOf('@') === -1) {
+    statusEl.textContent = 'Enter a valid email address.';
+    statusEl.style.color = '#993C1D';
+    return;
+  }
+
+  statusEl.textContent = 'Sending...';
+  statusEl.style.color = 'var(--hint)';
+
+  fetch('/.netlify/functions/gap-score-capture', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, dimension: lastDimension, score: lastGapIndex })
+  })
+  .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, data: data }; }); })
+  .then(function(result) {
+    if (result.ok) {
+      statusEl.textContent = 'Sent -- check your inbox.';
+      statusEl.style.color = '#1D9E75';
+      emailEl.value = '';
+    } else {
+      statusEl.textContent = 'Something went wrong. Try again.';
+      statusEl.style.color = '#993C1D';
+    }
+  })
+  .catch(function() {
+    statusEl.textContent = 'Something went wrong. Try again.';
+    statusEl.style.color = '#993C1D';
+  });
+}</script>
 </body>
 </html>
