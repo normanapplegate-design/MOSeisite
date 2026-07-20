@@ -599,6 +599,7 @@ document.getElementById('td-slider').addEventListener('input', function() { upda
       statusEl.textContent = 'Sent -- check your inbox.';
       statusEl.style.color = '#1D9E75';
       emailEl.value = '';
+      if (window.plausible) { window.plausible('Gap Diagnostic Completed', { props: { dimension: lastDimension } }); }
     } else {
       statusEl.textContent = 'Something went wrong. Try again.';
       statusEl.style.color = '#993C1D';
