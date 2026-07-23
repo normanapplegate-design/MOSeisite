@@ -60,10 +60,6 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); li
 .empty-state p { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.6; }
 .empty-state a { display: inline-block; font-size: 0.82rem; font-weight: 500; color: #fff; background: var(--navy); padding: 9px 20px; border-radius: var(--radius); text-decoration: none; }
 .loading-state { text-align: center; padding: 3rem; font-size: 0.85rem; color: var(--text-muted); }
-.footer-nudge { margin-top: 2.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem 1.75rem; text-align: center; }
-.footer-nudge p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.85rem; line-height: 1.6; }
-.footer-nudge a { font-size: 0.8rem; font-weight: 500; color: var(--navy); border: 1px solid rgba(26,39,68,0.3); border-radius: var(--radius); padding: 8px 18px; text-decoration: none; }
-.footer-nudge a:hover { background: var(--cream-dark); }
 .page-footer { background: var(--navy); padding: 1.5rem 2rem; text-align: center; }
 .footer-text { font-size: 0.75rem; color: rgba(255,255,255,0.35); }
 .footer-text a { color: var(--gold); text-decoration: none; }
@@ -112,6 +108,10 @@ function esc(s) {
 
 function tokenize(text) {
   return (text.toLowerCase().match(/[a-z']+/g) || []).filter(function(w){ return w.length > 2; });
+}
+
+function sourceLabel(item) {
+  return item.issue > 0 ? ('Issue #' + item.issue) : 'Framework Calibration';
 }
 
 function buildChips() {
@@ -208,16 +208,18 @@ function renderResults(items, query) {
   }
   container.innerHTML = items.map(function(item, idx) {
     var id = 'scenario-' + idx;
+    var label = sourceLabel(item);
+    var citeSubject = item.issue > 0 ? (' &mdash; ' + esc(item.subject)) : '';
     return '<div class="scenario-card" id="' + id + '">' +
       '<div class="scenario-head" onclick="toggleCard(\'' + id + '\')">' +
         '<div><div class="scenario-situation">&ldquo;' + esc(item.situation) + '&rdquo;</div>' +
-        '<div class="scenario-meta">Issue #' + item.issue + ' &middot; ' + esc(item.framework) + '</div></div>' +
+        '<div class="scenario-meta">' + label + ' &middot; ' + esc(item.framework) + '</div></div>' +
         '<div class="scenario-caret">&#9656;</div>' +
       '</div>' +
       '<div class="scenario-body"><div class="scenario-body-inner">' +
         '<div class="scenario-block"><div class="scenario-label">Framework Concept</div><div class="scenario-value framework">' + esc(item.framework) + '</div></div>' +
         '<div class="scenario-block"><div class="scenario-label">If You Do One Thing</div><div class="scenario-value">' + esc(item.action) + '</div></div>' +
-        '<div class="scenario-cite"><b>Source:</b> Issue #' + item.issue + ' &mdash; ' + esc(item.subject) + '<br>' + esc(item.summary) + '</div>' +
+        '<div class="scenario-cite"><b>Source:</b> ' + label + citeSubject + '<br>' + esc(item.summary) + '</div>' +
       '</div></div>' +
     '</div>';
   }).join('');
@@ -242,7 +244,7 @@ fetch('situations.json')
   .then(function(res) { return res.json(); })
   .then(function(data) {
     ALL_SCENARIOS = data;
-    document.getElementById('hero-sub').textContent = data.length + ' tagged issues and counting. Search in your own words, or browse by concept below.';
+    document.getElementById('hero-sub').textContent = data.length + ' tagged situations and counting. Search in your own words, or browse by concept below.';
     buildChips();
     runSearch();
   })
