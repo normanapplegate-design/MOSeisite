@@ -1,3 +1,4 @@
+
 const https = require('https');
 
 function httpsPost(options, body) {
@@ -128,10 +129,11 @@ function tokenize(text) {
 }
 
 function formatSituation(item) {
+  const source = item.issue > 0 ? ('Issue #' + item.issue + ' -- ' + item.subject) : 'Framework Calibration (not tied to a dated issue)';
   return 'Reader situation: "' + item.situation + '"\n' +
     'Framework concept: ' + item.framework + '\n' +
     'If you do one thing: ' + item.action + '\n' +
-    'Source: Issue #' + item.issue + ' -- ' + item.subject;
+    'Source: ' + source;
 }
 
 function findRelevantSituations(question, limit) {
