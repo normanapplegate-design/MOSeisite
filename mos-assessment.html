@@ -1,4 +1,5 @@
- <!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -20,6 +21,7 @@
     .nav-links { display: flex; gap: 1.75rem; }
     .nav-links a { font-size: 0.8rem; color: rgba(255,255,255,0.6); letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s; }
     .nav-links a:hover { color: var(--gold); }
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.4rem; line-height: 1; cursor: pointer; padding: 4px 8px; }
     .hero { background: var(--navy); padding: 3.5rem 2rem 3rem; text-align: center; position: relative; overflow: hidden; }
     .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%); pointer-events: none; }
     .hero h1 { font-family: var(--serif); font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 400; color: #fff; line-height: 1.2; margin-bottom: 0.6rem; }
@@ -122,14 +124,26 @@
     .footer-logo { font-family: var(--serif); font-size: 1.2rem; color: #fff; margin-bottom: 0.3rem; }
     .footer-logo span { color: var(--gold); }
     .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.2); }
-    @media (max-width: 640px) { .nav-links { display: none; } .q-row { flex-wrap: wrap; } .q-options { margin-top: 0.25rem; } }
+    @media (max-width: 640px) {
+      .q-row { flex-wrap: wrap; } .q-options { margin-top: 0.25rem; }
+      .nav-toggle { display: block; }
+      .nav-links { display: none; position: absolute; top: 56px; left: 0; right: 0; background: var(--navy); flex-direction: column; gap: 0; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 0.85rem 2rem; }
+    }
   </style>
-<script defer data-domain="mosei.org" src="https://plausible.io/js/script.js"></script>
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-b-1uuch-s9T7Xidbld01P.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
 </head>
 <body>
 <nav>
   <a href="index.html" class="nav-logo">MOS<span>ei</span></a>
-  <div class="nav-links">
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu" aria-expanded="false">&#9776;</button>
+  <div class="nav-links" id="nav-links">
     <a href="index.html#start-here">Start Here</a>
     <a href="index.html#framework">Framework</a>
     <a href="knowledge.html">Knowledge</a>
@@ -138,6 +152,23 @@
     <a href="index.html#contact">Contact</a>
   </div>
 </nav>
+<script>
+  function toggleNav() {
+    var links = document.getElementById('nav-links');
+    var btn = document.querySelector('.nav-toggle');
+    var isOpen = links.classList.toggle('open');
+    btn.setAttribute('aria-expanded', isOpen);
+    btn.innerHTML = isOpen ? '&#10005;' : '&#9776;';
+  }
+  document.querySelectorAll('#nav-links a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      document.getElementById('nav-links').classList.remove('open');
+      var btn = document.querySelector('.nav-toggle');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9776;';
+    });
+  });
+</script>
 <div class="hero">
   <h1>MOS Assessment Tool</h1>
   <p class="hero-sub">Score your Management Operating System across 12 elements. Receive your maturity level and a prioritized action plan.</p>
