@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,6 +38,7 @@
     .nav-links a { font-size: 0.8rem; color: rgba(255,255,255,0.6); letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s; }
     .nav-links a:hover { color: var(--gold); }
     .nav-links a.active { color: var(--gold); }
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.4rem; line-height: 1; cursor: pointer; padding: 4px 8px; }
     .page-hero { background: var(--navy); padding: 4rem 2rem 3.5rem; text-align: center; position: relative; overflow: hidden; }
     .page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%); pointer-events: none; }
     .page-hero-eyebrow { display: inline-block; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(201,168,76,0.4); padding: 4px 14px; border-radius: 20px; margin-bottom: 1.25rem; }
@@ -136,14 +138,26 @@
     .footer-links a { font-size: 0.75rem; color: rgba(255,255,255,0.4); transition: color 0.2s; }
     .footer-links a:hover { color: var(--gold); }
     .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.2); }
-    @media (max-width: 640px) { .nav-links { display: none; } .wp-card { flex-direction: column; } .podcast-card { flex-direction: column; } }
+    @media (max-width: 640px) {
+      .wp-card { flex-direction: column; } .podcast-card { flex-direction: column; }
+      .nav-toggle { display: block; }
+      .nav-links { display: none; position: absolute; top: 56px; left: 0; right: 0; background: var(--navy); flex-direction: column; gap: 0; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 0.85rem 2rem; }
+    }
   </style>
-<script defer data-domain="mosei.org" src="https://plausible.io/js/script.js"></script>
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-b-1uuch-s9T7Xidbld01P.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
 </head>
 <body>
 <nav>
   <a href="index.html" class="nav-logo">MOS<span>ei</span></a>
-  <div class="nav-links">
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu" aria-expanded="false">&#9776;</button>
+  <div class="nav-links" id="nav-links">
     <a href="index.html#start-here">Start Here</a>
     <a href="index.html#framework">Framework</a>
     <a href="index.html#books">Books</a>
@@ -155,6 +169,23 @@
     <a href="index.html#contact">Contact</a>
   </div>
 </nav>
+<script>
+  function toggleNav() {
+    var links = document.getElementById('nav-links');
+    var btn = document.querySelector('.nav-toggle');
+    var isOpen = links.classList.toggle('open');
+    btn.setAttribute('aria-expanded', isOpen);
+    btn.innerHTML = isOpen ? '&#10005;' : '&#9776;';
+  }
+  document.querySelectorAll('#nav-links a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      document.getElementById('nav-links').classList.remove('open');
+      var btn = document.querySelector('.nav-toggle');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9776;';
+    });
+  });
+</script>
 <div class="page-hero">
   <div class="page-hero-eyebrow">The Norman System</div>
   <h1>The Knowledge Base</h1>
