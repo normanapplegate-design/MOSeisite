@@ -1,229 +1,112 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MOSei &mdash; Management Operating System, External &amp; Internal Pressure</title>
-  <meta name="description" content="Norman Applegate's knowledge advisor platform. Frameworks, tools, and publishing built on the Norman's Gap diagnostic system." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --navy: #1a2744;
-      --navy-deep: #111c33;
-      --gold: #c9a84c;
-      --gold-light: #e8c97a;
-      --cream: #f8f5ef;
-      --cream-dark: #ede9e1;
-      --text: #1a1a1a;
-      --text-mid: #444;
-      --text-muted: #777;
-      --border: rgba(26,39,68,0.12);
-      --serif: 'EB Garamond', Georgia, serif;
-      --sans: 'Inter', system-ui, sans-serif;
-      --radius: 10px;
-      --radius-lg: 14px;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: var(--sans); background: var(--cream); color: var(--text); line-height: 1.6; }
-    img { max-width: 100%; display: block; }
-    a { color: inherit; text-decoration: none; }
-    nav { position: sticky; top: 0; z-index: 100; background: var(--navy); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 56px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-    .nav-logo { font-family: var(--serif); font-size: 1.35rem; color: #fff; letter-spacing: 0.01em; }
-    .nav-logo span { color: var(--gold); }
-    .nav-links { display: flex; gap: 1.75rem; }
-    .nav-links a { font-size: 0.8rem; color: rgba(255,255,255,0.6); letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--gold); }
-    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.4rem; line-height: 1; cursor: pointer; padding: 4px 8px; }
-    .hero { background: var(--navy); padding: 5rem 2rem 4.5rem; text-align: center; position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.1) 0%, transparent 70%); pointer-events: none; }
-    .hero-eyebrow { display: inline-block; font-size: 0.7rem; font-family: var(--sans); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(201,168,76,0.4); padding: 4px 14px; border-radius: 20px; margin-bottom: 1.5rem; }
-    .hero h1 { font-family: var(--serif); font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 400; color: #fff; line-height: 1.15; margin-bottom: 1.25rem; max-width: 720px; margin-inline: auto; }
-    .hero h1 em { font-style: italic; color: var(--gold-light); }
-    .hero-sub { font-size: 1rem; color: rgba(255,255,255,0.55); max-width: 540px; margin: 0 auto 2.25rem; line-height: 1.7; }
-    .hero-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--navy-deep); font-size: 0.85rem; font-weight: 500; padding: 11px 24px; border-radius: var(--radius); transition: background 0.2s; }
-    .hero-cta:hover { background: var(--gold-light); }
-    .hero-law { margin-top: 3rem; font-family: var(--serif); font-style: italic; font-size: 1rem; color: rgba(255,255,255,0.3); border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.5rem; max-width: 520px; margin-inline: auto; }
-    section { padding: 5rem 2rem; }
-    .container { max-width: 1080px; margin: 0 auto; }
-    .section-eyebrow { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
-    .section-title { font-family: var(--serif); font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 400; color: var(--navy); line-height: 1.2; margin-bottom: 0.75rem; }
-    .section-sub { font-size: 0.95rem; color: var(--text-muted); max-width: 560px; line-height: 1.7; margin-bottom: 2.5rem; }
-    .gap-banner { background: var(--navy-deep); border-radius: var(--radius-lg); padding: 2.5rem; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1.5rem; margin-bottom: 2rem; }
-    .gap-side { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 1.25rem 1.5rem; }
-    .gap-side-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
-    .gap-side-title { font-family: var(--serif); font-size: 1.2rem; color: #fff; }
-    .gap-side-desc { font-size: 0.8rem; color: rgba(255,255,255,0.45); margin-top: 4px; }
-    .gap-eq { text-align: center; font-family: var(--serif); font-size: 2rem; color: var(--gold); }
-    .books-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
-    .book-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; transition: box-shadow 0.2s, transform 0.2s; }
-    .book-card:hover { box-shadow: 0 8px 28px rgba(26,39,68,0.12); transform: translateY(-2px); }
-    .book-cover { aspect-ratio: 2/3; background: var(--cream-dark); overflow: hidden; }
-    .book-cover img { width: 100%; height: 100%; object-fit: cover; }
-    .book-info { padding: 1rem 1.1rem 1.25rem; flex: 1; display: flex; flex-direction: column; }
-    .book-title { font-family: var(--serif); font-size: 1rem; color: var(--navy); line-height: 1.3; margin-bottom: 0.4rem; }
-    .book-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.55; flex: 1; }
-    .book-link { display: inline-block; margin-top: 0.85rem; font-size: 0.75rem; font-weight: 500; color: var(--gold); border: 1px solid rgba(201,168,76,0.4); border-radius: 6px; padding: 5px 12px; text-align: center; transition: background 0.2s, color 0.2s; }
-    .book-link:hover { background: var(--gold); color: var(--navy-deep); }.book-link-highlight { display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-top: 0.6rem; font-size: 0.78rem; font-weight: 600; color: var(--navy-deep); background: var(--gold); border: 1px solid var(--gold); border-radius: 6px; padding: 7px 13px; text-align: center; transition: background 0.2s, transform 0.2s; box-shadow: 0 2px 10px rgba(201,168,76,0.35); }
-.book-link-highlight:hover { background: var(--gold-light); transform: translateY(-1px); }
-.book-link-badge { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; background: var(--navy-deep); color: var(--gold); padding: 1px 6px; border-radius: 4px; }    .book-card.coming-soon { opacity: 0.7; }
-    .book-coming-badge { display: inline-block; margin-top: 0.85rem; font-size: 0.75rem; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 6px; padding: 5px 12px; text-align: center; }
-    .eco-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
-    .eco-tile { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; display: flex; flex-direction: column; transition: box-shadow 0.2s; }
-    .eco-tile:hover { box-shadow: 0 6px 20px rgba(26,39,68,0.08); }
-    .eco-tile-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--navy); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-family: var(--serif); font-size: 1rem; color: var(--gold); font-weight: 500; }
-    .eco-tile-title { font-size: 0.9rem; font-weight: 500; color: var(--navy); margin-bottom: 0.35rem; }
-    .eco-tile-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; flex: 1; }
-    .eco-tile-link { display: inline-block; margin-top: 1rem; font-size: 0.75rem; font-weight: 500; color: var(--gold); }
-    .eco-tile-link:hover { text-decoration: underline; }
-    .tools-section { background: var(--cream-dark); }
-    .tool-embed-wrapper { border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 4px 32px rgba(26,39,68,0.14); border: 1px solid var(--border); margin-top: 2rem; }
-    .signal-section { background: var(--navy); }
-    .signal-section .section-title { color: #fff; }
-    .signal-section .section-sub { color: rgba(255,255,255,0.5); }
-    .signal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    .signal-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-lg); padding: 1.75rem; }
-    .signal-card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
-    .signal-card-title { font-family: var(--serif); font-size: 1.1rem; color: #fff; margin-bottom: 0.4rem; }
-    .signal-card-tagline { font-size: 0.8rem; font-style: italic; color: var(--gold-light); margin-bottom: 0.75rem; }
-    .signal-card-desc { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.65; margin-bottom: 1.25rem; }
-    .signal-btn { display: inline-block; font-size: 0.78rem; font-weight: 500; padding: 8px 18px; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.8); transition: background 0.2s, color 0.2s; }
-    .signal-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
-    .qa-section { background: var(--cream); }
-    .qa-box { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; max-width: 700px; }
-    .qa-header { background: var(--navy); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 10px; }
-    .qa-header-logo { font-family: var(--serif); font-size: 1rem; color: #fff; }
-    .qa-header-logo span { color: var(--gold); }
-    .qa-header-sub { font-size: 0.75rem; color: rgba(255,255,255,0.45); }
-    .qa-messages { padding: 1.25rem 1.5rem; min-height: 180px; max-height: 320px; overflow-y: auto; }
-    .qa-msg { margin-bottom: 0.85rem; }
-    .qa-msg-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
-    .qa-msg-bubble { display: inline-block; max-width: 90%; font-size: 0.875rem; line-height: 1.6; padding: 10px 14px; border-radius: 10px; }
-    .qa-msg.user .qa-msg-bubble { background: var(--navy); color: #fff; }
-    .qa-msg.assistant .qa-msg-bubble { background: var(--cream-dark); color: var(--text); }
-    .qa-msg.assistant .qa-msg-label { color: var(--gold); }
-    .qa-prompts { padding: 0.75rem 1.5rem 0; display: flex; flex-wrap: wrap; gap: 7px; }
-    .qa-prompt-chip { font-size: 0.72rem; font-weight: 500; padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(26,39,68,0.2); color: var(--navy); background: var(--cream); cursor: pointer; transition: background 0.15s, border-color 0.15s; white-space: nowrap; }
-    .qa-prompt-chip:hover { background: var(--cream-dark); border-color: var(--navy); }
-    .qa-input-row { border-top: 1px solid var(--border); padding: 0.85rem 1.25rem; display: flex; gap: 8px; margin-top: 0.75rem; }
-    .qa-input { flex: 1; font-size: 0.875rem; font-family: var(--sans); padding: 8px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--cream); color: var(--text); outline: none; }
-    .qa-input:focus { border-color: var(--navy); }
-    .qa-send { background: var(--navy); color: #fff; border: none; border-radius: var(--radius); padding: 8px 16px; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
-    .qa-send:hover { background: var(--navy-deep); }
-    .qa-send:disabled { opacity: 0.5; cursor: not-allowed; }
-    .qa-footer { font-size: 0.72rem; color: var(--text-muted); padding: 0 1.5rem 1rem; }
-    .contact-section { background: var(--cream-dark); }
-    .contact-box { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2.5rem; max-width: 620px; }
-    .contact-field { margin-bottom: 1.25rem; }
-    .contact-label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--navy); margin-bottom: 0.4rem; letter-spacing: 0.02em; }
-    .contact-input, .contact-textarea { width: 100%; font-size: 0.875rem; font-family: var(--sans); padding: 9px 13px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--cream); color: var(--text); outline: none; transition: border-color 0.2s; }
-    .contact-input:focus, .contact-textarea:focus { border-color: var(--navy); }
-    .contact-textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
-    .contact-submit { background: var(--navy); color: #fff; border: none; border-radius: var(--radius); padding: 10px 24px; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: background 0.2s; font-family: var(--sans); }
-    .contact-submit:hover { background: var(--navy-deep); }
-    .contact-success { display: none; background: #eaf3de; border: 1px solid #b2d48a; border-radius: var(--radius); padding: 1rem 1.25rem; font-size: 0.875rem; color: #27500a; margin-top: 1rem; }
-    footer { background: var(--navy-deep); padding: 2.5rem 2rem; text-align: center; }
-    .footer-logo { font-family: var(--serif); font-size: 1.4rem; color: #fff; margin-bottom: 0.4rem; }
-    .footer-logo span { color: var(--gold); }
-    .footer-tagline { font-size: 0.8rem; color: rgba(255,255,255,0.35); margin-bottom: 1.25rem; }
-    .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .footer-links a { font-size: 0.75rem; color: rgba(255,255,255,0.4); transition: color 0.2s; }
-    .footer-links a:hover { color: var(--gold); }
-    .footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.2); }
-    @media (max-width: 640px) {
-      .gap-banner { grid-template-columns: 1fr; } .gap-eq { transform: rotate(90deg); } .signal-grid { grid-template-columns: 1fr; }
-      .nav-toggle { display: block; }
-      .nav-links { display: none; position: absolute; top: 56px; left: 0; right: 0; background: var(--navy); flex-direction: column; gap: 0; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
-      .nav-links.open { display: flex; }
-      .nav-links a { padding: 0.85rem 2rem; }
-    }
-    .assessment-tool * { box-sizing: border-box; }
-    .assessment-tool { font-family: var(--sans); }
-    .at-header { background: var(--navy); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
-    .at-logo { font-family: var(--serif); font-size: 1.15rem; color: #fff; }
-    .at-logo span { color: var(--gold); }
-    .at-tagline { font-size: 0.7rem; color: rgba(255,255,255,0.45); margin-top: 1px; }
-    .at-badge { font-size: 0.68rem; color: rgba(255,255,255,0.5); border: 0.5px solid rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 20px; }
-    .at-body { padding: 1.5rem; background: var(--cream); }
-    .at-tabs { display: flex; border-bottom: 1px solid rgba(26,39,68,0.15); margin-bottom: 1.5rem; }
-    .at-tab { font-size: 0.8rem; padding: 7px 15px; cursor: pointer; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
-    .at-tab.active { color: var(--navy); font-weight: 500; border-bottom-color: var(--navy); }
-    .at-section-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.6rem; }
-    .at-card { background: #fff; border: 1px solid rgba(26,39,68,0.1); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
-    .at-dim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
-    .at-dim-title { font-size: 0.875rem; font-weight: 500; color: var(--navy); }
-    .at-badge-pill { font-size: 0.72rem; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
-    .at-q-row { display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem; }
-    .at-q-label { font-size: 0.8rem; color: var(--text-mid); flex: 1; line-height: 1.4; }
-    .at-q-slider { width: 110px; flex-shrink: 0; }
-    .at-q-val { font-size: 0.8rem; font-weight: 500; color: var(--text); width: 24px; text-align: right; flex-shrink: 0; }
-    .at-profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .at-profile-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
-    .at-field { display: flex; flex-direction: column; gap: 3px; }
-    .at-field.full { grid-column: 1 / -1; }
-    .at-field-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
-    .at-field input, .at-field select { font-size: 0.8rem; padding: 6px 9px; border-radius: 7px; border: 1px solid rgba(26,39,68,0.15); background: var(--cream); color: var(--text); width: 100%; }
-    .at-profile-header { display: flex; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(26,39,68,0.1); }
-    .at-avatar { width: 42px; height: 42px; border-radius: 50%; background: #E6F1FB; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 500; color: #0C447C; flex-shrink: 0; margin-right: 12px; }
-    .at-plant-name { font-size: 1rem; font-weight: 500; color: var(--navy); }
-    .at-plant-meta { font-size: 0.78rem; color: var(--text-muted); }
-    .at-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-    .at-chip { font-size: 0.68rem; padding: 2px 9px; border-radius: 20px; background: var(--cream-dark); color: var(--text-muted); border: 1px solid rgba(26,39,68,0.12); }
-    .at-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.25rem; }
-    .at-metric { background: var(--cream-dark); border-radius: 8px; padding: 0.85rem 1rem; }
-    .at-metric-label { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 3px; }
-    .at-metric-val { font-size: 1.35rem; font-weight: 500; color: var(--navy); }
-    .at-metric-sub { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
-    .at-verdict { border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; border: 1px solid; }
-    .at-verdict-title { font-size: 0.82rem; font-weight: 500; margin-bottom: 4px; }
-    .at-verdict-body { font-size: 0.8rem; color: var(--text-mid); line-height: 1.6; }
-    .at-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-    .at-bar-label { font-size: 0.75rem; color: var(--text-muted); width: 155px; flex-shrink: 0; }
-    .at-bar-track { flex: 1; height: 5px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; }
-    .at-bar-fill { height: 100%; border-radius: 3px; }
-    .at-bar-val { font-size: 0.75rem; font-weight: 500; width: 28px; text-align: right; color: var(--text); }
-    .at-rec { margin-bottom: 8px; padding-left: 12px; border-left: 2px solid rgba(26,39,68,0.2); font-size: 0.8rem; line-height: 1.65; color: var(--text-mid); }
-    .at-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 0.78rem; padding: 7px 14px; border-radius: 8px; cursor: pointer; border: 1px solid rgba(26,39,68,0.2); background: transparent; color: var(--text); font-family: var(--sans); }
-    .at-btn:hover { background: var(--cream-dark); }
-    .at-btn.primary { background: var(--navy); color: #fff; border-color: var(--navy); }
-    .at-btn.primary:hover { background: var(--navy-deep); }
-    .at-hr { border: none; border-top: 1px solid rgba(26,39,68,0.1); margin: 1.25rem 0; }
-    .at-plant-banner { background: var(--cream-dark); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; }
-    .at-plant-banner-name { font-size: 0.875rem; font-weight: 500; color: var(--navy); }
-    .at-plant-banner-meta { font-size: 0.72rem; color: var(--text-muted); }
-    .at-date { font-size: 0.68rem; color: var(--text-muted); }
-    .at-readme-hero { background: var(--navy); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.25rem; }
-    .at-readme-hero-title { font-family: var(--serif); font-size: 1.2rem; color: #fff; margin-bottom: 5px; }
-    .at-readme-hero-title span { color: var(--gold); }
-    .at-readme-hero-sub { font-size: 0.8rem; color: rgba(255,255,255,0.55); line-height: 1.6; }
-    .at-readme-h3 { font-size: 0.875rem; font-weight: 500; color: var(--navy); margin-bottom: 0.5rem; }
-    .at-readme-p { font-size: 0.8rem; color: var(--text-mid); line-height: 1.7; margin-bottom: 0.5rem; }
-    .at-gap-diagram { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin: 1rem 0; }
-    .at-gap-box { border-radius: 8px; padding: 0.875rem 1rem; text-align: center; }
-    .at-gap-box-label { font-size: 0.65rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
-    .at-gap-box-desc { font-size: 0.72rem; line-height: 1.5; }
-    .at-gap-arrow { font-size: 1.25rem; color: var(--text-muted); text-align: center; }
-    .at-band-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-    .at-band-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-    .at-band-label { font-size: 0.8rem; font-weight: 500; color: var(--navy); width: 95px; }
-    .at-band-desc { font-size: 0.75rem; color: var(--text-muted); }
-    .at-step-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 0.75rem; }
-    .at-step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 0.7rem; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-    .at-step-text { font-size: 0.8rem; color: var(--text-mid); line-height: 1.6; }
-    .at-step-text b { color: var(--text); font-weight: 500; }
-    .at-source-note { font-size: 0.7rem; color: var(--text-muted); }
-    @media print { nav, .hero, section:not(.tools-section), footer { display: none !important; } .tools-section { padding: 0; } .tool-embed-wrapper { box-shadow: none; border: none; } .at-btn, .at-tabs { display: none !important; } #at-tab-profile, #at-tab-assess, #at-tab-readme { display: none !important; } #at-tab-results { display: block !important; } #at-print-header { display: flex !important; } #at-print-footer { display: block !important; } body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
-    #at-print-header { display: none; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--navy); }
-    .at-print-logo { font-family: var(--serif); font-size: 1.1rem; color: var(--navy); }
-    .at-print-logo span { color: var(--gold); }
-    .at-print-tagline { font-size: 0.7rem; color: #888; margin-top: 2px; }
-    .at-print-rlabel { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; text-align: right; }
-    .at-print-rdate { font-size: 0.75rem; color: #444; text-align: right; margin-top: 2px; }
-    #at-print-footer { display: none; border-top: 1px solid #ccc; margin-top: 1.5rem; padding-top: 0.75rem; }
-    .at-print-footer-row { display: flex; justify-content: space-between; font-size: 0.65rem; color: #aaa; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tools &middot; MOSei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2744; --navy-deep: #111c33; --gold: #C9A84C; --gold-light: #e8c97a;
+    --ink: #1d2230; --text: #2d3142; --text-muted: #5a6072; --hint: #8b91a0;
+    --border: #e3e6ec; --cream: #f8f5ef; --cream-dark: #eeebe3;
+    --surface: #ffffff; --radius: 10px; --radius-lg: 14px;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--cream); color: var(--ink); font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+  .site-nav { background: var(--navy); padding: 14px 2rem; display: flex; align-items: center; justify-content: space-between; }
+  .nav-logo { font-family: var(--serif); font-size: 1.2rem; color: #fff; text-decoration: none; }
+  .nav-logo span { color: var(--gold); }
+  .nav-back { font-size: 0.78rem; color: rgba(255,255,255,0.55); text-decoration: none; border: 0.5px solid rgba(255,255,255,0.2); padding: 5px 14px; border-radius: 20px; transition: color 0.2s; }
+  .nav-back:hover { color: #fff; }
+
+  .page-hero { background: var(--navy); padding: 3.5rem 2rem 3rem; text-align: center; border-bottom: 3px solid var(--gold); }
+  .hero-eyebrow { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+  .hero-title { font-family: var(--serif); font-size: 2.4rem; color: #fff; margin-bottom: 0.75rem; line-height: 1.2; }
+  .hero-sub { font-size: 0.95rem; color: rgba(255,255,255,0.55); max-width: 540px; margin: 0 auto; line-height: 1.7; }
+
+  .wrap { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+
+  .section-label { font-size: 0.95rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.85rem; margin-top: 2.5rem; }
+  .section-label:first-child { margin-top: 0; }
+  .section-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; max-width: 600px; line-height: 1.6; }
+
+  .tool-table { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1rem; }
+  .tool-row { display: grid; grid-template-columns: 2fr 3fr 1fr; gap: 0; border-bottom: 1px solid var(--border); }
+  .tool-row:last-child { border-bottom: none; }
+  .tool-row.header { background: var(--cream-dark); }
+  .tool-row.header .cell { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); padding: 0.65rem 1.25rem; }
+  .cell { padding: 1.1rem 1.25rem; display: flex; align-items: flex-start; flex-direction: column; justify-content: center; }
+  .cell-name { font-size: 0.88rem; font-weight: 500; color: var(--navy); margin-bottom: 2px; }
+  .cell-format { font-size: 0.65rem; font-weight: 500; background: var(--cream-dark); color: var(--text-muted); padding: 2px 7px; border-radius: 4px; display: inline-block; margin-top: 4px; }
+  .cell-problem { font-size: 0.83rem; color: var(--text-muted); line-height: 1.55; font-style: italic; }
+  .cell-action { align-items: center; }
+  .tool-btn { font-size: 0.75rem; font-weight: 500; color: #fff; background: var(--navy); border-radius: 6px; padding: 6px 14px; text-decoration: none; white-space: nowrap; transition: opacity 0.15s; }
+  .tool-btn:hover { opacity: 0.85; }
+  .tool-btn.gold { background: var(--gold); color: var(--navy); }
+  .tool-btn.outline { background: transparent; color: var(--navy); border: 1px solid rgba(26,39,68,0.3); }
+  .tool-btn.outline:hover { background: var(--cream-dark); }
+
+  .consultant-band { background: var(--navy); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .consultant-band-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
+  .consultant-band-title { font-family: var(--serif); font-size: 1.1rem; color: #fff; }
+  .consultant-band-sub { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-top: 2px; }
+
+  .bundle-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; align-items: start; }
+  .bundle-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; position: relative; }
+  .bundle-card.featured { background: var(--navy); border-color: var(--navy); }
+  .bundle-card.outline-gold { border: 2px solid var(--gold); }
+  .bundle-popular { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); background: var(--gold); padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
+  .bundle-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.3rem; }
+  .bundle-card.featured .bundle-label { color: rgba(255,255,255,0.4); }
+  .bundle-price { font-family: var(--serif); font-size: 1.8rem; color: var(--navy); line-height: 1; margin-bottom: 0.2rem; }
+  .bundle-card.featured .bundle-price { color: #fff; }
+  .bundle-sub { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 1.1rem; }
+  .bundle-card.featured .bundle-sub { color: rgba(255,255,255,0.4); }
+  .bundle-tools { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.25rem; border-top: 1px solid var(--border); padding-top: 0.9rem; }
+  .bundle-card.featured .bundle-tools { border-top-color: rgba(255,255,255,0.1); }
+  .bundle-tool-item { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--text); }
+  .bundle-card.featured .bundle-tool-item { color: rgba(255,255,255,0.8); }
+  .bundle-tool-group { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.5rem; }
+  .bundle-card.featured .bundle-tool-group { color: rgba(255,255,255,0.35); }
+  .bundle-check { color: #27500a; font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
+  .bundle-card.featured .bundle-check { color: #7fd9bb; }
+  .bundle-plus { color: var(--gold); font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
+  .fmt-badge { margin-left: auto; font-size: 0.63rem; font-weight: 500; background: var(--cream-dark); color: var(--text-muted); padding: 2px 6px; border-radius: 3px; flex-shrink: 0; }
+  .bundle-card.featured .fmt-badge { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
+  .fmt-badge.plus { background: rgba(201,168,76,0.15); color: var(--gold); }
+  .bundle-roi { font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 0.6rem; line-height: 1.5; }
+  .bundle-card.featured .bundle-roi { color: rgba(255,255,255,0.4); }
+
+  .how-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-top: 2.5rem; }
+  .how-title { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+  .how-item { display: flex; gap: 10px; align-items: flex-start; }
+  .how-num { width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 0.7rem; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .how-text { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+  .how-text b { color: var(--ink); font-weight: 500; display: block; margin-bottom: 2px; }
+
+  .page-footer { background: var(--navy); padding: 1.5rem 2rem; text-align: center; }
+  .footer-text { font-size: 0.75rem; color: rgba(255,255,255,0.35); }
+  .footer-text a { color: var(--gold); text-decoration: none; }
+
+  @media (max-width: 760px) {
+    .bundle-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .tool-row { grid-template-columns: 1fr; }
+    .tool-row.header { display: none; }
+    .cell { padding: 0.9rem 1rem; }
+    .hero-title { font-size: 1.8rem; }
+    .consultant-band { flex-direction: column; align-items: flex-start; }
+  }
+</style>
 <!-- Privacy-friendly analytics by Plausible -->
 <script async src="https://plausible.io/js/pa-b-1uuch-s9T7Xidbld01P.js"></script>
 <script>
@@ -232,375 +115,450 @@
 </script>
 </head>
 <body>
-<nav>
-  <div class="nav-logo">MOS<span>ei</span></div>
-  <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu" aria-expanded="false">&#9776;</button>
-  <div class="nav-links" id="nav-links">
-    <a href="#start-here" style="color:var(--gold);">Start Here</a>
-    <a href="#framework">Framework</a>
-    <a href="#books">Books</a>
-    <a href="knowledge.html">Knowledge</a>
-    <a href="tools.html">Tools</a>
-   <a href="scenario-finder.html">Find Your Situation</a>    
-   <a href="regulate/">Regulate</a>
-    <a href="#signal">The Signal</a>
-    <a href="#ask-mosei">Ask MOSei</a>
-    <a href="#contact">Contact</a>
-  </div>
+
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo">MOS<span>ei</span></a>
+  <a href="index.html" class="nav-back">&larr; Back to MOSei</a>
 </nav>
-<script>
-  function toggleNav() {
-    var links = document.getElementById('nav-links');
-    var btn = document.querySelector('.nav-toggle');
-    var isOpen = links.classList.toggle('open');
-    btn.setAttribute('aria-expanded', isOpen);
-    btn.innerHTML = isOpen ? '&#10005;' : '&#9776;';
-  }
-  document.querySelectorAll('#nav-links a').forEach(function(a) {
-    a.addEventListener('click', function() {
-      document.getElementById('nav-links').classList.remove('open');
-      var btn = document.querySelector('.nav-toggle');
-      btn.setAttribute('aria-expanded', 'false');
-      btn.innerHTML = '&#9776;';
-    });
-  });
-</script>
-<header class="hero">
-  <div class="hero-eyebrow">The Norman System &mdash; Management Operating System</div>
-  <h1>Organizations don&rsquo;t fail because pressure exists. They fail when <em>pressure exceeds regulation.</em></h1>
-  <p class="hero-sub">MOSei is the operating system that measures, explains, and improves organizational regulation -- built on Norman Applegate&rsquo;s diagnostic framework, The Norman System.</p>
-  <a href="#ask-mosei" class="hero-cta">Ask MOSei &rarr;</a>
-  <p class="hero-law">&ldquo;Norman&rsquo;s Law: When external pressure exceeds internal regulation, instability follows.&rdquo;</p>
-</header>
-<section style="background:#fff;padding:3rem 2rem 0;">
-  <div class="container">
-    <div style="background:var(--navy);border-radius:var(--radius-lg);padding:2.25rem 2.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
-      <div style="flex:1;min-width:260px;">
-        <div style="font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#E4C97A;margin-bottom:0.5rem;">Free &mdash; For the Moment, Not the System</div>
-        <div style="font-family:var(--serif);font-size:1.6rem;color:#fff;line-height:1.2;margin-bottom:0.6rem;">Regulate, before you decide.</div>
-        <p style="font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.7;max-width:460px;">A 90-second reset for the moment pressure hits &mdash; a guided breath, a way to separate the threats, and a check for the distortions that creep in under stress. Installs to your phone like an app.</p>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:0.75rem;flex-shrink:0;">
-        <a href="regulate/" style="display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--navy-deep);font-size:0.88rem;font-weight:500;padding:12px 26px;border-radius:var(--radius);transition:background 0.2s;white-space:nowrap;" onmouseover="this.style.background='var(--gold-light)'" onmouseout="this.style.background='var(--gold)'">Try Regulate &rarr;</a>
-        <span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">Free &middot; No account &middot; Installs to your phone</span>
-      </div>
-    </div>
-  </div>
-</section>
-<section id="start-here" style="background:#fff;padding:3.5rem 2rem;">
-  <div class="container">
-    <p class="section-eyebrow">Start Here</p>
-    <h2 class="section-title">How to use this site</h2>
-    <p class="section-sub">MOSei is a knowledge and diagnostic platform built on The Norman System -- a framework for understanding why organizations become unstable under pressure. Here&rsquo;s where to begin.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;">
-      <div class="eco-tile" style="border-top:3px solid var(--gold);"><div class="eco-tile-icon" style="font-family:var(--sans);font-size:0.75rem;font-weight:500;">1</div><div class="eco-tile-title">Understand the framework</div><div class="eco-tile-desc">Start with Norman&rsquo;s Gap -- the structural distance between external pressure and internal regulation. Read the white paper or explore the framework section below.</div><a href="#framework" class="eco-tile-link">See the framework &darr;</a></div>
-      <div class="eco-tile" style="border-top:3px solid var(--gold);"><div class="eco-tile-icon" style="font-family:var(--sans);font-size:0.75rem;font-weight:500;">2</div><div class="eco-tile-title">Run a diagnostic</div><div class="eco-tile-desc">Use the free diagnostic tools to score your Gap, assess plant change readiness, or run a full gap diagnostic. Results are immediate and based on the published framework.</div><a href="#tools" class="eco-tile-link">See tools &darr;</a></div>
-      <div class="eco-tile" style="border-top:3px solid var(--gold);"><div class="eco-tile-icon" style="font-family:var(--sans);font-size:0.75rem;font-weight:500;">3</div><div class="eco-tile-title">Ask MOSei</div><div class="eco-tile-desc">Ask MOSei anything about the framework -- Signal Compression, Tiered Meetings, the Norman Decision Window, Norman&rsquo;s Gap, and more. Search the complete Norman System knowledge base.</div><a href="#ask-mosei" class="eco-tile-link">Ask MOSei &darr;</a></div>
-      <div class="eco-tile" style="border-top:3px solid var(--gold);"><div class="eco-tile-icon" style="font-family:var(--sans);font-size:0.75rem;font-weight:500;">4</div><div class="eco-tile-title">Go deeper</div><div class="eco-tile-desc">The four books form a complete operating system. The Tempered Signal newsletter and podcast apply the framework weekly to real operational events.</div><a href="#books" class="eco-tile-link">See the books &darr;</a></div>
-    </div>
-  </div>
-</section>
-<section id="framework">
-  <div class="container">
-    <p class="section-eyebrow">Norman&rsquo;s Gap</p>
-    <h2 class="section-title">The structural distance between pressure and response</h2>
-    <p class="section-sub">Every organization operates under external pressure. The Gap is what happens when internal regulation capacity can no longer keep pace.</p>
-    <div class="gap-banner">
-      <div class="gap-side"><div class="gap-side-label" style="color:#c9a84c;">External pressure</div><div class="gap-side-title">E</div><div class="gap-side-desc">Market volatility, regulatory change, competitive disruption, supply chain stress</div></div>
-      <div class="gap-eq">&minus;</div>
-      <div class="gap-side"><div class="gap-side-label" style="color:#5DCAA5;">Internal regulation</div><div class="gap-side-title">I</div><div class="gap-side-desc">Leadership ownership, KPI signal quality, tiered meetings, operational systems</div></div>
-      <p style="grid-column:1/-1;text-align:center;font-family:var(--serif);font-style:italic;font-size:1.2rem;color:rgba(255,255,255,0.65);">&ldquo;The Gap Score is the difference. Positive means strain. The wider it grows, the higher the risk.&rdquo;</p>
-    </div>
-  </div>
-</section>
-<section id="books" style="background:#fff;">
-  <div class="container">
-    <p class="section-eyebrow">Published Works</p>
-    <h2 class="section-title">The knowledge layer</h2>
-    <p class="section-sub">Four books that form a complete operating system -- diagnostic, operational, human, and physiological layers.</p>
-  <div class="books-grid">
-        <div class="book-card"><div class="book-cover"><img src="https://m.media-amazon.com/images/I/715UTYs3MXL._SY522_.jpg" alt="Building a Management Operating System" onerror="this.parentElement.style.background='#1a2744';this.remove();" /></div><div class="book-info"><div class="book-title">Building a Management Operating System</div><div class="book-desc">The operational prescription layer. How to build the MOS infrastructure that absorbs and responds to pressure.</div><a href="https://a.co/d/07TrZE9C" class="book-link" target="_blank" rel="noopener">Buy on Amazon &rarr;</a></div></div>
-        <div class="book-card"><div class="book-cover"><img src="https://m.media-amazon.com/images/I/712UJnSanFL._SY522_.jpg" alt="The Eight Limbs of Consulting" onerror="this.parentElement.style.background='#1a2744';this.remove();" /></div><div class="book-info"><div class="book-title">The Eight Limbs of Consulting</div><div class="book-desc">The human and leadership layer. Eight disciplines that define effective consulting under operational pressure.</div><a href="https://a.co/d/0e7P1hcP" class="book-link" target="_blank" rel="noopener">Buy on Amazon &rarr;</a></div></div>
-        <div class="book-card"><div class="book-cover"><img src="https://m.media-amazon.com/images/I/71r+DqMkuwL._SY522_.jpg" alt="Regulate" onerror="this.parentElement.style.background='#1a2744';this.remove();" /></div><div class="book-info"><div class="book-title">Regulate</div><div class="book-desc">The physiological and individual regulation layer. How leaders regulate ...themselves under sustained pressure. Measure your own gap free with the companion app below.</div><a href="https://a.co/d/0bojFIcV" class="book-link" target="_blank" rel="noopener">Buy on Amazon &rarr;</a><a href="https://mosei.org/regulation-app" class="book-link-highlight" target="_blank" rel="noopener"><span class="book-link-badge">Free</span> Try the Regulation App &rarr;</a></div></div>
-        <div class="book-card"><div class="book-cover"><img src="https://m.media-amazon.com/images/I/71+XQ-uCD8L._AC_UY436_QL65_.jpg" alt="Norman's Law" onerror="this.parentElement.style.background='#1a2744';this.remove();" /></div><div class="book-info"><div class="book-title">Norman's Law</div><div class="book-desc">The foundational layer. Seven named laws that trace the full path from pressure to failure -- and the framework to see the gap before it breaks the system.</div><a href="https://a.co/d/07PdBz5t" class="book-link" target="_blank" rel="noopener">Buy on Amazon &rarr;</a></div></div>
-      </div>
-  </div>
-</section>
-<section id="ecosystem">
-  <div class="container">
-    <p class="section-eyebrow">Ecosystem</p>
-    <h2 class="section-title">Every layer of the framework, accessible</h2>
-    <p class="section-sub">From white paper to Ask MOSei to tools -- the Norman System is built to be used, not just read.</p>
-    <div class="eco-grid">
-      <div class="eco-tile"><div class="eco-tile-icon">W</div><div class="eco-tile-title">Norman System White Paper</div><div class="eco-tile-desc">The 26-page diagnostic framework covering all seven laws, measurement methodology, and applied examples.</div><a href="https://temperedsignal.com" class="eco-tile-link" target="_blank" rel="noopener">Download via Substack &rarr;</a></div>
-      <div class="eco-tile"><div class="eco-tile-icon">A</div><div class="eco-tile-title">Ask MOSei</div><div class="eco-tile-desc">Search the complete Norman System knowledge base. Ask anything about the framework -- Signal Compression, Norman&rsquo;s Gap, Decision Velocity, and more.</div><a href="#ask-mosei" class="eco-tile-link">Ask MOSei &rarr;</a></div>
-      <div class="eco-tile"><div class="eco-tile-icon">T</div><div class="eco-tile-title">MOS Tools</div><div class="eco-tile-desc">Free interactive diagnostic tools built on the Norman System framework. Each tool is built around a problem it solves.</div><a href="#tools" class="eco-tile-link">See tools &darr;</a></div>
-      <div class="eco-tile"><div class="eco-tile-icon">S</div><div class="eco-tile-title">The Tempered Signal</div><div class="eco-tile-desc">Newsletter and podcast. Judgment formed under pressure -- published at TemperedSignal.com.</div><a href="https://temperedsignal.com" class="eco-tile-link" target="_blank" rel="noopener">Subscribe &rarr;</a></div>
-    </div>
-  </div>
-</section>
-<section id="tools" class="tools-section">
-  <div class="container">
-    <p class="section-eyebrow">MOS Tools</p>
-    <h2 class="section-title">Diagnostic tools built on the Norman System</h2>
-    <p class="section-sub">Each tool is built around the problem it solves. Identify where you are, then use the tool designed for that question.</p>
 
-    <!-- MOS ASSESSMENT FEATURED CALLOUT -->
-    <div style="background:var(--navy);border-radius:var(--radius-lg);padding:2.25rem 2.5rem;margin-bottom:2.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
-      <div style="flex:1;min-width:260px;">
-        <div style="font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Start Here -- Free Assessment</div>
-        <div style="font-family:var(--serif);font-size:1.6rem;color:#fff;line-height:1.2;margin-bottom:0.6rem;">How mature is your MOS?</div>
-        <p style="font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.7;max-width:460px;">Self-score 12 MOS elements across four pillars -- Governance, Execution, Performance, and Health. Takes 10 minutes. Receive your maturity level, pillar breakdown, and a prioritized action plan.</p>
+<div class="page-hero">
+  <p class="hero-eyebrow">MOS Tools</p>
+  <h1 class="hero-title">What problem are you solving?</h1>
+  <p class="hero-sub">Every tool on MOSei is built around the problem it answers. Find your problem, use the tool.</p>
+</div>
+
+<div class="wrap">
+
+  <div class="how-box" style="margin-top:0;margin-bottom:2.5rem;">
+    <p class="how-title">How to use this page</p>
+    <div class="how-grid">
+      <div class="how-item"><div class="how-num">1</div><div class="how-text"><b>Find your problem</b>Read the problem column. If it sounds like your situation, that's your tool.</div></div>
+      <div class="how-item"><div class="how-num">2</div><div class="how-text"><b>Start free</b>All diagnostic tools and the MOS Assessment are free. Run them first to understand where you are.</div></div>
+      <div class="how-item"><div class="how-num">3</div><div class="how-text"><b>Pick your bundle</b>Foundation, MOS Bundle, or Enterprise -- sized to how much of the system you need to deploy.</div></div>
+      <div class="how-item"><div class="how-num">4</div><div class="how-text"><b>Ask the Advisor</b>Not sure which tool fits? Ask MOSei -- it's trained on the full framework.</div></div>
+    </div>
+  </div>
+
+  <p class="section-label">Free Diagnostic Tools</p>
+  <div class="tool-table">
+    <div class="tool-row header">
+      <div class="cell">Tool</div>
+      <div class="cell">Problem it solves</div>
+      <div class="cell"></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">MOS Assessment Tool</div>
+        <span class="cell-format">HTML &middot; Interactive</span>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:0.75rem;flex-shrink:0;">
-        <a href="mos-assessment.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--navy-deep);font-size:0.88rem;font-weight:500;padding:12px 26px;border-radius:var(--radius);transition:background 0.2s;white-space:nowrap;" onmouseover="this.style.background='var(--gold-light)'" onmouseout="this.style.background='var(--gold)'">Take the MOS Assessment &rarr;</a>
-        <span style="font-size:0.72rem;color:rgba(255,255,255,0.35);">Free &middot; No account required &middot; Results in 10 minutes</span>
+      <div class="cell">
+        <div class="cell-problem">How mature is my Management Operating System? Self-score 12 MOS elements across four pillars. Receive your maturity level, pillar breakdown, and a prioritized action plan.</div>
+      </div>
+      <div class="cell cell-action">
+        <a href="mos-assessment.html" class="tool-btn">Take Assessment &rarr;</a>
       </div>
     </div>
 
-    <p style="font-size:0.7rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">Free Diagnostic Tools</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem;margin-bottom:2.5rem;">
-      <div class="eco-tile" style="border-top:3px solid var(--navy);"><div class="eco-tile-icon" style="font-size:0.85rem;">P</div><div class="eco-tile-title">Plant Change Readiness Assessment</div><div class="eco-tile-desc"><em>Am I ready to lead change at this plant?</em><br><br>Site-level diagnostic. Five dimensions, Gap Score, dimension breakdown, and printable PDF report.</div><a href="#plant-assessment" class="eco-tile-link" style="display:inline-block;margin-top:1rem;font-size:0.75rem;font-weight:500;color:#fff;background:var(--navy);border-radius:6px;padding:6px 14px;">Use Tool &darr;</a></div>
-      <div class="eco-tile" style="border-top:3px solid #c9982a;"><div class="eco-tile-icon" style="font-size:0.85rem;">D</div><div class="eco-tile-title">Full Gap Diagnostic</div><div class="eco-tile-desc"><em>Where exactly is my organization breaking down?</em><br><br>Deep precision instrument. Slider-based scoring. Produces Gap Index, Gap Score, Gap Severity, and Effectiveness %.</div><a href="gap-diagnostic.html" class="eco-tile-link" style="display:inline-block;margin-top:1rem;font-size:0.75rem;font-weight:500;color:#fff;background:var(--navy);border-radius:6px;padding:6px 14px;" target="_blank" rel="noopener">Use Tool &rarr;</a></div>
-      <div class="eco-tile" style="border-top:3px solid var(--gold);"><div class="eco-tile-icon" style="font-size:0.85rem;">M</div><div class="eco-tile-title">MOS Assessment Tool</div><div class="eco-tile-desc"><em>How mature is my Management Operating System?</em><br><br>Self-score 12 MOS elements across four pillars -- Governance, Execution, Performance, and Health. Receive your maturity level, pillar breakdown, and a prioritized action plan.</div><a href="mos-assessment.html" class="eco-tile-link" style="display:inline-block;margin-top:1rem;font-size:0.75rem;font-weight:500;color:#fff;background:var(--navy);border-radius:6px;padding:6px 14px;">Take Assessment &rarr;</a></div>
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Plant Change Readiness Assessment</div>
+        <span class="cell-format">HTML &middot; Interactive</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Am I ready to lead change at this plant? Site-level diagnostic across five dimensions. Produces a Gap Score, dimension breakdown, and printable PDF report.</div>
+      </div>
+      <div class="cell cell-action">
+        <a href="index.html#plant-assessment" class="tool-btn">Use Tool &rarr;</a>
+      </div>
     </div>
 
-    <p style="font-size:0.7rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;">Tool Bundles</p>
-    <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1.75rem;max-width:600px;">A single consultant day to diagnose your Gap costs $2,500--$5,000. The tools that let you do it yourself start at $29.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-bottom:2.5rem;align-items:start;">
-      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;display:flex;flex-direction:column;">
-        <div style="font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.35rem;">Foundation Toolkit</div>
-        <div style="font-family:var(--serif);font-size:2rem;color:var(--navy);line-height:1;margin-bottom:0.2rem;">$29</div>
-        <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:1.25rem;">5 tools &middot; immediate download</div>
-        <div style="border-top:1px solid var(--border);padding-top:1rem;margin-bottom:1.25rem;display:flex;flex-direction:column;gap:0.55rem;">
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:#27500a;font-weight:600;">&#10003;</span><span>Operating Foundation</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:var(--cream-dark);color:var(--text-muted);padding:2px 7px;border-radius:4px;">PPTX</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:#27500a;font-weight:600;">&#10003;</span><span>Meeting Decision Framework</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:var(--cream-dark);color:var(--text-muted);padding:2px 7px;border-radius:4px;">PPTX</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:#27500a;font-weight:600;">&#10003;</span><span>Meeting Signal Review</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:var(--cream-dark);color:var(--text-muted);padding:2px 7px;border-radius:4px;">XLSX</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:#27500a;font-weight:600;">&#10003;</span><span>Simple Signal Walk Log</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:var(--cream-dark);color:var(--text-muted);padding:2px 7px;border-radius:4px;">XLSX</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:#27500a;font-weight:600;">&#10003;</span><span>Shift Handover Log</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:var(--cream-dark);color:var(--text-muted);padding:2px 7px;border-radius:4px;">XLSX</span></div>
-        </div>        <a href="https://moseiorg.gumroad.com/l/foundation-toolkit" style="display:block;font-size:0.82rem;font-weight:500;color:var(--navy);border:1px solid rgba(26,39,68,0.3);border-radius:var(--radius);padding:10px 18px;text-align:center;transition:background 0.2s;" onmouseover="this.style.background='var(--cream-dark)'" onmouseout="this.style.background=''">Get Foundation Toolkit -- $29 &rarr;</a>
-        <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;margin-top:0.6rem;">If one meeting runs 30 minutes shorter every week, this pays for itself in the first hour.</p>
+
+   <div class="tool-row" style="background:rgba(201,168,76,0.06);">
+      <div class="cell">
+        <div class="cell-name">Full Gap Diagnostic <span style="font-size:0.6rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--navy-deep);background:var(--gold);padding:3px 9px;border-radius:20px;margin-left:6px;white-space:nowrap;">Start Here</span></div>
+        <span class="cell-format">HTML &middot; Interactive</span>
       </div>
-      <div style="background:var(--navy);border-radius:var(--radius-lg);padding:1.75rem;display:flex;flex-direction:column;position:relative;">
-        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:0.72rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--navy);background:var(--gold);padding:5px 16px;border-radius:20px;white-space:nowrap;">Most Popular</div>
-        <div style="font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:0.35rem;margin-top:0.5rem;">MOS Bundle</div>
-        <div style="font-family:var(--serif);font-size:2rem;color:#fff;line-height:1;margin-bottom:0.2rem;">$99</div>
-        <div style="font-size:0.75rem;color:rgba(255,255,255,0.45);margin-bottom:1.25rem;">18 tools &middot; immediate download</div>
-        <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1rem;margin-bottom:1.25rem;display:flex;flex-direction:column;gap:0.55rem;">
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:#7fd9bb;font-weight:600;">&#10003;</span><span>Everything in Foundation (5 tools)</span></div>
-          <div style="font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-top:0.4rem;">Governance</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>Ownership Matrix</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">XLSX</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>Leader Cadence</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">XLSX</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>Tier Meeting Diagnostic</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">PPTX</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>Meeting Quality Score</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">HTML</span></div>
-          <div style="font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-top:0.4rem;">Execution</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>Hourly Boards</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">XLSX</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>Escalation &amp; Action Signal</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">XLSX</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>Daily Full Signal Walk</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">XLSX</span></div>
-          <div style="font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-top:0.4rem;">Performance</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>KPI Register</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">XLSX</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>KPI Cascade Workshop</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">PPTX</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>IMI Tool</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">XLSX</span></div>
-          <div style="font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-top:0.4rem;">Health</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>Plant Health Score</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">HTML</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>Signal Flow Index</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">HTML</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.8);"><span style="color:var(--gold);font-weight:600;">+</span><span>Safety Signal Assessment</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);padding:2px 7px;border-radius:4px;">HTML</span></div>
-        </div>
-        <a href="https://moseiorg.gumroad.com/l/MOS-Bundle" style="display:block;font-size:0.82rem;font-weight:500;color:var(--navy);background:var(--gold);border-radius:var(--radius);padding:10px 18px;text-align:center;transition:background 0.2s;margin-bottom:0.6rem;" onmouseover="this.style.background='var(--gold-light)'" onmouseout="this.style.background='var(--gold)'">Get MOS Bundle -- $99 &rarr;</a>
-        <div style="text-align:center;font-size:0.72rem;color:rgba(255,255,255,0.35);">Saves $50 vs. Foundation + individual tools</div>
-        <p style="font-size:0.72rem;color:rgba(255,255,255,0.4);text-align:center;margin-top:0.4rem;">One prevented escalation failure covers the cost 50 times over.</p>
+      <div class="cell">
+        <div class="cell-problem">Where exactly is my organization breaking down? Deep precision instrument. Slider-based scoring across external pressure, system regulation, and leader regulation.</div>
       </div>
-      <div style="background:#fff;border:2px solid var(--gold);border-radius:var(--radius-lg);padding:1.75rem;display:flex;flex-direction:column;">
-        <div style="font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.35rem;">Enterprise / Consultant</div>
-        <div style="font-family:var(--serif);font-size:2rem;color:var(--navy);line-height:1;margin-bottom:0.2rem;">$249</div>
-        <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:1.25rem;">25 tools &middot; client-ready &middot; immediate download</div>
-        <div style="border-top:1px solid var(--border);padding-top:1rem;margin-bottom:1.25rem;display:flex;flex-direction:column;gap:0.55rem;">
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:#27500a;font-weight:600;">&#10003;</span><span>Everything in MOS Bundle (18 tools)</span></div>
-          <div style="font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-top:0.4rem;">Consultant Diagnostics</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:var(--gold);font-weight:600;">+</span><span>Gap Scoring Tool</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:var(--cream-dark);color:var(--text-muted);padding:2px 7px;border-radius:4px;">HTML</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:var(--gold);font-weight:600;">+</span><span>MOS Pressure Test</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:var(--cream-dark);color:var(--text-muted);padding:2px 7px;border-radius:4px;">HTML</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:var(--gold);font-weight:600;">+</span><span>Signal Compression Tracer</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:var(--cream-dark);color:var(--text-muted);padding:2px 7px;border-radius:4px;">HTML</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:var(--gold);font-weight:600;">+</span><span>Decision Window Tracker</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:var(--cream-dark);color:var(--text-muted);padding:2px 7px;border-radius:4px;">HTML</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:var(--gold);font-weight:600;">+</span><span>Leader Regulation Scorecard</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:var(--cream-dark);color:var(--text-muted);padding:2px 7px;border-radius:4px;">HTML</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:var(--gold);font-weight:600;">+</span><span>Consultant's Coaching Guide</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:var(--cream-dark);color:var(--text-muted);padding:2px 7px;border-radius:4px;">PDF</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--text);"><span style="color:var(--gold);font-weight:600;">+</span><span>Norman's Law Trend Tracker</span><span style="margin-left:auto;font-size:0.65rem;font-weight:500;background:var(--navy);color:#fff;padding:2px 7px;border-radius:4px;">LIVE</span></div>
-          <div style="margin-top:0.75rem;padding:0.75rem;background:var(--cream);border-radius:8px;font-size:0.75rem;color:var(--text-muted);line-height:1.6;">Live, interactive diagnostics -- not static spreadsheets. Observer-verified scoring, auto-calculated Gap Index and stress-scenario projections, and a printable client summary ready to leave behind. The Trend Tracker runs as a hosted tool so your weekly readings persist across the engagement.</div>
-        </div>
-        <a href="https://moseiorg.gumroad.com/l/Enterprise-Consultant" style="display:block;font-size:0.82rem;font-weight:500;color:var(--navy-deep);background:var(--gold);border-radius:var(--radius);padding:10px 18px;text-align:center;transition:background 0.2s;" onmouseover="this.style.background='var(--gold-light)'" onmouseout="this.style.background='var(--gold)'">Get Enterprise Bundle -- $249 &rarr;</a>
-        <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;margin-top:0.6rem;">Deploy with one client. The tools pay for themselves before the engagement ends.</p>
+      <div class="cell cell-action">
+        <a href="gap-diagnostic.html" class="tool-btn" target="_blank">Use Tool &rarr;</a>
       </div>
     </div>
-    <div style="background:var(--cream);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.75rem;margin-bottom:2.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
-      <div><div style="font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem;">Not sure which bundle is right?</div><div style="font-size:0.88rem;color:var(--navy);font-weight:500;">See every tool and the problem it solves</div><div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;">Browse the full tool directory -- find your problem, then pick your bundle.</div></div>
-      <a href="tools.html" style="display:inline-block;font-size:0.78rem;font-weight:500;color:var(--navy);border:1px solid rgba(26,39,68,0.3);border-radius:var(--radius);padding:9px 20px;white-space:nowrap;transition:background 0.2s;" onmouseover="this.style.background='var(--cream-dark)'" onmouseout="this.style.background=''">What problem are you trying to solve? &rarr;</a>
-    </div>
-    <p style="font-size:0.9rem;font-weight:500;color:var(--navy);margin-bottom:1rem;" id="plant-assessment">Plant Change Readiness Assessment</p>
-    <div class="tool-embed-wrapper">
-      <div class="assessment-tool">
-        <div class="at-header"><div><div class="at-logo">MOS<span>ei</span></div><div class="at-tagline">Plant Change Readiness Assessment</div></div><div class="at-badge">Norman&rsquo;s Gap Framework</div></div>
-        <div class="at-body">
-          <div class="at-tabs">
-            <div class="at-tab active" onclick="atShowTab('readme')">Read me</div>
-            <div class="at-tab" onclick="atShowTab('profile')">Plant profile</div>
-            <div class="at-tab" onclick="atShowTab('assess')">Assessment</div>
-            <div class="at-tab" onclick="atShowTab('results')">Results</div>
-          </div>
-          <div id="at-tab-readme">
-            <div class="at-readme-hero"><div class="at-readme-hero-title">Norman&rsquo;s <span>Gap</span> Framework</div><div class="at-readme-hero-sub">This tool measures the structural distance between the external pressure bearing down on your plant and your organization&rsquo;s internal capacity to regulate and respond. That distance is the Gap.</div></div>
-            <div style="margin-bottom:1.25rem;"><div class="at-readme-h3">What is the Gap?</div><p class="at-readme-p">Every plant operates under external pressure: customer demand shifts, regulatory changes, supply chain volatility, competitive disruption. At the same time, every plant has an internal regulation capacity -- its ability to sense, decide, and act in response to those pressures.</p><p class="at-readme-p">When internal regulation keeps pace with external pressure, the plant is stable and change-ready. When pressure outpaces capacity, a Gap opens. The wider the Gap, the higher the risk that change initiatives stall, quality erodes, or the system fails under load.</p><div class="at-gap-diagram"><div class="at-gap-box" style="background:#FAECE7;"><div class="at-gap-box-label" style="color:#712B13;">External pressure</div><div class="at-gap-box-desc" style="color:#993C1D;">Market, regulatory, and competitive forces</div></div><div class="at-gap-arrow">&minus;</div><div class="at-gap-box" style="background:#E1F5EE;"><div class="at-gap-box-label" style="color:#085041;">Internal regulation</div><div class="at-gap-box-desc" style="color:#0F6E56;">Leadership, systems, signals, and routines</div></div></div></div>
-            <div class="at-hr"></div>
-            <div style="margin-bottom:1.25rem;"><div class="at-readme-h3">The four Gap bands</div><div style="margin-top:0.6rem;"><div class="at-band-row"><div class="at-band-dot" style="background:#1D9E75;"></div><span class="at-band-label">Stable</span><span class="at-band-desc">Gap Score 0 or below. Internal capacity meets or exceeds pressure.</span></div><div class="at-band-row"><div class="at-band-dot" style="background:#BA7517;"></div><span class="at-band-label">Early strain</span><span class="at-band-desc">+0.1 to +2.0. Pressure beginning to outpace regulation.</span></div><div class="at-band-row"><div class="at-band-dot" style="background:#993C1D;"></div><span class="at-band-label">High risk</span><span class="at-band-desc">+2.1 to +4.0. Change initiatives likely stalling.</span></div><div class="at-band-row"><div class="at-band-dot" style="background:#A32D2D;"></div><span class="at-band-label">Critical</span><span class="at-band-desc">Above +4.0. Immediate structural action required.</span></div></div></div>
-            <div class="at-hr"></div>
-            <div style="margin-bottom:1.25rem;"><div class="at-readme-h3">How to use this tool</div><div class="at-step-row"><div class="at-step-num">1</div><div class="at-step-text"><b>Plant profile</b> -- Enter the facility, company, industry, size, assessor name and date.</div></div><div class="at-step-row"><div class="at-step-num">2</div><div class="at-step-text"><b>Assessment</b> -- Score each of 15 questions on a 1--10 scale. Badges update live.</div></div><div class="at-step-row"><div class="at-step-num">3</div><div class="at-step-text"><b>Results</b> -- Review your Gap Score, dimension breakdown, and priority recommendations.</div></div><div class="at-step-row"><div class="at-step-num">4</div><div class="at-step-text"><b>Print / save PDF</b> -- Generate a branded leave-behind report for the plant manager.</div></div></div>
-            <div class="at-hr"></div>
-            <p class="at-source-note">Based on <em>Building a Management Operating System</em>, <em>Regulate</em>, and the Norman&rsquo;s Gap white paper by Norman Applegate. Published by MOSei.org.</p>
-            <div style="margin-top:1rem;"><button class="at-btn primary" onclick="atShowTab('profile')">Start assessment &rarr;</button></div>
-          </div>
-          <div id="at-tab-profile" style="display:none;">
-            <p class="at-section-label">Site identification</p>
-            <div class="at-card">
-              <div class="at-profile-header"><div class="at-avatar" id="at-avatar">?</div><div><div class="at-plant-name" id="at-plant-name-disp">Plant name</div><div class="at-plant-meta" id="at-plant-meta-disp">Industry &middot; Location</div><div class="at-chips" id="at-chips"></div></div></div>
-              <div class="at-profile-grid">
-                <div class="at-field full"><span class="at-field-label">Plant / facility name</span><input type="text" id="at-f-name" placeholder="e.g. Dayton Assembly Plant" oninput="atUpdateProfile()"></div>
-                <div class="at-field"><span class="at-field-label">Company</span><input type="text" id="at-f-company" placeholder="e.g. Acme Mfg." oninput="atUpdateProfile()"></div>
-                <div class="at-field"><span class="at-field-label">Location</span><input type="text" id="at-f-location" placeholder="e.g. Dayton, OH" oninput="atUpdateProfile()"></div>
-                <div class="at-field"><span class="at-field-label">Industry</span><select id="at-f-industry" onchange="atUpdateProfile()"><option value="">Select industry</option><option>Automotive</option><option>Food and beverage</option><option>Chemical / process</option><option>Consumer goods</option><option>Industrial equipment</option><option>Pharmaceuticals</option><option>Electronics</option><option>Defense</option><option>Other</option></select></div>
-                <div class="at-field"><span class="at-field-label">Plant size</span><select id="at-f-size" onchange="atUpdateProfile()"><option value="">Select size</option><option>Under 100</option><option>100 to 500</option><option>500 to 1,000</option><option>1,000 to 5,000</option><option>5,000+</option></select></div>
-              </div>
-              <div class="at-profile-grid-3">
-                <div class="at-field"><span class="at-field-label">Assessor name</span><input type="text" id="at-f-assessor" placeholder="Your name" oninput="atUpdateProfile()"></div>
-                <div class="at-field"><span class="at-field-label">Role</span><input type="text" id="at-f-role" placeholder="e.g. Plant Manager" oninput="atUpdateProfile()"></div>
-                <div class="at-field"><span class="at-field-label">Date</span><input type="date" id="at-f-date" oninput="atUpdateProfile()"></div>
-              </div>
-            </div>
-            <button class="at-btn" onclick="atShowTab('assess')">Start assessment &rarr;</button>
-          </div>
-          <div id="at-tab-assess" style="display:none;">
-            <p class="at-section-label">External pressure exposure</p>
-            <div class="at-card"><div class="at-dim-header"><span class="at-dim-title">Market &amp; regulatory signals</span><span class="at-badge-pill" id="at-badge-ext" style="background:#E6F1FB;color:#0C447C;">5.0</span></div><div class="at-q-row"><span class="at-q-label">Customer demand volatility in the last 12 months</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-ext1')"><span class="at-q-val" id="at-v-ext1">5</span></div><div class="at-q-row"><span class="at-q-label">Regulatory change pressure (safety, environmental, labor)</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-ext2')"><span class="at-q-val" id="at-v-ext2">5</span></div><div class="at-q-row"><span class="at-q-label">Competitive or supply chain disruption intensity</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-ext3')"><span class="at-q-val" id="at-v-ext3">5</span></div></div>
-            <p class="at-section-label" style="margin-top:1rem;">Internal regulation capacity</p>
-            <div class="at-card"><div class="at-dim-header"><span class="at-dim-title">Leadership &amp; ownership</span><span class="at-badge-pill" id="at-badge-lead" style="background:#E1F5EE;color:#085041;">5.0</span></div><div class="at-q-row"><span class="at-q-label">Clear ownership of change initiatives (vs. diffused accountability)</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-lead1')"><span class="at-q-val" id="at-v-lead1">5</span></div><div class="at-q-row"><span class="at-q-label">Leaders model the behaviors they require from teams</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-lead2')"><span class="at-q-val" id="at-v-lead2">5</span></div><div class="at-q-row"><span class="at-q-label">Decision speed: how quickly are operational calls made?</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-lead3')"><span class="at-q-val" id="at-v-lead3">5</span></div></div>
-            <div class="at-card"><div class="at-dim-header"><span class="at-dim-title">KPI signal quality</span><span class="at-badge-pill" id="at-badge-kpi" style="background:#EEEDFE;color:#3C3489;">5.0</span></div><div class="at-q-row"><span class="at-q-label">KPIs reflect real operating reality (not lagging or cosmetic)</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-kpi1')"><span class="at-q-val" id="at-v-kpi1">5</span></div><div class="at-q-row"><span class="at-q-label">Floor-level data reaches leadership with minimal distortion</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-kpi2')"><span class="at-q-val" id="at-v-kpi2">5</span></div><div class="at-q-row"><span class="at-q-label">Metrics are acted upon, not just reviewed</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-kpi3')"><span class="at-q-val" id="at-v-kpi3">5</span></div></div>
-            <div class="at-card"><div class="at-dim-header"><span class="at-dim-title">Meeting cadence &amp; communication</span><span class="at-badge-pill" id="at-badge-meet" style="background:#FAEEDA;color:#633806;">5.0</span></div><div class="at-q-row"><span class="at-q-label">Tiered meetings in place (shift to daily to weekly to monthly)</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-meet1')"><span class="at-q-val" id="at-v-meet1">5</span></div><div class="at-q-row"><span class="at-q-label">Issues escalate through tiers appropriately, not all to the top</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-meet2')"><span class="at-q-val" id="at-v-meet2">5</span></div><div class="at-q-row"><span class="at-q-label">Change communication reaches frontline workers clearly</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-meet3')"><span class="at-q-val" id="at-v-meet3">5</span></div></div>
-            <div class="at-card"><div class="at-dim-header"><span class="at-dim-title">Operational systems &amp; routines</span><span class="at-badge-pill" id="at-badge-ops" style="background:#EAF3DE;color:#27500A;">5.0</span></div><div class="at-q-row"><span class="at-q-label">Standard work and SOPs are current and followed</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-ops1')"><span class="at-q-val" id="at-v-ops1">5</span></div><div class="at-q-row"><span class="at-q-label">Continuous improvement routines are embedded, not episodic</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-ops2')"><span class="at-q-val" id="at-v-ops2">5</span></div><div class="at-q-row"><span class="at-q-label">Plant can absorb change without destabilizing core operations</span><input type="range" class="at-q-slider" min="1" max="10" value="5" oninput="atSync(this,'at-v-ops3')"><span class="at-q-val" id="at-v-ops3">5</span></div></div>
-            <div style="display:flex;gap:10px;margin-top:1rem;"><button class="at-btn" onclick="atShowTab('profile')">&larr; Back</button><button class="at-btn" onclick="atShowTab('results')">View results &rarr;</button></div>
-          </div>
-          <div id="at-tab-results" style="display:none;">
-            <div id="at-print-header"><div><div class="at-print-logo">MOS<span>ei</span></div><div class="at-print-tagline">Plant Change Readiness Assessment &middot; MOSei.org</div></div><div><div class="at-print-rlabel">Confidential report</div><div class="at-print-rdate" id="at-print-date"></div></div></div>
-            <div class="at-plant-banner"><div><div class="at-plant-banner-name" id="at-res-name">Plant name</div><div class="at-plant-banner-meta" id="at-res-meta">Industry &middot; Location</div></div><div class="at-date" id="at-res-date"></div></div>
-            <div class="at-summary-grid"><div class="at-metric"><div class="at-metric-label">Gap score</div><div class="at-metric-val" id="at-gap-score">0.0</div><div class="at-metric-sub">External minus internal</div></div><div class="at-metric"><div class="at-metric-label">Internal regulation</div><div class="at-metric-val" id="at-int-score">5.0</div><div class="at-metric-sub">Avg across 4 dimensions</div></div><div class="at-metric"><div class="at-metric-label">External pressure</div><div class="at-metric-val" id="at-ext-score">5.0</div><div class="at-metric-sub">Market and regulatory</div></div></div>
-            <div class="at-verdict" id="at-verdict" style="background:#FAEEDA;border-color:#63380644;"><div class="at-verdict-title" id="at-verdict-title" style="color:#633806;">Early strain</div><div class="at-verdict-body" id="at-verdict-body">Complete the assessment to see your diagnosis.</div></div>
-            <p class="at-section-label">Dimension breakdown</p>
-            <div id="at-dim-bars" style="margin-bottom:1.25rem;"></div>
-            <div class="at-hr"></div>
-            <p class="at-section-label">Priority recommendations</p>
-            <div id="at-recs" style="margin-bottom:1.25rem;"></div>
-            <div id="at-print-footer"><div class="at-print-footer-row"><span>Generated by MOSei.org &middot; Norman Applegate &middot; Norman&rsquo;s Gap Framework</span><span id="at-print-footer-date"></span></div></div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="at-btn" onclick="atShowTab('assess')">&larr; Edit assessment</button><button class="at-btn primary" onclick="atPrint()">Print / save PDF</button></div>
-          </div>
+   <div class="tool-row">
+        <div class="cell">
+          <div class="cell-name">Scenario Finder</div>
+          <span class="cell-format">HTML &middot; Searchable</span>
+        </div>
+        <div class="cell">
+          <div class="cell-problem">Not sure where to start? Search the tagged Tempered Signal archive in your own words and get the exact framework concept and action for your situation.</div>
+        </div>
+        <div class="cell cell-action">
+          <a href="scenario-finder.html" class="tool-btn" target="_blank">Use Tool &rarr;</a>
         </div>
       </div>
-    </div>
   </div>
-</section>
-<section id="signal" class="signal-section">
-  <div class="container">
-    <p class="section-eyebrow" style="color:rgba(201,168,76,0.8);">The Tempered Signal</p>
-    <h2 class="section-title">Judgment formed under pressure</h2>
-    <p class="section-sub">A newsletter and podcast for plant managers, operations leaders, and consultants navigating real pressure with the Norman System.</p>
-    <div class="signal-grid">
-      <div class="signal-card"><div class="signal-card-icon">&#9993;</div><div class="signal-card-title">The Tempered Signal Newsletter</div><div class="signal-card-tagline">&ldquo;Judgment Formed Under Pressure&rdquo;</div><div class="signal-card-desc">Weekly editions applying Signal Compression, the Norman Decision Window, and Gap diagnostics to real operational events.</div><a href="https://temperedsignal.com" class="signal-btn" target="_blank" rel="noopener">Subscribe on Substack &rarr;</a></div>
-      <div class="signal-card"><div class="signal-card-icon">&#9654;</div><div class="signal-card-title">The Tempered Signal Podcast</div><div class="signal-card-tagline">Pressure &middot; Signal &middot; Regulation</div><div class="signal-card-desc">Conversations and deep dives on the seven laws of Norman&rsquo;s Gap, featuring real case studies from the plant floor to the boardroom.</div><a href="https://podcasts.apple.com/us/podcast/the-tempered-signal-with-norm-applegate/id1885971440" class="signal-btn" target="_blank" rel="noopener">Listen on Apple Podcasts &rarr;</a></div>
+
+  <p class="section-label" style="margin-top:2rem;">Tool Bundles</p>
+  <p class="section-sub">A single consultant day to diagnose your Gap costs $2,500&ndash;$5,000. The tools that let you do it yourself start at $29.</p>
+
+  <div class="bundle-row">
+
+    <div class="bundle-card">
+      <div class="bundle-label">Foundation Toolkit</div>
+      <div class="bundle-price">$29</div>
+      <div class="bundle-sub">5 tools &middot; immediate download</div>
+     <div class="bundle-tools">
+        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Operating Foundation <span class="fmt-badge">PPTX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Meeting Decision Framework <span class="fmt-badge">PPTX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Meeting Signal Review <span class="fmt-badge">HTML</span></div>
+        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Simple Signal Walk Log <span class="fmt-badge">XLSX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Shift Handover Log <span class="fmt-badge">XLSX</span></div>
+      </div>      <a href="https://moseiorg.gumroad.com/l/foundation-toolkit" class="tool-btn outline" style="display:block;text-align:center;padding:10px;">Get Foundation &mdash; $29 &rarr;</a>
+      <p class="bundle-roi">If one meeting runs 30 minutes shorter every week, this pays for itself in the first hour.</p>
     </div>
-  </div>
-</section>
-<section id="ask-mosei" class="qa-section">
-  <div class="container">
-    <p class="section-eyebrow">Ask MOSei</p>
-    <h2 class="section-title">Search the Norman System knowledge base</h2>
-    <p class="section-sub">Ask MOSei anything about the framework. Every answer is grounded in Norman Applegate&rsquo;s published works -- the four books, white papers, and The Norman System.</p>
-    <div class="qa-box">
-      <div class="qa-header"><div><div class="qa-header-logo">MOS<span>ei</span></div><div class="qa-header-sub">Search the complete Norman System knowledge base</div></div></div>
-      <div class="qa-messages" id="qa-messages">
-        <div class="qa-msg assistant"><div class="qa-msg-label">Ask MOSei</div><div class="qa-msg-bubble">Ask me anything about the Norman System -- Norman&rsquo;s Gap, Signal Compression, Decision Velocity, Tiered Meetings, KPI design, escalation, leadership, safety, or continuous improvement.</div></div>
+
+    <div class="bundle-card featured">
+      <div class="bundle-popular">Most Popular</div>
+      <div class="bundle-label" style="margin-top:0.5rem;">MOS Bundle</div>
+      <div class="bundle-price">$99</div>
+      <div class="bundle-sub">18 tools &middot; immediate download</div>
+      <div class="bundle-tools">
+        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Everything in Foundation (5 tools)</div>
+        <div class="bundle-tool-group">Governance</div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Ownership Matrix <span class="fmt-badge plus">XLSX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Leader Cadence <span class="fmt-badge plus">XLSX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Tier Meeting Diagnostic <span class="fmt-badge plus">PPTX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Meeting Quality Score <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-group">Execution</div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Hourly Boards <span class="fmt-badge plus">XLSX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Escalation &amp; Action Signal <span class="fmt-badge plus">XLSX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Daily Full Signal Walk <span class="fmt-badge plus">XLSX</span></div>
+        <div class="bundle-tool-group">Performance</div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> KPI Register <span class="fmt-badge plus">XLSX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> KPI Cascade Workshop <span class="fmt-badge plus">PPTX</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> IMI Tool <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-group">Health</div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Plant Health Score <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Signal Flow Index <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Safety Signal Assessment <span class="fmt-badge plus">HTML</span></div>
+      </div>      <a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn gold" style="display:block;text-align:center;padding:10px;">Get MOS Bundle &mdash; $99 &rarr;</a>
+      <p class="bundle-roi">Saves $50 vs. Foundation + individual tools<br>One prevented escalation failure covers the cost 50 times over.</p>
+    </div>
+
+    <div class="bundle-card outline-gold">
+      <div class="bundle-label" style="color:var(--gold);">Enterprise / Consultant</div>
+      <div class="bundle-price">$249</div>
+      <div class="bundle-sub">25 tools &middot; client-ready &middot; immediate download</div>
+      <div class="bundle-tools">
+        <div class="bundle-tool-item"><span class="bundle-check">&#10003;</span> Everything in MOS Bundle (18 tools)</div>
+        <div class="bundle-tool-group">Consultant Diagnostics</div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Gap Scoring Tool <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> MOS Pressure Test <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Signal Compression Tracer <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Decision Window Tracker <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Leader Regulation Scorecard <span class="fmt-badge plus">HTML</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Consultant's Coaching Guide <span class="fmt-badge plus">PDF</span></div>
+        <div class="bundle-tool-item"><span class="bundle-plus">+</span> Norman's Law Trend Tracker <span class="fmt-badge plus" style="background:var(--navy);color:#fff;">LIVE</span></div>
       </div>
-      <div class="qa-prompts">
-        <span class="qa-prompt-chip" onclick="qaAsk('What is Norman\'s Gap?')">Norman&rsquo;s Gap</span>
-        <span class="qa-prompt-chip" onclick="qaAsk('What is Signal Compression?')">Signal Compression</span>
-        <span class="qa-prompt-chip" onclick="qaAsk('What is Decision Velocity?')">Decision Velocity</span>
-        <span class="qa-prompt-chip" onclick="qaAsk('How do Tiered Meetings work?')">Tiered Meetings</span>
-        <span class="qa-prompt-chip" onclick="qaAsk('How do I design better KPIs?')">KPI Design</span>
-        <span class="qa-prompt-chip" onclick="qaAsk('How should escalation work in a tiered system?')">Escalation</span>
-        <span class="qa-prompt-chip" onclick="qaAsk('What does the Norman System say about leadership?')">Leadership</span>
-        <span class="qa-prompt-chip" onclick="qaAsk('How does the Norman System apply to safety?')">Safety</span>
-        <span class="qa-prompt-chip" onclick="qaAsk('How does the Norman System apply to manufacturing?')">Manufacturing</span>
-        <span class="qa-prompt-chip" onclick="qaAsk('What is the Norman System approach to continuous improvement?')">Continuous Improvement</span>
-      </div>
-      <div class="qa-input-row">
-        <input type="text" class="qa-input" id="qa-input" placeholder="Ask about the Norman System..." onkeydown="if(event.key==='Enter')qaSend()" />
-        <button class="qa-send" id="qa-send-btn" onclick="qaSend()">Ask</button>
-      </div>
-      <p class="qa-footer">Responses are grounded in Norman Applegate&rsquo;s published works. For complex diagnostics, use the Plant Assessment tool above or contact MOSei directly.</p>
+      <a href="https://moseiorg.gumroad.com/l/Enterprise-Consultant" class="tool-btn outline" style="display:block;text-align:center;padding:10px;border-color:var(--gold);color:var(--navy);">Get Enterprise &mdash; $249 &rarr;</a>
+      <p class="bundle-roi">Live, interactive diagnostics -- not spreadsheets. Deploy with one client and the tools pay for themselves before the engagement ends.</p>
     </div>
+
   </div>
-</section>
-<section id="contact" class="contact-section">
-  <div class="container">
-    <p class="section-eyebrow">Get in Touch</p>
-    <h2 class="section-title">Reach Norman directly</h2>
-    <p class="section-sub">Have a question about the framework, a consulting inquiry, or want to connect? Send a message and Norman will respond personally.</p>
-    <div class="contact-box">
-      <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="handleContactSubmit(event)">
-        <input type="hidden" name="form-name" value="contact" />
-        <p style="display:none;"><input name="bot-field" /></p>
-        <div class="contact-field"><label class="contact-label" for="contact-name">Your name</label><input class="contact-input" type="text" id="contact-name" name="name" placeholder="First and last name" required /></div>
-        <div class="contact-field"><label class="contact-label" for="contact-email">Email address</label><input class="contact-input" type="email" id="contact-email" name="email" placeholder="you@company.com" required /></div>
-        <div class="contact-field"><label class="contact-label" for="contact-subject">Subject</label><input class="contact-input" type="text" id="contact-subject" name="subject" placeholder="What's this about?" /></div>
-        <div class="contact-field"><label class="contact-label" for="contact-message">Message</label><textarea class="contact-textarea" id="contact-message" name="message" placeholder="Your question or note..." required></textarea></div>
-        <button type="submit" class="contact-submit">Send message &rarr;</button>
-        <div class="contact-success" id="contact-success">Message sent. Norman will be in touch.</div>
-      </form>
+
+  <p class="section-label" style="margin-top:2.5rem;">What each tool solves</p>
+  <div class="tool-table">
+    <div class="tool-row header">
+      <div class="cell">Tool</div>
+      <div class="cell">Problem it solves</div>
+      <div class="cell"></div>
     </div>
+
+   
+
+      <div class="tool-row">
+                             <div class="cell">
+        <div class="cell-name">Operating Foundation</div>
+        <span class="cell-format">PPTX &middot; Foundation</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do we align leadership on what the MOS is, why it exists, and what we are committing to build? Executive-facing charter template for launching or relaunching an MOS.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/foundation-toolkit" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Meeting Decision Framework</div>
+        <span class="cell-format">PPTX &middot; Foundation</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Our meetings produce status updates, not decisions. How do we build a tiered meeting system that keeps signal flowing and decisions grounded at the right level?</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/foundation-toolkit" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Meeting Signal Review</div>
+        <span class="cell-format">HTML &middot; Foundation</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do we know if our tiered meetings are actually working? Any participant can rotate in as the observer and score the meeting live across 9 sections and 27 questions, with a maturity classification and trend tracking over time.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/foundation-toolkit" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div><div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Simple Signal Walk Log</div>
+        <span class="cell-format">XLSX &middot; Foundation</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">I need a quick floor observation record that doesn&rsquo;t require a full log. What&rsquo;s the lightest tool for capturing what I see?</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/foundation-toolkit" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Shift Handover Log</div>
+        <span class="cell-format">XLSX &middot; Foundation</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Critical information is getting lost between shifts. How do we ensure every handover transfers the right signal without compression or omission?</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/foundation-toolkit" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Ownership Matrix</div>
+        <span class="cell-format">XLSX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Accountability keeps falling through the cracks. How do we assign and track ownership across every function?</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Leader Cadence</div>
+        <span class="cell-format">XLSX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do I structure my day as a leader so floor presence and signal review are built in, not reactive?</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Tier Meeting Diagnostic</div>
+        <span class="cell-format">PPTX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Our tier meetings happen, but are they regulating? Full T1&ndash;T4 reference covering agendas, decision rights, and escalation thresholds, plus the Norman Condition Flags that quietly break installed meetings.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Meeting Quality Score</div>
+        <span class="cell-format">HTML &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Did that meeting regulate, or did it just occur? The chair self-scores six dimensions in two minutes, immediately after the meeting, and tracks the trend across weeks.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Hourly Boards</div>
+        <span class="cell-format">XLSX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do I track production performance hour by hour so problems surface in real time instead of at end of shift?</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Escalation &amp; Action Signal</div>
+        <span class="cell-format">XLSX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Issues get raised but never resolved, or they get hoarded until they explode. How do we track escalation from trigger to closure with a named owner at every step?</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+   <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Daily Full Signal Walk</div>
+        <span class="cell-format">XLSX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do I capture and track what I see on the floor every day without it disappearing into notes? Structured Signal Walk observation log with owner, action, and follow-up tracking.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">KPI Register</div>
+        <span class="cell-format">XLSX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">We have too many metrics and no one agrees on which ones matter. How do we build a single source of KPI truth?</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">KPI Cascade Workshop</div>
+        <span class="cell-format">PPTX &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do we connect plant-level KPIs to team-level metrics so everyone is pulling in the same direction?</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">IMI Tool</div>
+        <span class="cell-format">HTML &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do we track MOS implementation maturity across the site without it becoming another spreadsheet no one updates?</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Plant Health Score</div>
+        <span class="cell-format">HTML &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How healthy is this plant right now, in one composite number? Aggregates Gap Index, Pressure Test, Signal Flow Index, Meeting Signal Review, Meeting Quality Score, and Leader Cadence into a single T4 system health indicator.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Signal Flow Index</div>
+        <span class="cell-format">HTML &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Is information traveling cleanly from the floor to leadership, or getting compressed and distorted along the way? Measures signal flow quality across the tier structure.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Safety Signal Assessment</div>
+        <span class="cell-format">HTML &middot; MOS Bundle</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do I assess whether our safety practices are keeping pace with operational pressure?</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Gap Scoring Tool</div>
+        <span class="cell-format">HTML &middot; Enterprise</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">What is the evidence-based Gap Score for this client? Live, observer-verified scoring with auto-calculated Gap Index, Gap Severity, Effectiveness %, and a printable one-page client summary.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/Enterprise-Consultant" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">MOS Pressure Test</div>
+        <span class="cell-format">HTML &middot; Enterprise</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Can this system absorb the pressure it&rsquo;s under? Live 12-dimension pressure-to-regulation scoring with weighted scenario stress tests for demand spikes, supplier failure, staffing loss, and system outage.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/Enterprise-Consultant" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Signal Compression Tracer</div>
+        <span class="cell-format">HTML &middot; Enterprise</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Where exactly is a signal getting distorted between the floor and leadership? Hop-by-hop escalation trace that pinpoints which handoff compressed, delayed, or dropped the message.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/Enterprise-Consultant" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Decision Window Tracker</div>
+        <span class="cell-format">HTML &middot; Enterprise</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Did this decision get made inside the window that mattered? Four-timestamp reconstruction that scores each decision PASSED, AT RISK, or FAILED against the Norman Decision Window.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/Enterprise-Consultant" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Leader Regulation Scorecard</div>
+        <span class="cell-format">HTML &middot; Enterprise</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Is this leader regulating pressure or just absorbing it? Three-factor continuous scoring across observer, self, and ideal-state columns, with a gap analysis that shows exactly where perception splits from reality.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/Enterprise-Consultant" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Consultant's Coaching Guide</div>
+        <span class="cell-format">PDF &middot; Enterprise</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">How do I sequence a full engagement from first day on-site to sustainment? Full roadmap from Prep and Gemba through baseline scoring, diagnostics, scorecard, and SBI-I synthesis delivery.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/Enterprise-Consultant" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
+    <div class="tool-row">
+      <div class="cell">
+        <div class="cell-name">Norman's Law Trend Tracker</div>
+        <span class="cell-format">LIVE &middot; Enterprise</span>
+      </div>
+      <div class="cell">
+        <div class="cell-problem">Is the Gap Index improving or slipping over the course of an engagement? Hosted tool that logs a reading each week and builds a longitudinal trend line -- readings persist across sessions since it runs on a live page, not a downloaded file.</div>
+      </div>
+      <div class="cell cell-action"><a href="https://moseiorg.gumroad.com/l/Enterprise-Consultant" class="tool-btn outline">Get Bundle &rarr;</a></div>
+    </div>
+
   </div>
-</section>
-<footer>
-  <div class="footer-logo">MOS<span>ei</span></div>
-  <div class="footer-tagline">Management Operating System -- External &amp; Internal Pressure</div>
-  <div class="footer-links">
-    <a href="#framework">Framework</a>
-    <a href="#books">Books</a>
-    <a href="knowledge.html">Knowledge</a>
-    <a href="tools.html">Tools</a>
-    <a href="https://temperedsignal.com" target="_blank" rel="noopener">The Tempered Signal</a>
-    <a href="#ask-mosei">Ask MOSei</a>
+
+  <div style="margin-top:2.5rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;text-align:center;">
+    <p style="font-family:var(--serif);font-size:1.25rem;color:var(--navy);margin-bottom:0.5rem;">Not sure which tool fits your situation?</p>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">Ask MOSei is trained on the full Norman System framework. Describe what you&rsquo;re dealing with and it will point you to the right tool.</p>
+    <a href="index.html#ask-mosei" class="tool-btn" style="display:inline-block;padding:10px 24px;font-size:0.85rem;">Ask MOSei &rarr;</a>
   </div>
-  <div class="footer-copy">&copy; 2026 Norman Applegate. All rights reserved. &middot; MOSei.org</div>
+
+</div>
+
+<footer class="page-footer">
+  <p class="footer-text">MOSei.org &middot; <a href="https://temperedsignal.com" target="_blank">The Tempered Signal</a> &middot; &copy; Norman Applegate</p>
 </footer>
-<script>
-var atDims = [
-  { id:'lead', label:'Leadership and ownership', keys:['lead1','lead2','lead3'], color:'#1D9E75' },
-  { id:'kpi',  label:'KPI signal quality',       keys:['kpi1','kpi2','kpi3'],   color:'#7F77DD' },
-  { id:'meet', label:'Meeting cadence',          keys:['meet1','meet2','meet3'], color:'#BA7517' },
-  { id:'ops',  label:'Operational systems',      keys:['ops1','ops2','ops3'],   color:'#639922' }
-];
-var atExtKeys = ['ext1','ext2','ext3'];
-function atVal(k) { var el = document.getElementById('at-v-'+k); return el ? parseInt(el.textContent) : 5; }
-function atAvg(keys) { return keys.reduce(function(s,k){ return s+atVal(k); },0)/keys.length; }
-function atSync(inp, id) { document.getElementById(id).textContent = inp.value; atUpdateBadges(); }
-function atScoreColor(s) { if (s >= 7.5) return { bg:'#EAF3DE', fg:'#27500A' }; if (s >= 5) return { bg:'#FAEEDA', fg:'#633806' }; return { bg:'#FCEBEB', fg:'#791F1F' }; }
-function atGapResult(g) { if (g <= 0) return { bg:'#EAF3DE', fg:'#27500A', label:'Stable', body:'Internal regulation matches or exceeds external pressure. The plant has capacity to absorb and lead change effectively.' }; if (g <= 2) return { bg:'#FAEEDA', fg:'#633806', label:'Early strain', body:'External pressure is beginning to outpace internal regulation. Targeted strengthening of weaker dimensions is needed before strain compounds.' }; if (g <= 4) return { bg:'#FAECE7', fg:'#712B13', label:'High risk', body:'A meaningful gap exists between pressure and capacity. Change initiatives are likely stalling or creating instability. Structured intervention required.' }; return { bg:'#FCEBEB', fg:'#791F1F', label:'Critical', body:"External pressure far exceeds the plant's ability to self-regulate. Without immediate structural intervention, change efforts will fail and operations are vulnerable." }; }
-function atUpdateBadges() { atDims.forEach(function(d) { var sc = atScoreColor(atAvg(d.keys)); var b = document.getElementById('at-badge-'+d.id); if (b) { b.style.background=sc.bg; b.style.color=sc.fg; b.textContent=atAvg(d.keys).toFixed(1); } }); var extAvg = atAvg(atExtKeys); var sc = atScoreColor(extAvg); var eb = document.getElementById('at-badge-ext'); if (eb) { eb.style.background=sc.bg; eb.style.color=sc.fg; eb.textContent=extAvg.toFixed(1); } }
-function atUpdateProfile() { var name = document.getElementById('at-f-name').value.trim() || 'Plant name'; var company = document.getElementById('at-f-company').value.trim(); var location = document.getElementById('at-f-location').value.trim(); var industry = document.getElementById('at-f-industry').value; var size = document.getElementById('at-f-size').value; document.getElementById('at-plant-name-disp').textContent = name; document.getElementById('at-plant-meta-disp').textContent = [industry,location].filter(Boolean).join(' \u00b7 ') || 'Industry \u00b7 Location'; var words = name.split(' ').filter(Boolean); document.getElementById('at-avatar').textContent = (words.length >= 2 ? words[0][0]+words[1][0] : (words[0]?words[0].slice(0,2):'?')).toUpperCase(); var chips = []; if (company) chips.push(company); if (size) chips.push(size+' employees'); document.getElementById('at-chips').innerHTML = chips.map(function(c){ return '<span class="at-chip">'+c+'</span>'; }).join(''); }
-function atUpdateResults() { var extAvg = atAvg(atExtKeys); var dimAvgs = atDims.map(function(d){ return atAvg(d.keys); }); var intAvg = dimAvgs.reduce(function(s,v){ return s+v; },0)/dimAvgs.length; var gap = extAvg - intAvg; atUpdateBadges(); document.getElementById('at-gap-score').textContent = (gap>0?'+':'')+gap.toFixed(1); document.getElementById('at-int-score').textContent = intAvg.toFixed(1); document.getElementById('at-ext-score').textContent = extAvg.toFixed(1); var gc = atGapResult(gap); var vc = document.getElementById('at-verdict'); vc.style.background=gc.bg; vc.style.borderColor=gc.fg+'44'; document.getElementById('at-verdict-title').style.color=gc.fg; document.getElementById('at-verdict-title').textContent=gc.label; document.getElementById('at-verdict-body').textContent=gc.body; document.getElementById('at-dim-bars').innerHTML = atDims.map(function(d,i){ return '<div class="at-bar-row"><span class="at-bar-label">'+d.label+'</span><div class="at-bar-track"><div class="at-bar-fill" style="width:'+Math.round(dimAvgs[i]*10)+'%;background:'+d.color+';"></div></div><span class="at-bar-val">'+dimAvgs[i].toFixed(1)+'</span></div>'; }).join(''); var sorted = atDims.slice().sort(function(a,b){ return atAvg(a.keys)-atAvg(b.keys); }); var recs = []; if (atAvg(sorted[0].keys) < 6) recs.push('<b style="color:#1a2744">'+sorted[0].label+'</b> is your lowest-scoring dimension. Prioritize ownership and structural fixes here first.'); if (gap > 2) recs.push('Signal compression is likely occurring. Audit whether KPI data from the floor reaches leadership without distortion.'); if (atVal('lead3') < 5) recs.push('Decision speed is constrained. Map your Norman Decision Window to identify where decisions stall.'); if (atVal('meet1') < 5) recs.push('Tiered meeting structure is underdeveloped. Establishing shift-level and daily cadences will improve change absorption capacity.'); if (recs.length===0) recs.push('Your plant shows strong readiness. Focus on sustaining routines and stress-testing against escalating external scenarios.'); document.getElementById('at-recs').innerHTML = recs.map(function(r){ return '<div class="at-rec">'+r+'</div>'; }).join(''); var name = document.getElementById('at-f-name').value.trim() || 'Unnamed plant'; var company = document.getElementById('at-f-company').value.trim(); var industry = document.getElementById('at-f-industry').value; var location = document.getElementById('at-f-location').value.trim(); var dateVal = document.getElementById('at-f-date').value; var assessor = document.getElementById('at-f-assessor').value.trim(); var role = document.getElementById('at-f-role').value.trim(); document.getElementById('at-res-name').textContent = name+(company?' \u00b7 '+company:''); document.getElementById('at-res-meta').textContent = [industry,location,assessor?'Assessed by '+assessor+(role?' ('+role+')':''):''].filter(Boolean).join(' \u00b7 '); var formatted = ''; if (dateVal) { var dd = new Date(dateVal+'T00:00:00'); formatted = dd.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}); } document.getElementById('at-res-date').textContent = formatted; document.getElementById('at-print-date').textContent = formatted?'Assessment date: '+formatted:''; document.getElementById('at-print-footer-date').textContent = 'Printed '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
-function atPrint() { atUpdateResults(); window.print(); }
-function atShowTab(name) { ['readme','profile','assess','results'].forEach(function(t){ document.getElementById('at-tab-'+t).style.display = t===name?'':'none'; }); document.querySelectorAll('.at-tab').forEach(function(t,i){ t.classList.toggle('active',['readme','profile','assess','results'][i]===name); }); if (name==='results') atUpdateResults(); }
-document.getElementById('at-f-date').value = new Date().toISOString().split('T')[0];
-atUpdateProfile();
-atUpdateBadges();
-var qaHistory = [];
-function qaAsk(question) { document.getElementById('qa-input').value = question; qaSend(); }
-async function qaSend() { var input = document.getElementById('qa-input'); var q = input.value.trim(); if (!q) return; input.value = ''; document.getElementById('qa-send-btn').disabled = true; var msgs = document.getElementById('qa-messages'); msgs.innerHTML += '<div class="qa-msg user"><div class="qa-msg-label">You</div><div class="qa-msg-bubble">'+q.replace(/</g,'&lt;')+'</div></div>'; var thinkingId = 'qa-thinking-'+Date.now(); msgs.innerHTML += '<div class="qa-msg assistant" id="'+thinkingId+'"><div class="qa-msg-label">Ask MOSei</div><div class="qa-msg-bubble" style="opacity:0.5;">Thinking...</div></div>'; msgs.scrollTop = msgs.scrollHeight; qaHistory.push({ role:'user', content: q }); try { var res = await fetch('/.netlify/functions/advisor', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: qaHistory }) }); var data = await res.json(); var answer = data.content && data.content[0] ? data.content[0].text : 'Unable to reach Ask MOSei. Please try again.'; qaHistory.push({ role:'assistant', content: answer }); var el = document.getElementById(thinkingId); if (el) el.querySelector('.qa-msg-bubble').innerHTML = answer.replace(/\n/g,'<br>'); } catch(e) { var el = document.getElementById(thinkingId); if (el) el.querySelector('.qa-msg-bubble').textContent = 'Connection error. Please try again.'; } document.getElementById('qa-send-btn').disabled = false; msgs.scrollTop = msgs.scrollHeight; }
-async function handleContactSubmit(e) { e.preventDefault(); var form = e.target; var btn = form.querySelector('.contact-submit'); btn.textContent = 'Sending...'; btn.disabled = true; try { var formData = new FormData(form); var encoded = new URLSearchParams(); formData.forEach(function(value, key) { encoded.append(key, value); }); var res = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: encoded.toString() }); if (res.ok || res.status === 200 || res.status === 303) { form.reset(); document.getElementById('contact-success').style.display = 'block'; btn.textContent = 'Sent \u2713'; btn.style.background = '#27500a'; setTimeout(function() { document.getElementById('contact-success').style.display = 'none'; btn.textContent = 'Send message \u2192'; btn.style.background = ''; btn.disabled = false; }, 4000); } else { throw new Error('Server returned ' + res.status); } } catch(err) { btn.textContent = 'Send message \u2192'; btn.disabled = false; alert('Something went wrong. Please try again.'); } }
-</script>
+
 </body>
 </html>
