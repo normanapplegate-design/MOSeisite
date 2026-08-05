@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tier Meeting System for Plant Managers | MOSei</title>
+<meta name="description" content="A done-for-you tier meeting system, not another explainer. Built for plant managers who need Tier 1-3 meetings to actually cascade signal, not just repeat status updates.">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<script defer data-domain="mosei.org" src="https://plausible.io/js/script.js"></script>
+<style>
+:root{
+  --navy:#1a2744; --navy-deep:#111c33; --gold:#c9a84c; --gold-light:#e8c97a;
+  --accent:#2E75B6; --ink:#1d2230; --muted:#5a6072; --hint:#8b91a0;
+  --line:#e3e6ec; --surface:#ffffff; --surface2:#f5f7fa; --page:#f8f5ef;
+  --info-bg:#e6f1fb; --info-tx:#0c447c;
+  --teal-bg:#e1f5ee; --teal-tx:#085041;
+  --green-bg:#eaf3de; --green-tx:#27500a;
+  --amber-bg:#faeeda; --amber-tx:#633806;
+  --coral-bg:#faece7; --coral-tx:#712b13;
+  --red-bg:#fcebeb; --red-tx:#791f1f;
+  --serif: 'EB Garamond', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+  --radius: 10px; --radius-lg: 14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--page);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+/* — Brand header — */
+.tool-header{background:var(--navy);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+.tool-logo{font-family:var(--serif);font-size:1.15rem;color:#fff;}
+.tool-logo span{color:var(--gold);}
+.tool-tagline{font-size:0.7rem;color:rgba(255,255,255,0.45);margin-top:1px;}
+.tool-badge{background:rgba(201,168,76,0.15);color:var(--gold-light);font-size:0.72rem;font-weight:500;padding:6px 12px;border-radius:20px;}
+
+/* — Tabs — */
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--line);background:#fff;padding:0 20px;}
+.tab-btn{background:none;border:none;padding:14px 18px;font-family:var(--sans);font-size:0.9rem;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;}
+.tab-btn.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:500;}
+
+.wrap{max-width:720px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+
+/* — Read Me — */
+.readme-hero{background:var(--navy);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.5rem;}
+.readme-hero-title{font-family:var(--serif);font-size:1.35rem;color:#fff;margin-bottom:0.6rem;}
+.readme-hero-title span{color:var(--gold);}
+.readme-hero-sub{font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.65;}
+.readme-h3{font-size:0.9rem;font-weight:500;color:var(--ink);margin-bottom:0.5rem;margin-top:1.5rem;}
+.readme-p{font-size:0.82rem;color:var(--muted);line-height:1.7;margin-bottom:0.5rem;}
+.readme-divider{border:none;border-top:1px solid var(--line);margin:1.25rem 0;}
+
+/* — Tier chain visual — */
+.tier-chain{display:flex;flex-direction:column;gap:0.5rem;margin:1rem 0;}
+.tier-row{display:flex;align-items:center;gap:12px;background:var(--surface2);border:1px solid var(--line);border-radius:var(--radius);padding:0.85rem 1rem;}
+.tier-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:500;flex-shrink:0;}
+.tier-label{font-size:0.85rem;font-weight:500;color:var(--ink);}
+.tier-desc{font-size:0.78rem;color:var(--muted);}
+.tier-arrow{text-align:center;color:var(--hint);font-size:0.75rem;padding:2px 0;}
+
+/* — Tool form — */
+.block{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.block-title{font-size:0.85rem;font-weight:500;color:var(--navy);margin-bottom:0.75rem;}
+.field-row{margin-bottom:0.9rem;}
+.field-label{font-size:0.78rem;color:var(--muted);margin-bottom:0.35rem;display:flex;justify-content:space-between;}
+.field-label b{color:var(--ink);}
+input[type="range"]{width:100%;accent-color:var(--gold);}
+.tier-input-row{display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;}
+.tier-input-row label{font-size:0.8rem;color:var(--ink);width:190px;flex-shrink:0;}
+
+.result-band{margin-top:1.25rem;padding:1rem;border-radius:var(--radius);background:var(--surface2);}
+.result-label{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:0.3rem;}
+.result-value{font-family:var(--serif);font-size:1.8rem;color:var(--navy);}
+.result-note{font-size:0.8rem;color:var(--muted);margin-top:0.3rem;}
+
+.btn{display:inline-block;background:var(--navy);color:#fff;border:none;border-radius:8px;padding:0.75rem 1.25rem;font-size:0.85rem;font-weight:500;cursor:pointer;font-family:var(--sans);}
+.btn:hover{background:var(--navy-deep);}
+
+.foot{margin-top:2.5rem;text-align:center;font-size:13px;color:var(--hint);}
+
+@media (max-width:600px){
+  .tier-input-row{flex-wrap:wrap;}
+  .tier-input-row label{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- MOSei brand header -->
+<div class="tool-header">
+  <div>
+    <div class="tool-logo">MOS<span>ei</span></div>
+    <div class="tool-tagline">Tier Meeting Governance</div>
+  </div>
+  <div class="tool-badge">Norman&rsquo;s Gap Framework</div>
+</div>
+
+<!-- Tabs -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('readme')">Read me</button>
+  <button class="tab-btn" onclick="showTab('tool')">Run diagnostic</button>
+</div>
+
+<!-- READ ME TAB -->
+<div id="tab-readme">
+  <div class="wrap">
+    <div class="readme-hero">
+      <div class="readme-hero-title">Tier Meeting System for Plant Managers</div>
+      <div class="readme-hero-sub">Most tier meeting content explains the concept. This is the tool. A structure for Tier 1, 2, and 3 meetings where what happens in one actually determines what the next one can see. We call that Tier Meeting Governance. If Tier 1 breaks down, Tier 3 never gets the real signal, no matter how good the meeting looks on paper.</div>
+    </div>
+
+    <div class="readme-h3">What this tool measures</div>
+    <p class="readme-p">Most tier meeting audits check if the meetings happen. This checks whether they connect. Tier 1 gates what Tier 2 can see. Tier 2 gates what Tier 3 can see. A near-perfect Tier 3 meeting means nothing if Tier 1 is broken, because the signal never made it that far.</p>
+    <p class="readme-p">That's why this uses a multiplicative chain, not an average. A weak link anywhere in the chain drags the whole score down, the same way it drags down what leadership actually sees on the floor.</p>
+
+    <hr class="readme-divider">
+
+    <div class="readme-h3">How the tiers connect</div>
+    <div class="tier-chain">
+      <div class="tier-row">
+        <div class="tier-num">1</div>
+        <div>
+          <div class="tier-label">Tier 1: Shift / Line Level</div>
+          <div class="tier-desc">Raw signal captured at the point of work. If this breaks, nothing above it is real.</div>
+        </div>
+      </div>
+      <div class="tier-arrow">gates &darr;</div>
+      <div class="tier-row">
+        <div class="tier-num">2</div>
+        <div>
+          <div class="tier-label">Tier 2: Area / Department</div>
+          <div class="tier-desc">Aggregates Tier 1 signal into decisions and escalations.</div>
+        </div>
+      </div>
+      <div class="tier-arrow">gates &darr;</div>
+      <div class="tier-row">
+        <div class="tier-num">3</div>
+        <div>
+          <div class="tier-label">Tier 3: Site / Leadership</div>
+          <div class="tier-desc">Only as accurate as what survived Tiers 1 and 2.</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="readme-divider">
+    <p class="readme-source" style="font-size:0.72rem;color:var(--hint);font-style:italic;">Part of the MOSei Foundation and MOS Bundle toolkits.</p>
+  </div>
+</div>
+
+<!-- TOOL TAB -->
+<div id="tab-tool" style="display:none;">
+  <div class="wrap">
+    <div class="block">
+      <div class="block-title">Score each tier</div>
+      <p class="readme-p" style="margin-bottom:1rem;">Rate how reliably each tier meeting actually happens, stays on structure, and passes along real signal (not just status). 0 = rarely functions. 100 = fully reliable.</p>
+
+      <div class="field-row">
+        <div class="field-label"><span>Tier 1: Shift / Line Level</span><b id="t1val">70</b></div>
+        <input type="range" id="t1" min="0" max="100" value="70" oninput="calc()">
+      </div>
+      <div class="field-row">
+        <div class="field-label"><span>Tier 2: Area / Department</span><b id="t2val">70</b></div>
+        <input type="range" id="t2" min="0" max="100" value="70" oninput="calc()">
+      </div>
+      <div class="field-row">
+        <div class="field-label"><span>Tier 3: Site / Leadership</span><b id="t3val">70</b></div>
+        <input type="range" id="t3" min="0" max="100" value="70" oninput="calc()">
+      </div>
+
+      <div class="result-band">
+        <div class="result-label">Governance Yield</div>
+        <div class="result-value" id="yieldResult">34%</div>
+        <div class="result-note" id="yieldNote">Signal reaching leadership is a fraction of what any single tier's score suggests.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Get the full toolkit</div>
+      <p class="readme-p" style="margin-bottom:1rem;">This diagnostic is part of the MOS Bundle: the Tier Meeting Diagnostic template, Meeting Quality Score, and 16 other tools built to fix what this score reveals.</p>
+      <a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="btn" style="text-decoration:none;">Get the MOS Bundle &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<div class="foot">MOSei &middot; Tier Meeting Governance</div>
+
+<script>
+function showTab(name){
+  document.getElementById('tab-readme').style.display = name === 'readme' ? 'block' : 'none';
+  document.getElementById('tab-tool').style.display = name === 'tool' ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  event.target.classList.add('active');
+  if(name === 'tool' && window.plausible){
+    window.plausible('Tier Meeting Diagnostic Opened');
+  }
+}
+
+function calc(){
+  var t1 = parseInt(document.getElementById('t1').value);
+  var t2 = parseInt(document.getElementById('t2').value);
+  var t3 = parseInt(document.getElementById('t3').value);
+  document.getElementById('t1val').textContent = t1;
+  document.getElementById('t2val').textContent = t2;
+  document.getElementById('t3val').textContent = t3;
+
+  var y = (t1/100) * (t2/100) * (t3/100) * 100;
+  document.getElementById('yieldResult').textContent = Math.round(y) + '%';
+
+  var note = document.getElementById('yieldNote');
+  if(y >= 60){
+    note.textContent = 'Strong governance. Signal is largely surviving the full chain.';
+  } else if(y >= 30){
+    note.textContent = 'Moderate leakage. Check whichever tier scored lowest first, since it drags the whole chain down.';
+  } else {
+    note.textContent = 'Significant leakage. Leadership is likely seeing a fraction of the real floor signal.';
+  }
+}
+calc();
+</script>
+
+</body>
+</html>
