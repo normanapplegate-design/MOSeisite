@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>14 Tools Every Manager Must Have | MOSei</title>
+<meta name="description" content="Fourteen field diagnostics built from the management laws already running your plant, whether you've named them or not. Pareto, Goodhart's, Little's Law, Theory of Constraints, and more, plus Norman's Law. One bundle.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --navy-deep:#001543;
+    --navy:#1a2744;
+    --gold:#c9a84c;
+    --gold-light:#e8c97a;
+    --cream:#f8f5ef;
+    --ink:#1a2744;
+    --line:#dcd5c4;
+    --muted:#6b7280;
+    --danger:#8a4a3a;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+
+  a{ color:inherit; }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    background:linear-gradient(135deg, var(--navy-deep), var(--navy));
+    color:var(--cream);
+    padding:64px 24px 56px;
+    text-align:center;
+    border-bottom:3px solid var(--gold);
+  }
+
+  .eyebrow{
+    font-family:'Inter', sans-serif;
+    font-size:12px;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    margin-bottom:16px;
+  }
+
+  header.hero h1{
+    font-family:'EB Garamond', serif;
+    font-weight:600;
+    font-size:clamp(34px, 5vw, 54px);
+    letter-spacing:0.2px;
+    max-width:780px;
+    margin:0 auto 18px;
+    line-height:1.15;
+  }
+
+  header.hero p.sub{
+    font-family:'EB Garamond', serif;
+    font-style:italic;
+    font-size:19px;
+    color:#cfd6e6;
+    max-width:560px;
+    margin:0 auto 34px;
+  }
+
+  .cta-row{
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+
+  .btn{
+    display:inline-block;
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:15px;
+    padding:14px 28px;
+    border-radius:5px;
+    border:1px solid var(--gold);
+    background:var(--gold);
+    color:var(--navy-deep);
+    cursor:pointer;
+    letter-spacing:0.3px;
+    text-decoration:none;
+    transition:transform 0.15s ease, background 0.15s ease;
+  }
+
+  .btn:hover{ background:var(--gold-light); transform:translateY(-1px); }
+
+  .btn.ghost{
+    background:none;
+    color:var(--cream);
+    border:1px solid rgba(248,245,239,0.4);
+  }
+
+  .btn.ghost:hover{ border-color:var(--cream); background:rgba(248,245,239,0.06); }
+
+  .btn.dark{
+    background:var(--navy);
+    color:#fff;
+    border:1px solid var(--navy);
+  }
+
+  .btn.dark:hover{ background:var(--navy-deep); }
+
+  .btn.secondary{
+    background:none;
+    color:var(--navy);
+    border:1px solid var(--line);
+  }
+
+  .btn.secondary:hover{ border-color:var(--navy); background:var(--cream); }
+
+  .trust-line{
+    font-size:13px;
+    color:#9fa9c2;
+    letter-spacing:0.2px;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  main{ max-width:900px; margin:0 auto; padding:0 24px; }
+
+  section{ padding:56px 0; border-bottom:1px solid var(--line); }
+  section:last-of-type{ border-bottom:none; }
+
+  h2{
+    font-family:'EB Garamond', serif;
+    font-weight:600;
+    font-size:30px;
+    color:var(--navy);
+    margin-bottom:10px;
+    text-align:center;
+  }
+
+  p.section-sub{
+    color:var(--muted);
+    font-size:15px;
+    text-align:center;
+    max-width:560px;
+    margin:0 auto 36px;
+  }
+
+  /* ---------- PROBLEM ---------- */
+  .problem-text{
+    max-width:640px;
+    margin:0 auto;
+    font-size:17px;
+    color:var(--ink);
+  }
+
+  .problem-text p{ margin-bottom:16px; }
+
+  .problem-text p:last-child{ margin-bottom:0; }
+
+  .problem-text .pivot{
+    font-family:'EB Garamond', serif;
+    font-style:italic;
+    font-size:19px;
+    color:var(--navy);
+    border-left:3px solid var(--gold);
+    padding-left:18px;
+    margin-top:24px;
+  }
+
+  /* ---------- TOOL LEDGER ---------- */
+  .ledger{ counter-reset:tool; }
+
+  .ledger-row{
+    display:grid;
+    grid-template-columns:26px 40px 1fr 84px;
+    align-items:start;
+    gap:14px;
+    padding:18px 0;
+    border-bottom:1px solid var(--line);
+    opacity:0;
+    animation:fadeUp 0.5s ease forwards;
+  }
+
+  @media (max-width:560px){
+    .ledger-row{ grid-template-columns:22px 34px 1fr; }
+    .ledger-buy{ grid-column:1 / -1; flex-direction:row; justify-content:flex-end; gap:10px; margin-top:8px; }
+  }
+
+  .ledger-row:last-child{ border-bottom:none; }
+
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(8px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .pick-check{
+    margin-top:5px;
+    width:16px;
+    height:16px;
+    accent-color:var(--navy);
+    cursor:pointer;
+  }
+
+  .ledger-num{
+    font-family:'EB Garamond', serif;
+    font-size:22px;
+    font-weight:600;
+    color:var(--gold);
+    padding-top:2px;
+  }
+
+  .ledger-body h3{
+    font-family:'EB Garamond', serif;
+    font-weight:600;
+    font-size:19px;
+    color:var(--navy);
+    margin-bottom:4px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .ledger-body p{
+    font-size:14.5px;
+    color:var(--muted);
+  }
+
+  .ledger-buy{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:6px;
+    padding-top:2px;
+  }
+
+  .ledger-price{
+    font-family:'EB Garamond', serif;
+    font-size:17px;
+    font-weight:600;
+    color:var(--navy);
+  }
+
+  .btn.tiny{
+    padding:6px 14px;
+    font-size:12.5px;
+    border-radius:4px;
+  }
+
+  .flagship-tag{
+    display:inline-block;
+    font-family:'Inter', sans-serif;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+    background:var(--navy);
+    color:var(--gold-light);
+    padding:3px 9px;
+    border-radius:10px;
+  }
+
+  .ledger-row.flagship{
+    background:linear-gradient(90deg, rgba(201,168,76,0.08), transparent);
+    border-left:3px solid var(--gold);
+    padding-left:14px;
+    margin-left:-14px;
+  }
+
+  /* ---------- SELECTION BAR ---------- */
+  .selection-bar{
+    position:sticky;
+    bottom:16px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-left:4px solid var(--navy);
+    border-radius:8px;
+    padding:16px 20px;
+    margin-top:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    box-shadow:0 4px 18px rgba(26,39,68,0.12);
+    transition:border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .selection-bar.beats-bundle{
+    border-left-color:var(--gold);
+    background:#fdf9ef;
+  }
+
+  .selection-text{
+    font-size:14px;
+    color:var(--ink);
+  }
+
+  .selection-text strong{ color:var(--navy); }
+
+  .selection-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  /* ---------- PRICING ---------- */
+  .pricing-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:40px;
+    max-width:520px;
+    margin:0 auto;
+    text-align:center;
+  }
+
+  .price-compare{
+    font-size:15px;
+    color:var(--muted);
+    text-decoration:line-through;
+    margin-bottom:4px;
+  }
+
+  .price-main{
+    font-family:'EB Garamond', serif;
+    font-size:56px;
+    font-weight:600;
+    color:var(--navy);
+    line-height:1;
+    margin-bottom:6px;
+  }
+
+  .price-save{
+    display:inline-block;
+    background:#e9e2cf;
+    color:var(--navy);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.4px;
+    padding:4px 12px;
+    border-radius:12px;
+    margin-bottom:22px;
+  }
+
+  .pricing-card .btn{ width:100%; margin-bottom:14px; }
+
+  .pricing-fine{ font-size:12.5px; color:var(--muted); }
+
+  /* ---------- WHAT YOU GET ---------- */
+  .get-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+
+  @media (max-width:600px){ .get-grid{ grid-template-columns:1fr; } }
+
+  .get-item{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+  }
+
+  .get-icon{
+    flex-shrink:0;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:var(--navy);
+    color:var(--gold-light);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:700;
+    font-family:'EB Garamond', serif;
+  }
+
+  .get-item h4{
+    font-family:'EB Garamond', serif;
+    font-size:16px;
+    color:var(--navy);
+    margin-bottom:3px;
+  }
+
+  .get-item p{ font-size:13.5px; color:var(--muted); }
+
+  /* ---------- FAQ ---------- */
+  .faq-item{ margin-bottom:24px; max-width:640px; margin-left:auto; margin-right:auto; }
+
+  .faq-item h4{
+    font-family:'EB Garamond', serif;
+    font-size:17px;
+    color:var(--navy);
+    margin-bottom:6px;
+  }
+
+  .faq-item p{ font-size:14.5px; color:var(--ink); }
+
+  /* ---------- FINAL CTA ---------- */
+  .final-cta{
+    text-align:center;
+    background:linear-gradient(135deg, var(--navy-deep), var(--navy));
+    border-radius:10px;
+    padding:48px 32px;
+    color:var(--cream);
+  }
+
+  .final-cta h2{ color:var(--cream); }
+
+  .final-cta p.section-sub{ color:#cfd6e6; }
+
+  footer{
+    text-align:center;
+    padding:32px 24px;
+    color:var(--muted);
+    font-size:12px;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">MOSei &middot; Field Pattern Diagnostics</div>
+  <h1>14 Tools Every Manager Must Have</h1>
+  <p class="sub">Built from the management laws already running your plant, whether you've named them or not.</p>
+  <div class="cta-row">
+    <a href="#pricing" class="btn">Bundle Launching This Week</a>
+    <a href="#ledger" class="btn ghost">See What's Inside</a>
+  </div>
+  <div class="trust-line">14 self-contained tools &middot; work offline &middot; no login, no subscription</div>
+</header>
+
+<main>
+
+  <section id="problem">
+    <div class="problem-text">
+      <p>Most of the pressure you deal with in a plant or an operation was named a long time ago, by someone else, in a different industry, usually before you were born. It still shows up the same way. The metric that gets gamed the moment it becomes a target. The meeting that expands to fill the hour regardless of what's on the agenda. The one machine quietly setting the ceiling for everyone downstream of it, while attention goes wherever looks busiest instead.</p>
+      <p>You've probably already noticed most of these patterns. What's missing usually isn't the insight, it's a fast, repeatable way to check for it before it costs you a quarter.</p>
+      <p class="pivot">Fourteen tools, one for each pattern, built to trace it in your own numbers in a few minutes.</p>
+    </div>
+  </section>
+
+  <section id="ledger">
+    <h2>What's Inside</h2>
+    <p class="section-sub">Fourteen self-contained diagnostics, $19 each on their own. Check the ones you want to compare against the bundle, or buy any single tool right now.</p>
+
+    <div class="ledger">
+
+      <div class="ledger-row" style="animation-delay:0.02s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/pareto-law-tracer" aria-label="Select Pareto Law Tracer">
+                <div class="ledger-num">01</div>
+        <div class="ledger-body">
+          <h3>Pareto Law Tracer</h3>
+          <p>Finds the slice of effort actually producing your results, and flags the long tail eating your team's time for almost nothing back.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/pareto-law-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row" style="animation-delay:0.06s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/goodharts-law-tracer" aria-label="Select Goodhart's Law Tracer">
+                <div class="ledger-num">02</div>
+        <div class="ledger-body">
+          <h3>Goodhart's Law Tracer</h3>
+          <p>Scores your own KPIs for how far they've drifted from the outcome they were built to represent.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/goodharts-law-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row" style="animation-delay:0.10s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/parkinsons-law-tracer" aria-label="Select Parkinson's Law Tracer">
+                <div class="ledger-num">03</div>
+        <div class="ledger-body">
+          <h3>Parkinson's Law Tracer</h3>
+          <p>Compares allotted time against real work content across your recurring meetings, and totals up the padding.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/parkinsons-law-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row" style="animation-delay:0.14s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/brooks-law-tracer" aria-label="Select Brooks's Law Tracer">
+                <div class="ledger-num">04</div>
+        <div class="ledger-body">
+          <h3>Brooks's Law Tracer</h3>
+          <p>Models whether adding people to a late project actually buys back time, or just adds ramp-up drag on top of the delay.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/brooks-law-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row" style="animation-delay:0.18s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/conways-law-tracer" aria-label="Select Conway's Law Tracer">
+                <div class="ledger-num">05</div>
+        <div class="ledger-body">
+          <h3>Conway's Law Tracer</h3>
+          <p>Maps your systems against your teams to find the seams where fragmented ownership is quietly slowing everything down.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/conways-law-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row" style="animation-delay:0.22s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/peter-principle-tracer" aria-label="Select Peter Principle Tracer">
+                <div class="ledger-num">06</div>
+        <div class="ledger-body">
+          <h3>Peter Principle Tracer</h3>
+          <p>Tracks fit before and after a promotion, so a role that's outgrown someone gets caught early, as a coaching problem, not a performance one.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/peter-principle-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row" style="animation-delay:0.26s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/amaras-law-tracer" aria-label="Select Amara's Law Tracer">
+                <div class="ledger-num">07</div>
+        <div class="ledger-body">
+          <h3>Amara's Law Tracer</h3>
+          <p>Separates short-term hype from long-term blind spots on new tools and initiatives, starting from day 90, not year three.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/amaras-law-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row" style="animation-delay:0.30s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/dunning-kruger-tracer" aria-label="Select Dunning-Kruger Effect Tracer">
+                <div class="ledger-num">08</div>
+        <div class="ledger-body">
+          <h3>Dunning-Kruger Effect Tracer</h3>
+          <p>Compares genuinely blind self-assessment against peer assessment, built for real coaching conversations, not scoreboards.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/dunning-kruger-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row" style="animation-delay:0.34s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/bannister-effect-tracer" aria-label="Select Bannister Effect Tracer">
+                <div class="ledger-num">09</div>
+        <div class="ledger-body">
+          <h3>Bannister Effect Tracer</h3>
+          <p>Checks whether a breakthrough actually spread through your team, or stayed a one-off nobody else believed was repeatable.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/bannister-effect-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row" style="animation-delay:0.38s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/littles-law-tracer" aria-label="Select Little's Law Tracer">
+                <div class="ledger-num">10</div>
+        <div class="ledger-body">
+          <h3>Little's Law Tracer</h3>
+          <p>Turns work in progress and throughput into a real cycle time prediction, and shows exactly where hidden delay is hiding.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/littles-law-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row" style="animation-delay:0.42s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/theory-of-constraints-tracer" aria-label="Select Theory of Constraints Tracer">
+                <div class="ledger-num">11</div>
+        <div class="ledger-body">
+          <h3>Theory of Constraints Tracer</h3>
+          <p>Finds the one step actually setting your ceiling, and models the real payoff of investing in it before you spend a dollar.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/theory-of-constraints-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row" style="animation-delay:0.46s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/demings-rule-tracer" aria-label="Select Deming's 94/6 Rule Tracer">
+                <div class="ledger-num">12</div>
+        <div class="ledger-body">
+          <h3>Deming's 94/6 Rule Tracer</h3>
+          <p>Runs recurring problems through the system, not the person, to find out how much of the fault is actually fixable at the root.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/demings-rule-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row" style="animation-delay:0.50s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/hofstadters-law-tracer" aria-label="Select Hofstadter's Law Tracer">
+                <div class="ledger-num">13</div>
+        <div class="ledger-body">
+          <h3>Hofstadter's Law Tracer</h3>
+          <p>Calculates your team's real optimism multiplier from past estimates, and applies it forward to the next one.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/hofstadters-law-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+      <div class="ledger-row flagship" style="animation-delay:0.54s">
+        <input type="checkbox" class="pick-check" data-price="19" data-url="https://moseiorg.gumroad.com/l/normans-law-tracer" aria-label="Select Norman's Law Tracer">
+                <div class="ledger-num">14</div>
+        <div class="ledger-body">
+          <h3>Norman's Law Tracer <span class="flagship-tag">Flagship</span></h3>
+          <p>The foundational diagnostic behind the other thirteen. Tests any documented process against what actually happens under real pressure.</p>
+        </div>
+        <div class="ledger-buy">
+          <div class="ledger-price">$19</div>
+          <a href="https://moseiorg.gumroad.com/l/normans-law-tracer?wanted=true" class="btn tiny" target="_blank" rel="noopener">Buy</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="selection-bar" id="selection-bar">
+      <div class="selection-text" id="selection-text">Check any tools above to compare against the bundle.</div>
+      <div class="selection-actions">
+        <a href="#" class="btn tiny secondary" id="checkout-selected" style="display:none;">Open Checkout for Selected</a>
+        <a href="#ledger" class="btn tiny dark" id="selection-bundle-cta" style="display:none;">Bundle Launching This Week</a>
+      </div>
+    </div>
+
+  </section>
+
+  <section id="pricing">
+    <h2>Get All 14</h2>
+    <p class="section-sub">One purchase, every tool, no subscription.</p>
+
+    <div class="pricing-card">
+      <div class="price-compare">$266 bought one at a time</div>
+      <div class="price-main">$129</div>
+      <div class="price-save">Save 52%</div>
+      <a href="#ledger" class="btn dark">Bundle Launching This Week</a>
+      <div class="pricing-fine">Bundle checkout goes live within days. All 14 tools are already available individually below, $19 each.</div>
+    </div>
+  </section>
+
+  <section id="whats-included">
+    <h2>How It Works</h2>
+    <p class="section-sub">No installs, no dashboards to configure, no data leaving your machine.</p>
+
+    <div class="get-grid">
+      <div class="get-item">
+        <div class="get-icon">1</div>
+        <div>
+          <h4>Open it in any browser</h4>
+          <p>Each tool is one file. Double-click it, or drop it in a browser tab, and it runs.</p>
+        </div>
+      </div>
+      <div class="get-item">
+        <div class="get-icon">2</div>
+        <div>
+          <h4>Enter your own numbers</h4>
+          <p>A table, a checklist, a couple of fields. Real data from your own operation.</p>
+        </div>
+      </div>
+      <div class="get-item">
+        <div class="get-icon">3</div>
+        <div>
+          <h4>Get a scored trace</h4>
+          <p>A chart, a rating, a plain-language read on what the pattern is doing in your numbers.</p>
+        </div>
+      </div>
+      <div class="get-item">
+        <div class="get-icon">4</div>
+        <div>
+          <h4>Keep it, reuse it</h4>
+          <p>Nothing expires. Run it again next quarter on the same file.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2>A Few Questions</h2>
+
+    <div class="faq-item">
+      <h4>Do I need to know the Norman System to use these?</h4>
+      <p>No. Thirteen of the fourteen are built from well-known, public management principles, Pareto, Goodhart's, Little's Law, and the rest. Norman's Law is the one exception, and it stands on its own even without the rest of the framework.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4>Are these related to the MOS Bundle or Enterprise tier?</h4>
+      <p>They're a separate line. The MOS tools are built around your management operating system directly. This bundle is a broader diagnostic toolkit, useful whether or not you're running MOS.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4>Can I buy just one or two instead of all 14?</h4>
+      <p>Yes. Every tool is $19 on its own, check the tools you want in the list above and buy them individually. The bundle only makes sense once you're past about seven tools, otherwise buying a few outright is the better deal.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4>What format are they in?</h4>
+      <p>Each tool is a single HTML file. Open it in Chrome, Safari, Firefox, whatever you use. No install, no login, nothing to configure.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4>Will more tools get added later?</h4>
+      <p>Likely, yes. If the bundle grows, existing buyers get the new tools at no extra charge.</p>
+    </div>
+  </section>
+
+  <section id="final" style="border-bottom:none;">
+    <div class="final-cta">
+      <h2>14 Tools Every Manager Must Have</h2>
+      <p class="section-sub">Every one of these patterns is already running in your operation. Now you can see exactly where.</p>
+      <a href="#pricing" class="btn">Bundle Launching This Week</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>MOSei &middot; Field Pattern Diagnostics &middot; The Norman System</footer>
+
+<script>
+(function(){
+  const checks = Array.from(document.querySelectorAll('.pick-check'));
+  const bar = document.getElementById('selection-bar');
+  const text = document.getElementById('selection-text');
+  const checkoutBtn = document.getElementById('checkout-selected');
+  const bundleCta = document.getElementById('selection-bundle-cta');
+  const BUNDLE_PRICE = 129;
+
+  function update(){
+    const selected = checks.filter(c => c.checked);
+    const total = selected.length * 19;
+
+    if(selected.length === 0){
+      text.innerHTML = 'Check any tools above to compare against the bundle.';
+      checkoutBtn.style.display = 'none';
+      bundleCta.style.display = 'none';
+      bar.classList.remove('beats-bundle');
+      return;
+    }
+
+    checkoutBtn.style.display = 'inline-block';
+    checkoutBtn.textContent = `Open Checkout for ${selected.length} Selected`;
+
+    if(total >= BUNDLE_PRICE){
+      text.innerHTML = `<strong>${selected.length} tools selected &middot; $${total}</strong> &mdash; the bundle gets you all 14 for less.`;
+      bundleCta.style.display = 'inline-block';
+      bar.classList.add('beats-bundle');
+    } else {
+      const away = BUNDLE_PRICE - total;
+      text.innerHTML = `<strong>${selected.length} tools selected &middot; $${total}</strong> &mdash; $${away} away from the full bundle at $129.`;
+      bundleCta.style.display = 'none';
+      bar.classList.remove('beats-bundle');
+    }
+  }
+
+  checks.forEach(c => c.addEventListener('change', update));
+
+  checkoutBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    const selected = checks.filter(c => c.checked);
+    if(selected.length === 0) return;
+    selected.forEach(c => window.open(c.dataset.url, '_blank'));
+    text.innerHTML = `Opened ${selected.length} tabs. Click <strong>Add to Cart</strong> on each, then check out once from your Gumroad cart.`;
+  });
+
+  update();
+})();
+</script>
+
+</body>
+</html>
