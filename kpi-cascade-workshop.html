@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KPI Cascade Workshop Template for Manufacturing | MOSei</title>
+<meta name="description" content="A KPI cascade workshop built for plant floors, not generic business dashboards. Turn top-level targets into signals your shift leads can actually act on.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --navy-deep:#001543;
+    --navy:#1a2744;
+    --gold:#c9a84c;
+    --gold-light:#e8c97a;
+    --cream:#f8f5ef;
+    --text:#1a2744;
+    --text-muted:#6b7280;
+    --border:#dcd5c4;
+    --radius:8px;
+    --radius-lg:14px;
+    --serif:'EB Garamond', serif;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:var(--cream);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+  }
+
+  a{ color:inherit; }
+
+  header{
+    background:linear-gradient(135deg, var(--navy-deep), var(--navy));
+    color:#fff;
+    padding:56px 24px 48px;
+    text-align:center;
+    border-bottom:3px solid var(--gold);
+  }
+
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    margin-bottom:14px;
+  }
+
+  header h1{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(28px, 4.5vw, 42px);
+    max-width:760px;
+    margin:0 auto 16px;
+    line-height:1.2;
+  }
+
+  header p.sub{
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:17px;
+    color:#cfd6e6;
+    max-width:600px;
+    margin:0 auto;
+  }
+
+  main{ max-width:820px; margin:0 auto; padding:0 24px 60px; }
+
+  .intro{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:32px;
+    margin-top:-24px;
+    margin-bottom:36px;
+    position:relative;
+    z-index:2;
+  }
+
+  .intro p{ font-size:16px; margin-bottom:14px; }
+  .intro p:last-child{ margin-bottom:0; }
+
+  .intro .signal-note{
+    font-family:var(--serif);
+    font-style:italic;
+    color:var(--navy);
+    border-left:3px solid var(--gold);
+    padding-left:16px;
+    margin-top:18px;
+  }
+
+  section{ margin-bottom:44px; }
+
+  h2{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:24px;
+    color:var(--navy);
+    margin-bottom:16px;
+  }
+
+  h3{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:18px;
+    color:var(--navy);
+    margin-bottom:8px;
+  }
+
+  p{ font-size:15px; color:#333; }
+
+  .spine-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+    gap:12px;
+    margin-top:18px;
+  }
+
+  .spine-item{
+    background:#fff;
+    border:1px solid var(--border);
+    border-top:3px solid var(--gold);
+    border-radius:var(--radius);
+    padding:16px 14px;
+    text-align:center;
+  }
+
+  .spine-item .letter{
+    font-family:var(--serif);
+    font-size:22px;
+    color:var(--navy);
+    font-weight:600;
+  }
+
+  .spine-item .label{
+    font-size:12px;
+    color:var(--text-muted);
+    margin-top:4px;
+  }
+
+  .deck-card{
+    background:var(--navy);
+    color:#fff;
+    border-radius:var(--radius-lg);
+    padding:32px;
+    margin-bottom:36px;
+  }
+
+  .deck-card h2{ color:#fff; }
+
+  .deck-card .price-line{
+    font-family:var(--serif);
+    font-size:32px;
+    margin:6px 0 4px;
+  }
+
+  .deck-card .price-sub{
+    font-size:13px;
+    color:rgba(255,255,255,0.55);
+    margin-bottom:20px;
+  }
+
+  .deck-list{
+    list-style:none;
+    margin-bottom:24px;
+  }
+
+  .deck-list li{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    font-size:14px;
+    color:rgba(255,255,255,0.85);
+    padding:8px 0;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+
+  .deck-list li:last-child{ border-bottom:none; }
+
+  .deck-list .check{ color:var(--gold-light); font-weight:700; flex-shrink:0; }
+
+  .btn{
+    display:inline-block;
+    font-weight:600;
+    font-size:15px;
+    padding:13px 26px;
+    border-radius:var(--radius);
+    text-decoration:none;
+    text-align:center;
+    transition:background 0.2s;
+  }
+
+  .btn.gold{
+    background:var(--gold);
+    color:var(--navy-deep);
+  }
+
+  .btn.gold:hover{ background:var(--gold-light); }
+
+  .deck-card .btn{ width:100%; }
+
+  .deck-fine{
+    font-size:12.5px;
+    color:rgba(255,255,255,0.5);
+    text-align:center;
+    margin-top:12px;
+  }
+
+  .checker-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:32px;
+  }
+
+  .checker-card .free-tag{
+    display:inline-block;
+    background:var(--cream);
+    color:var(--navy);
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    padding:4px 10px;
+    border-radius:12px;
+    margin-bottom:14px;
+    border:1px solid var(--border);
+  }
+
+  .criteria-list{ margin:20px 0; }
+
+  .criteria-item{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    padding:12px 0;
+    border-bottom:1px solid var(--border);
+  }
+
+  .criteria-item:last-child{ border-bottom:none; }
+
+  .criteria-item input[type="checkbox"]{
+    margin-top:3px;
+    width:18px;
+    height:18px;
+    accent-color:var(--navy);
+    flex-shrink:0;
+    cursor:pointer;
+  }
+
+  .criteria-item label{
+    font-size:14.5px;
+    cursor:pointer;
+  }
+
+  .criteria-item label strong{ color:var(--navy); }
+
+  #checker-result{
+    margin-top:20px;
+    padding:18px 20px;
+    border-radius:var(--radius);
+    display:none;
+  }
+
+  #checker-result.show{ display:block; }
+
+  #checker-result .score{
+    font-family:var(--serif);
+    font-size:28px;
+    color:var(--navy);
+    margin-bottom:4px;
+  }
+
+  #checker-result .verdict{ font-size:14px; color:var(--text-muted); }
+
+  .kpi-input{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:10px 12px;
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+    margin-bottom:18px;
+    background:var(--cream);
+  }
+
+  .kpi-input:focus{ outline:none; border-color:var(--gold); }
+
+  footer{
+    text-align:center;
+    padding:32px 24px;
+    color:var(--text-muted);
+    font-size:12px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">MOSei &middot; MOS Bundle</div>
+  <h1>KPI Cascade Workshop Template (Manufacturing)</h1>
+  <p class="sub">Turn top-level targets into signals your shift leads can actually act on.</p>
+</header>
+
+<main>
+
+  <div class="intro">
+    <p>Most KPI cascade templates are written for retail or corporate dashboards, then relabeled for the floor. This one starts on the floor. It's built around SQDCP, leading versus lagging indicators, and a live build canvas you run in the room with your team, not a static org chart of metrics nobody asked for.</p>
+    <p class="signal-note">We track it as a Signal Flow Dashboard, because a number that doesn't reach the person who can act on it isn't a KPI. It's noise.</p>
+  </div>
+
+  <section>
+    <h2>The SQDCP Spine</h2>
+    <p>Every KPI in the cascade gets sorted against one of five categories before it's allowed onto a board. If it doesn't map cleanly to one, it doesn't belong on the wall yet.</p>
+    <div class="spine-grid">
+      <div class="spine-item"><div class="letter">S</div><div class="label">Safety</div></div>
+      <div class="spine-item"><div class="letter">Q</div><div class="label">Quality</div></div>
+      <div class="spine-item"><div class="letter">D</div><div class="label">Delivery</div></div>
+      <div class="spine-item"><div class="letter">C</div><div class="label">Cost</div></div>
+      <div class="spine-item"><div class="letter">P</div><div class="label">People</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Leading vs. Lagging, On Purpose</h2>
+    <p>A lagging indicator tells you what already happened. A leading indicator gives someone on the floor a chance to change the outcome before it happens. Most cascades are built almost entirely from lagging metrics, easy to report, useless for actually preventing the miss. The workshop forces at least one leading indicator into every tier of the cascade, tied to an action someone can actually take that shift.</p>
+  </section>
+
+  <section class="checker-card">
+    <span class="free-tag">Free &middot; No Signup</span>
+    <h2>Would This KPI Survive The Cascade?</h2>
+    <p>The full workshop runs a KPI through seven selection criteria before it earns a spot on a tier board. Try one candidate metric against a short version of that check right now.</p>
+
+    <input type="text" class="kpi-input" id="kpi-name" placeholder="Name a KPI you're considering, e.g. Overall Equipment Effectiveness">
+
+    <div class="criteria-list" id="criteria-list">
+      <div class="criteria-item">
+        <input type="checkbox" id="c1">
+        <label for="c1"><strong>Actionable.</strong> Someone at this tier can actually change it this shift, not just report it.</label>
+      </div>
+      <div class="criteria-item">
+        <input type="checkbox" id="c2">
+        <label for="c2"><strong>Owned.</strong> One named person or role is accountable for it, not "the team."</label>
+      </div>
+      <div class="criteria-item">
+        <input type="checkbox" id="c3">
+        <label for="c3"><strong>Traceable.</strong> It clearly rolls up to a Tier 2 or Tier 3 metric above it.</label>
+      </div>
+      <div class="criteria-item">
+        <input type="checkbox" id="c4">
+        <label for="c4"><strong>Timely.</strong> It updates often enough to actually inform a decision, not just a monthly review.</label>
+      </div>
+      <div class="criteria-item">
+        <input type="checkbox" id="c5">
+        <label for="c5"><strong>Simple to read.</strong> Someone can glance at it and know good from bad without translation.</label>
+      </div>
+      <div class="criteria-item">
+        <input type="checkbox" id="c6">
+        <label for="c6"><strong>Not gameable.</strong> Hitting the number doesn't quietly reward the wrong behavior.</label>
+      </div>
+      <div class="criteria-item">
+        <input type="checkbox" id="c7">
+        <label for="c7"><strong>SQDCP-mapped.</strong> It clearly belongs to one of the five categories above.</label>
+      </div>
+    </div>
+
+    <button class="btn gold" id="check-btn" style="border:none; cursor:pointer;">Check This KPI</button>
+
+    <div id="checker-result"></div>
+  </section>
+
+  <div class="deck-card">
+    <h2>The Full Workshop</h2>
+    <div class="price-line">Included in the MOS Bundle</div>
+    <div class="price-sub">14-slide facilitation deck &middot; run live with your team</div>
+    <ul class="deck-list">
+      <li><span class="check">&#10003;</span> SQDCP spine, explained and applied</li>
+      <li><span class="check">&#10003;</span> Leading vs. lagging indicator framework</li>
+      <li><span class="check">&#10003;</span> Live build canvas, run the workshop in the room</li>
+      <li><span class="check">&#10003;</span> Full 7-criteria selection framework, not the short version above</li>
+      <li><span class="check">&#10003;</span> Power questions for facilitating pushback</li>
+      <li><span class="check">&#10003;</span> Feeds directly into the KPI Register and Signal Flow Dashboard</li>
+    </ul>
+    <a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="btn gold" target="_blank" rel="noopener">Get The MOS Bundle &rarr;</a>
+    <p class="deck-fine">18 tools total, including this workshop, for $99.</p>
+  </div>
+
+</main>
+
+<footer>MOSei &middot; Management Operating System &middot; mosei.org</footer>
+
+<script>
+(function(){
+  const checkBtn = document.getElementById('check-btn');
+  const resultBox = document.getElementById('checker-result');
+  const checkboxes = document.querySelectorAll('#criteria-list input[type="checkbox"]');
+
+  checkBtn.addEventListener('click', function(){
+    const checkedCount = Array.from(checkboxes).filter(c => c.checked).length;
+    const kpiName = document.getElementById('kpi-name').value.trim() || 'This KPI';
+
+    let verdict, bg, textColor;
+    if(checkedCount === 7){
+      verdict = 'Passes all seven. This one earns a spot on the board.';
+      bg = '#e9e2cf'; textColor = 'var(--navy)';
+    } else if(checkedCount >= 5){
+      verdict = 'Close. Tighten the criteria it\'s missing before it goes on a tier board.';
+      bg = '#f1ecd9'; textColor = '#7a6a3a';
+    } else if(checkedCount >= 3){
+      verdict = 'Not ready yet. More than half the checks failed.';
+      bg = '#f1e2c9'; textColor = '#8a6a2f';
+    } else {
+      verdict = 'This isn\'t a cascade metric yet, it\'s a reporting number.';
+      bg = '#f1e2dd'; textColor = '#8a4a3a';
+    }
+
+    resultBox.innerHTML = `
+      <div class="score">${checkedCount} of 7</div>
+      <div class="verdict">${kpiName}: ${verdict}</div>
+    `;
+    resultBox.style.background = bg;
+    resultBox.style.color = textColor;
+    resultBox.classList.add('show');
+
+    if(typeof plausible === 'function'){
+      plausible('KPI Cascade Checker Used', {props: {score: checkedCount}});
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
