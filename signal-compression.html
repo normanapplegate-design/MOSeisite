@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Is Signal Compression? How Organizations Lose the Truth | MOSei</title>
+<meta name="description" content="Signal Compression is the loss of truth, clarity, and urgency as real problems move through organizational layers. Learn how it happens, why it's structural, and how to protect signal integrity.">
+<link rel="canonical" href="https://mosei.org/signal-compression">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap');
+  :root{
+    --navy-deep:#001543; --navy:#1a2744; --gold:#c9a84c; --gold-light:#e8c97a;
+    --cream:#f8f5ef; --text:#1a2744; --text-muted:#6b7280; --border:#dcd5c4;
+    --radius:8px; --radius-lg:14px; --serif:'EB Garamond', serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--cream); color:var(--text); font-family:'Inter', sans-serif; line-height:1.6; }
+  a{ color:inherit; }
+  header{ background:linear-gradient(135deg, var(--navy-deep), var(--navy)); color:#fff; padding:56px 24px 48px; text-align:center; border-bottom:3px solid var(--gold); }
+  .eyebrow{ font-size:12px; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold-light); margin-bottom:14px; }
+  header h1{ font-family:var(--serif); font-weight:600; font-size:clamp(28px, 4.5vw, 42px); max-width:820px; margin:0 auto 16px; line-height:1.2; }
+  header p.sub{ font-family:var(--serif); font-style:italic; font-size:17px; color:#cfd6e6; max-width:640px; margin:0 auto; }
+  main{ max-width:760px; margin:0 auto; padding:0 24px 60px; }
+  .intro{ background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; margin-top:-24px; margin-bottom:36px; position:relative; z-index:2; }
+  .intro p{ font-size:16px; margin-bottom:14px; } .intro p:last-child{ margin-bottom:0; }
+  article section{ margin-bottom:40px; }
+  h2{ font-family:var(--serif); font-weight:600; font-size:26px; color:var(--navy); margin-bottom:14px; margin-top:8px; }
+  h3{ font-family:var(--serif); font-weight:600; font-size:18px; color:var(--navy); margin-bottom:8px; margin-top:20px; }
+  p{ font-size:15.5px; color:#333; margin-bottom:12px; }
+  .translation-chain{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:18px; margin:16px 0; font-family:var(--serif); font-size:14.5px; color:var(--navy); }
+  .translation-chain span.arrow{ color:var(--gold); font-weight:600; }
+  .callout{ font-family:var(--serif); font-style:italic; color:var(--navy); border-left:3px solid var(--gold); padding:14px 18px; background:#fff; border-radius:0 var(--radius) var(--radius) 0; margin:16px 0; }
+  .divider{ border:none; border-top:1px solid var(--border); margin:40px 0; }
+  .cta-card{ background:var(--navy); color:#fff; border-radius:var(--radius-lg); padding:32px; margin:44px 0; text-align:center; }
+  .cta-card p{ color:rgba(255,255,255,0.85); margin-bottom:20px; }
+  .btn{ display:inline-block; font-weight:600; font-size:15px; padding:13px 26px; border-radius:var(--radius); text-decoration:none; text-align:center; transition:background 0.2s; background:var(--gold); color:var(--navy-deep); }
+  .btn:hover{ background:var(--gold-light); }
+  .related{ margin-top:36px; padding-top:24px; border-top:1px solid var(--border); font-size:14px; color:var(--text-muted); }
+  .related .related-label{ font-weight:600; color:var(--navy); display:block; margin-bottom:10px; }
+  .related a{ color:var(--navy); font-weight:500; text-decoration:none; border-bottom:1px solid var(--gold); }
+  .related a:hover{ color:var(--gold); }
+  .related-list{ display:flex; flex-wrap:wrap; gap:8px 18px; }
+  footer{ text-align:center; padding:32px 24px; color:var(--text-muted); font-size:12px; }
+</style>
+</head>
+<body>
+<div style="background:var(--cream);padding:12px 24px;font-size:13px;">
+  <a href="/" style="color:var(--navy);text-decoration:none;font-weight:500;">&larr; MOSei Home</a>
+  <span style="color:var(--text-muted);margin:0 8px;">|</span>
+  <a href="/knowledge" style="color:var(--navy);text-decoration:none;font-weight:500;">Knowledge</a>
+</div>
+<header>
+  <div class="eyebrow">MOSei &middot; The Norman System</div>
+  <h1>What Is Signal Compression?</h1>
+  <p class="sub">How organizations lose the truth as it moves upward.</p>
+</header>
+
+<main>
+  <div class="intro">
+    <p>Signal Compression is the loss of truth, clarity, and urgency as a real problem moves through the layers of an organization.</p>
+    <p>It's the mechanism that hides Norman's Gap until it's too late to close. A leader rarely receives a false version of a problem. They receive a softened one, translated so many times on the way up that the urgency which would have triggered a fast decision has quietly gone missing.</p>
+  </div>
+
+  <article>
+    <section>
+      <p>That distinction is the whole reason Signal Compression is worth naming on its own. The information isn't wrong. It's just no longer useful.</p>
+    </section>
+
+    <section>
+      <h2>How the Signal Gets Lost</h2>
+      <p>Every layer between the point where a problem is first seen and the person with the authority to act on it applies its own filter. Personal experience shapes how someone frames what they've observed. Political safety shapes what they're willing to say out loud. Career risk shapes how strongly they're willing to push it upward. None of that is malicious. It's how people naturally communicate inside a hierarchy, and it happens whether or not anyone intends it to.</p>
+      <p>The result is a kind of translation, not a lie:</p>
+      <div class="translation-chain">
+        "We run out of containers in 90 minutes" <span class="arrow">&rarr;</span> a risk in the next report <span class="arrow">&rarr;</span> a watch item in the following meeting <span class="arrow">&rarr;</span> a bullet point two layers up
+      </div>
+      <p>Each translation is technically accurate. None of them carries the original urgency. By the time the signal reaches someone who can act on it, it has been made comfortable enough to present and diluted well past the point of being useful.</p>
+      <p>This is why Signal Compression is structural rather than accidental. It's built into how organizations pass information upward by default, and it shows up in the same shape almost everywhere it's studied. Filtered field reports reaching decision-makers who no longer had an accurate picture. Summarized metrics replacing ground truth until the real state of things became unrecognizable to the people meant to be governing it. The mechanism repeats because the incentive to soften bad news repeats.</p>
+    </section>
+
+    <section>
+      <h2>Signal Compression vs. Window Separation</h2>
+      <p>Signal Compression is often confused with a related but distinct failure: Window Separation.</p>
+      <p>Signal Compression is about what's lost. The urgency and specificity of the problem itself gets diluted, and the leader ends up deciding on a distorted version of reality.</p>
+      <p>Window Separation is about the clock. Even when the problem itself is described accurately, the amount of time left to act on it often doesn't travel with the signal. A frontline team almost always knows exactly how much time a given situation allows. That knowledge rarely survives the trip upward with the rest of the report. Leadership can end up making a time-sensitive call without realizing it was ever time-sensitive at all.</p>
+      <p>They require different fixes. Signal Compression is addressed by protecting the integrity of the information itself as it moves through each layer. Window Separation is addressed by attaching a Decision Required By timestamp to every escalation, so the clock travels with the problem instead of staying behind at the point where it was first identified.</p>
+      <div class="callout">Most organizations that think they have a communication problem actually have both of these running at once, and treating them as the same issue means neither one gets fixed.</div>
+    </section>
+
+    <hr class="divider">
+
+    <section>
+      <h2>What Signal Compression Looks Like in Practice</h2>
+      <p>A few patterns show up consistently wherever Signal Compression is present.</p>
+      <p>A frontline observation gets summarized into a single line for a leadership meeting, and the specific detail that made it urgent doesn't survive the summary.</p>
+      <p>A KPI trending in the wrong direction gets contextualized before it reaches the executive level &mdash; "seasonally normal," "within expected variance" &mdash; rather than presented plainly alongside whatever comparable good news exists.</p>
+      <p>A concern raised at one tier gets softened into a "watch item" at the next tier, not because anyone decided to bury it, but because flagging it as urgent felt premature without more data.</p>
+      <p>A decision-maker asks a clarifying question in a review and gets an answer calibrated to reassure rather than inform.</p>
+      <p>None of these individually looks like a failure. Together, over enough layers, they produce a leadership team that is confidently acting on a version of the organization that no longer exists.</p>
+    </section>
+
+    <section>
+      <h2>Why This Matters More Than It Looks Like It Should</h2>
+      <p>The instinct when outcomes go wrong is to look for what leadership did wrong with the information they had. That's often the wrong question. The more useful question is what information leadership actually had, and how much of the original signal survived the trip to reach them.</p>
+      <p>An organization can have highly capable leaders making sound decisions on the information in front of them, and still produce bad outcomes consistently, because the information in front of them was never an accurate picture of the floor to begin with. Signal Compression turns a solvable problem into an invisible one. Nobody up the chain believes they're missing anything, because what they're seeing looks complete. It just isn't.</p>
+    </section>
+
+    <section>
+      <h2>Protecting Signal Integrity</h2>
+      <p>Reducing Signal Compression isn't primarily a training problem. It's a structural one.</p>
+      <p>The most direct intervention is treating raw signal as something that should travel intact rather than get summarized by default. That means escalations carrying the original specificity of the problem, not a softened restatement of it. It means leadership actively asking for the unfiltered version rather than accepting the pre-digested one, especially in reviews where bad news is more likely to have been rounded off before it arrived. And it means building the same Decision Required By discipline that addresses Window Separation, since a signal that carries both its full specificity and its actual clock is a signal that's very hard to compress without someone noticing.</p>
+      <p>Signal Compression connects directly to Norman's Gap. A widening gap between pressure and regulation is often invisible from the top of an organization precisely because Signal Compression has been quietly filtering out the evidence of it at every layer along the way. Measuring the gap and protecting signal integrity are two sides of the same problem.</p>
+    </section>
+
+    <div class="cta-card">
+      <h2 style="color:#fff;">See Where Your Own Signal Is Breaking Down</h2>
+      <p>MOSei's diagnostic tools are built to surface where signal integrity is breaking down inside your own organization, before the distorted version of reality becomes the one leadership is deciding on.</p>
+      <a href="/gap-diagnostic" class="btn">Run the Gap Diagnostic &rarr;</a>
+    </div>
+
+    <div class="related">
+      <span class="related-label">Related</span>
+      <div class="related-list">
+        <a href="/management-operating-system">What Is a Management Operating System?</a>
+        <a href="/normans-gap">What Is Norman's Gap?</a>
+        <a href="/manufacturing-management-operating-system">Management Operating Systems in Manufacturing</a>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer>MOSei &middot; Management Operating System &middot; mosei.org</footer>
+</body>
+</html>

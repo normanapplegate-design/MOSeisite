@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Is Norman's Gap? A Framework for Organizational Instability | MOSei</title>
+<meta name="description" content="Norman's Gap measures the distance between the pressure a system is under and its capacity to absorb it. Learn how the gap forms, how it's measured, and why it predicts instability before outcomes do.">
+<link rel="canonical" href="https://mosei.org/normans-gap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap');
+  :root{
+    --navy-deep:#001543; --navy:#1a2744; --gold:#c9a84c; --gold-light:#e8c97a;
+    --cream:#f8f5ef; --text:#1a2744; --text-muted:#6b7280; --border:#dcd5c4;
+    --radius:8px; --radius-lg:14px; --serif:'EB Garamond', serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--cream); color:var(--text); font-family:'Inter', sans-serif; line-height:1.6; }
+  a{ color:inherit; }
+  header{ background:linear-gradient(135deg, var(--navy-deep), var(--navy)); color:#fff; padding:56px 24px 48px; text-align:center; border-bottom:3px solid var(--gold); }
+  .eyebrow{ font-size:12px; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold-light); margin-bottom:14px; }
+  header h1{ font-family:var(--serif); font-weight:600; font-size:clamp(28px, 4.5vw, 42px); max-width:820px; margin:0 auto 16px; line-height:1.2; }
+  header p.sub{ font-family:var(--serif); font-style:italic; font-size:17px; color:#cfd6e6; max-width:640px; margin:0 auto; }
+  main{ max-width:760px; margin:0 auto; padding:0 24px 60px; }
+  .intro{ background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; margin-top:-24px; margin-bottom:36px; position:relative; z-index:2; }
+  .intro p{ font-size:16px; margin-bottom:14px; } .intro p:last-child{ margin-bottom:0; }
+  article section{ margin-bottom:40px; }
+  h2{ font-family:var(--serif); font-weight:600; font-size:26px; color:var(--navy); margin-bottom:14px; margin-top:8px; }
+  h3{ font-family:var(--serif); font-weight:600; font-size:18px; color:var(--navy); margin-bottom:8px; margin-top:20px; }
+  p{ font-size:15.5px; color:#333; margin-bottom:12px; }
+  .gap-formula{ display:flex; align-items:center; justify-content:center; gap:18px; flex-wrap:wrap; background:var(--navy-deep); border-radius:var(--radius-lg); padding:24px; margin:20px 0; }
+  .gap-side{ background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:var(--radius); padding:14px 18px; text-align:center; color:#fff; }
+  .gap-side .label{ font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--gold-light); margin-bottom:4px; }
+  .gap-side .term{ font-family:var(--serif); font-size:17px; }
+  .gap-op{ font-family:var(--serif); font-size:24px; color:var(--gold); }
+  .callout{ font-family:var(--serif); font-style:italic; color:var(--navy); border-left:3px solid var(--gold); padding:14px 18px; background:#fff; border-radius:0 var(--radius) var(--radius) 0; margin:16px 0; }
+  .divider{ border:none; border-top:1px solid var(--border); margin:40px 0; }
+  .cta-card{ background:var(--navy); color:#fff; border-radius:var(--radius-lg); padding:32px; margin:44px 0; text-align:center; }
+  .cta-card p{ color:rgba(255,255,255,0.85); margin-bottom:20px; }
+  .btn{ display:inline-block; font-weight:600; font-size:15px; padding:13px 26px; border-radius:var(--radius); text-decoration:none; text-align:center; transition:background 0.2s; background:var(--gold); color:var(--navy-deep); }
+  .btn:hover{ background:var(--gold-light); }
+  .related{ margin-top:36px; padding-top:24px; border-top:1px solid var(--border); font-size:14px; color:var(--text-muted); }
+  .related .related-label{ font-weight:600; color:var(--navy); display:block; margin-bottom:10px; }
+  .related a{ color:var(--navy); font-weight:500; text-decoration:none; border-bottom:1px solid var(--gold); }
+  .related a:hover{ color:var(--gold); }
+  .related-list{ display:flex; flex-wrap:wrap; gap:8px 18px; }
+  footer{ text-align:center; padding:32px 24px; color:var(--text-muted); font-size:12px; }
+</style>
+</head>
+<body>
+<div style="background:var(--cream);padding:12px 24px;font-size:13px;">
+  <a href="/" style="color:var(--navy);text-decoration:none;font-weight:500;">&larr; MOSei Home</a>
+  <span style="color:var(--text-muted);margin:0 8px;">|</span>
+  <a href="/knowledge" style="color:var(--navy);text-decoration:none;font-weight:500;">Knowledge</a>
+</div>
+<header>
+  <div class="eyebrow">MOSei &middot; The Norman System</div>
+  <h1>What Is Norman's Gap?</h1>
+  <p class="sub">The measurable distance between pressure and the capacity to absorb it.</p>
+</header>
+
+<main>
+  <div class="intro">
+    <p>Norman's Gap is the measurable distance between the pressure acting on an organization and that organization's capacity to absorb it.</p>
+    <p>It's the operational expression of a simpler principle, Norman's Law: when external pressure exceeds internal regulation, instability follows. Norman's Law names the condition. Norman's Gap measures it.</p>
+  </div>
+
+  <article>
+    <section>
+      <p>That distinction matters, because most organizations don't fail from a lack of information. They fail because pressure has quietly outpaced their capacity to respond to it, and nobody measured the gap until the outcome already showed it.</p>
+    </section>
+
+    <section>
+      <h2>Pressure and Regulation</h2>
+      <p>Norman's Gap is built from two inputs.</p>
+      <div class="gap-formula">
+        <div class="gap-side"><div class="label">Input</div><div class="term">External Pressure</div></div>
+        <div class="gap-op">&minus;</div>
+        <div class="gap-side"><div class="label">Input</div><div class="term">Internal Regulation</div></div>
+      </div>
+      <p><strong>External Pressure</strong> is the intensity and consequence level of what's acting on the system right now. A production disruption carries different weight than a strategic planning delay. A safety event carries different weight than a missed internal deadline. Pressure isn't just "how bad does this feel." It's scored against how visible the problem is, whether it's spreading across functions, and whether it's persisting without resolution.</p>
+      <p><strong>Internal Regulation</strong> is the organization's capacity to absorb that pressure without distorting how it operates. This has two parts: how the system itself behaves under load (does ownership stay clear, do decisions stay fast, does escalation stay honest, do metrics stay truthful), and how the leader closest to the decision behaves under load (composed or reactive, decisive or hesitant, disciplined on trade-offs or avoidant of them).</p>
+      <p>Norman's Gap is the distance between those two numbers. When pressure is high and regulation is low, the gap is wide, and instability isn't a risk anymore &mdash; it's already forming. When pressure is high but regulation is strong, the system can hold. The gap tells you which situation you're actually in, instead of relying on how urgent things feel in the room.</p>
+    </section>
+
+    <section>
+      <h2>Why the Gap Hides Until It's Too Late</h2>
+      <p>The reason Norman's Gap matters as a diagnostic, rather than just a retrospective explanation, is that it's visible in behavior long before it's visible in outcomes.</p>
+      <p>A widening gap shows up as decisions that used to take hours now taking days. It shows up as accountability spreading across a team instead of resting with one named owner. It shows up as metrics getting softened or reframed before they reach the people who need to act on them. It shows up as leaders reacting emotionally to pressure instead of making clear trade-offs.</p>
+      <p>Every one of those is a regulation failure, not a performance failure. That distinction is the whole point. An organization that treats a widening gap as a performance problem invests in the wrong fix, usually more oversight or more meetings, while the actual capacity to absorb pressure keeps eroding underneath.</p>
+      <div class="callout">The mechanism that hides the gap has a name too: Signal Compression. As a real problem moves up through an organization, each layer filters it a little, softening it for political safety, career risk, or simple discomfort with bad news. Norman's Gap is the distance. Signal Compression is one of the main reasons the distance goes unnoticed.</div>
+    </section>
+
+    <hr class="divider">
+
+    <section>
+      <h2>How Norman's Gap Is Scored</h2>
+      <p>Norman's Gap produces two related numbers.</p>
+      <h3>The Gap Score</h3>
+      <p>External Pressure minus Internal Regulation. It's simple and directionally clear. Positive means pressure exceeds regulation. Zero means equilibrium. Negative means the organization has reserve capacity.</p>
+      <h3>The Gap Index</h3>
+      <p>External Pressure divided by Internal Regulation. This is the more diagnostically useful number, because a Gap Score of 2.0 can mean very different things depending on the scale it's measured against. A system under high pressure with meaningful regulation left is in a very different position than a system under low pressure with almost no regulation left, even though the subtraction looks identical. The Gap Index separates those two situations.</p>
+      <p>Both numbers are read alongside a direction indicator: is the gap widening, holding steady, or closing. A gap that's wide but closing is a system that's recovering. A gap that's moderate but widening is a system heading toward instability faster than the current number suggests. The direction matters as much as the number itself.</p>
+    </section>
+
+    <section>
+      <h2>What a Wide Gap Actually Predicts</h2>
+      <p>Norman's Gap doesn't predict that failure is certain. It predicts the condition under which failure becomes probable, and it does that early enough to still be useful.</p>
+      <p>When the gap crosses into a wide range, the organization typically isn't self-correcting anymore. Outcomes are either already degrading or about to. That's the point where the intervention has to be about stabilizing regulation, not about optimizing performance further, because pushing for more output from a system that's already losing its capacity to absorb pressure tends to widen the gap instead of closing it.</p>
+      <p>The value of measuring this early is straightforward. A wide, widening gap gives an organization time to fix ownership clarity, decision speed, escalation discipline, and leadership composure before those weaknesses show up as a missed shipment, a blown deadline, or a safety incident. Waiting for the outcome to confirm the gap means acting after the window to prevent it has already closed.</p>
+    </section>
+
+    <section>
+      <h2>Where Norman's Gap Fits in the Larger System</h2>
+      <p>Norman's Gap is one piece of a connected framework. Signal Compression explains how the gap hides as information moves through an organization. The Norman Decision Window defines how much time a given situation actually allows before the outcome becomes irreversible. Norman Decision Time measures how long the organization actually takes to decide and own that decision. When Decision Time exceeds the Decision Window, the Norman Failure Condition has been met, and the outcome is no longer correctable by any intervention available at that point.</p>
+      <p>Norman's Gap is the entry point into that chain. It's the number that tells an organization, before any of the rest of it plays out, whether it's carrying more pressure than it currently has the regulation to handle.</p>
+    </section>
+
+    <div class="cta-card">
+      <h2 style="color:#fff;">Find Out Where Your Gap Is</h2>
+      <p>MOSei measures Norman's Gap directly through the Full Gap Diagnostic, scoring both the system-level and leader-level components that make up Internal Regulation against the pressure currently acting on your organization.</p>
+      <a href="/gap-diagnostic" class="btn">Run the Gap Diagnostic &rarr;</a>
+    </div>
+
+    <div class="related">
+      <span class="related-label">Related</span>
+      <div class="related-list">
+        <a href="/management-operating-system">What Is a Management Operating System?</a>
+        <a href="/manufacturing-management-operating-system">Management Operating Systems in Manufacturing</a>
+        <a href="/signal-compression">What Is Signal Compression?</a>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer>MOSei &middot; Management Operating System &middot; mosei.org</footer>
+</body>
+</html>

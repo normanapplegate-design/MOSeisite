@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Build a Management Operating System | MOSei</title>
+<meta name="description" content="A practical guide to building a Management Operating System, from choosing measures and cadence to designing ownership, escalation, and decision-making that actually holds under pressure.">
+<link rel="canonical" href="https://mosei.org/how-to-build-a-management-operating-system">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap');
+  :root{
+    --navy-deep:#001543; --navy:#1a2744; --gold:#c9a84c; --gold-light:#e8c97a;
+    --cream:#f8f5ef; --text:#1a2744; --text-muted:#6b7280; --border:#dcd5c4;
+    --radius:8px; --radius-lg:14px; --serif:'EB Garamond', serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--cream); color:var(--text); font-family:'Inter', sans-serif; line-height:1.6; }
+  a{ color:inherit; }
+  header{ background:linear-gradient(135deg, var(--navy-deep), var(--navy)); color:#fff; padding:56px 24px 48px; text-align:center; border-bottom:3px solid var(--gold); }
+  .eyebrow{ font-size:12px; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold-light); margin-bottom:14px; }
+  header h1{ font-family:var(--serif); font-weight:600; font-size:clamp(28px, 4.5vw, 42px); max-width:820px; margin:0 auto 16px; line-height:1.2; }
+  header p.sub{ font-family:var(--serif); font-style:italic; font-size:17px; color:#cfd6e6; max-width:640px; margin:0 auto; }
+  main{ max-width:760px; margin:0 auto; padding:0 24px 60px; }
+  .intro{ background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; margin-top:-24px; margin-bottom:36px; position:relative; z-index:2; }
+  .intro p{ font-size:16px; margin-bottom:14px; } .intro p:last-child{ margin-bottom:0; }
+  article section{ margin-bottom:40px; }
+  h2{ font-family:var(--serif); font-weight:600; font-size:26px; color:var(--navy); margin-bottom:14px; margin-top:8px; }
+  p{ font-size:15.5px; color:#333; margin-bottom:12px; }
+  .loop-line{ font-family:var(--serif); font-size:19px; color:var(--navy); text-align:center; padding:16px; background:#fff; border:1px solid var(--border); border-left:3px solid var(--gold); border-radius:var(--radius); margin:16px 0; }
+  .step{ display:flex; gap:16px; margin-bottom:28px; }
+  .step-num{ flex-shrink:0; width:36px; height:36px; border-radius:50%; background:var(--navy); color:var(--gold-light); font-family:var(--serif); font-size:16px; display:flex; align-items:center; justify-content:center; font-weight:600; }
+  .step-body h3{ font-family:var(--serif); font-weight:600; font-size:19px; color:var(--navy); margin-bottom:6px; }
+  .step-body p{ margin-bottom:0; }
+  .callout{ font-family:var(--serif); font-style:italic; color:var(--navy); border-left:3px solid var(--gold); padding:14px 18px; background:#fff; border-radius:0 var(--radius) var(--radius) 0; margin:16px 0; }
+  .divider{ border:none; border-top:1px solid var(--border); margin:40px 0; }
+  .cta-card{ background:var(--navy); color:#fff; border-radius:var(--radius-lg); padding:32px; margin:44px 0; text-align:center; }
+  .cta-card p{ color:rgba(255,255,255,0.85); margin-bottom:20px; }
+  .btn{ display:inline-block; font-weight:600; font-size:15px; padding:13px 26px; border-radius:var(--radius); text-decoration:none; text-align:center; transition:background 0.2s; background:var(--gold); color:var(--navy-deep); }
+  .btn:hover{ background:var(--gold-light); }
+  .related{ margin-top:36px; padding-top:24px; border-top:1px solid var(--border); font-size:14px; color:var(--text-muted); }
+  .related .related-label{ font-weight:600; color:var(--navy); display:block; margin-bottom:10px; }
+  .related a{ color:var(--navy); font-weight:500; text-decoration:none; border-bottom:1px solid var(--gold); }
+  .related a:hover{ color:var(--gold); }
+  .related-list{ display:flex; flex-wrap:wrap; gap:8px 18px; }
+  footer{ text-align:center; padding:32px 24px; color:var(--text-muted); font-size:12px; }
+</style>
+</head>
+<body>
+<div style="background:var(--cream);padding:12px 24px;font-size:13px;">
+  <a href="/" style="color:var(--navy);text-decoration:none;font-weight:500;">&larr; MOSei Home</a>
+  <span style="color:var(--text-muted);margin:0 8px;">|</span>
+  <a href="/knowledge" style="color:var(--navy);text-decoration:none;font-weight:500;">Knowledge</a>
+</div>
+<header>
+  <div class="eyebrow">MOSei &middot; The Norman System</div>
+  <h1>How to Build a Management Operating System</h1>
+  <p class="sub">Design the whole path from signal to resolution, on purpose.</p>
+</header>
+
+<main>
+  <div class="intro">
+    <p>Most organizations don't build a Management Operating System on purpose. It accumulates. A KPI dashboard gets added here, a weekly meeting gets added there, an escalation process gets written down after something went wrong once, and eventually there's a collection of management activity that nobody designed as a single system.</p>
+    <p>That's usually where the trouble starts. The individual pieces can each look reasonable and still fail to work together, which means problems get discussed without getting solved, and decisions get made without anyone confirming they worked.</p>
+  </div>
+
+  <article>
+    <section>
+      <p>Building a Management Operating System on purpose means designing the whole path from a problem being visible to that problem being resolved, as one connected system rather than a collection of separate habits.</p>
+    </section>
+
+    <section>
+      <h2>Start With the Loop, Not the Tools</h2>
+      <p>Before choosing meetings, dashboards, or software, get clear on the loop the whole system exists to run:</p>
+      <div class="loop-line">Signal &rarr; Ownership &rarr; Decision &rarr; Action &rarr; Verification</div>
+      <p>A signal has to become visible. Someone has to own it. A decision has to get made. Action has to follow. And someone has to confirm whether that action actually produced the result it was supposed to.</p>
+      <p>Every tool you add later &mdash; a tiered meeting, a KPI review, an escalation matrix &mdash; should be justified by which part of that loop it strengthens. If a proposed meeting or report doesn't clearly serve one of those five steps, it's not part of the operating system. It's just activity.</p>
+    </section>
+
+    <section>
+      <h2>Six Steps to Building the System</h2>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Choose a Small Number of Measures That Reveal Problems Early</h3>
+          <p>Start with the measures, not the meetings. The right question isn't how many KPIs the organization can produce. It's whether the measures you choose move early enough for someone to act before the outcome is already locked in. A metric that only confirms a problem after it's too late to fix isn't diagnostic, it's a postmortem. Pick the handful of measures that reliably move before the outcome does. Cut anything tracked out of habit rather than because it changes a decision.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Design the Cadence Around Escalation, Not Repetition</h3>
+          <p>Once you know what you're measuring, decide when it gets reviewed and at what level. The mistake most organizations make is running every tier as a status update instead of an escalation filter. Each level of your cadence should exist to catch what the level below it couldn't resolve on its own. Design the cadence backward from the question each tier is supposed to answer: what needs attention, what needs a decision, and what has to move to the next level up.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Build Ownership Into the System, Not Into Good Intentions</h3>
+          <p>Every issue that reaches a review needs a named owner before the meeting ends. Not a team. Not a department. One name. Under normal conditions, a missing name is a minor gap. Under pressure, it's the difference between a problem getting solved and a problem getting discussed for three weeks running. Building this into the system means the meeting format itself won't let an issue close without an owner, an expected result, and a return date attached to it.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Design Escalation to Carry the Clock, Not Just the Problem</h3>
+          <p>Most escalation processes carry only the description of the problem, not how much time is left before it becomes unrecoverable. When you design your escalation path, build in one additional field: Decision Required By. Every escalation should state not just what's wrong, but when a decision has to be made before the window to act on it closes. Without this, a real problem can escalate accurately and still lose the opportunity to act on it, because the clock that was obvious at the point of origin never made the trip upstairs.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>Make Decision Authority Visible Before You Need It</h3>
+          <p>A Management Operating System has to answer, in advance, who can make which decisions. If that authority is unclear, it gets discovered in the moment a decision is actually needed, which is the worst possible time to figure it out. For every recurring category of decision, define who has the authority to make the call, what information they need, and what happens if agreement can't be reached quickly.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <h3>Close the Loop With Verification</h3>
+          <p>The system isn't finished when a decision gets made. It's finished when someone confirms the decision produced the result it was supposed to. This is the step most operating systems skip entirely, because it doesn't feel as urgent as the decision itself. Build verification into the same cadence from step two &mdash; when an owner closes an action, the next relevant review should ask whether it produced the intended result, not just whether the action was completed.</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <section>
+      <h2>Building for Normal Conditions Isn't Enough</h2>
+      <p>A Management Operating System that only works when things are calm isn't finished. The real test is what happens when pressure rises, when three problems hit at once, when a decision has to be made faster than the system was designed to handle comfortably.</p>
+      <p>This is where most Management Operating Systems reveal a gap that wasn't visible on a normal day. Ownership diffuses under pressure even if it was clear during calm periods. Signal gets softened at each layer even if escalation looked fine on a quiet week. Leaders become reactive under load even if they were composed during routine reviews.</p>
+      <div class="callout">This is the layer The Norman System is built to measure directly. Norman's Gap quantifies the distance between the pressure your system is under and its actual capacity to absorb it, at both the system level and the individual leader level. A Management Operating System that's well-designed on paper can still have a wide, widening gap in practice, and the only way to know is to measure it rather than assume it from how well things ran last quarter.</div>
+    </section>
+
+    <section>
+      <h2>Build It, Then Measure It</h2>
+      <p>Designing the loop, the measures, the cadence, the ownership structure, and the escalation path gets you a real Management Operating System. Measuring how that system actually performs under pressure is what tells you whether it will hold when it matters.</p>
+      <p>MOSei's diagnostic tools score exactly this: how your system and your leadership regulate pressure in practice, not just how the process looks in a design document.</p>
+    </section>
+
+    <div class="cta-card">
+      <h2 style="color:#fff;">Find Out Where Your Gap Is Before It Costs You</h2>
+      <p>Explore the MOS Maturity Assessment, the Full Gap Diagnostic, and the rest of the Norman System toolkit at MOSei.</p>
+      <a href="/mos-assessment" class="btn">Take the MOS Assessment &rarr;</a>
+    </div>
+
+    <div class="related">
+      <span class="related-label">Related</span>
+      <div class="related-list">
+        <a href="/management-operating-system">What Is a Management Operating System?</a>
+        <a href="/manufacturing-management-operating-system">Management Operating Systems in Manufacturing</a>
+        <a href="/normans-gap">What Is Norman's Gap?</a>
+        <a href="/signal-compression">What Is Signal Compression?</a>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer>MOSei &middot; Management Operating System &middot; mosei.org</footer>
+</body>
+</html>
