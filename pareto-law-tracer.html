@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pareto Law Tracer | MOSei</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --navy-deep:#001543;
+    --navy:#1a2744;
+    --gold:#c9a84c;
+    --gold-light:#e8c97a;
+    --cream:#f8f5ef;
+    --ink:#1a2744;
+    --line:#dcd5c4;
+    --muted:#6b7280;
+    --danger:#8a4a3a;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    padding-bottom:80px;
+  }
+
+  header{
+    background:linear-gradient(135deg, var(--navy-deep), var(--navy));
+    color:var(--cream);
+    padding:36px 24px 28px;
+    text-align:center;
+    border-bottom:3px solid var(--gold);
+  }
+
+  header .eyebrow{
+    font-family:'Inter', sans-serif;
+    font-size:12px;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    margin-bottom:10px;
+  }
+
+  header h1{
+    font-family:'EB Garamond', serif;
+    font-weight:600;
+    font-size:36px;
+    letter-spacing:0.3px;
+  }
+
+  header p.sub{
+    font-family:'EB Garamond', serif;
+    font-style:italic;
+    font-size:17px;
+    color:#cfd6e6;
+    margin-top:8px;
+  }
+
+  nav.tabs{
+    max-width:900px;
+    margin:0 auto;
+    display:flex;
+    border-bottom:1px solid var(--line);
+    background:var(--cream);
+    position:sticky;
+    top:0;
+    z-index:10;
+  }
+
+  nav.tabs button{
+    flex:1;
+    padding:16px 8px;
+    background:none;
+    border:none;
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:0.5px;
+    color:var(--muted);
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    transition:all 0.15s ease;
+  }
+
+  nav.tabs button.active{
+    color:var(--navy);
+    border-bottom-color:var(--gold);
+  }
+
+  nav.tabs button:hover{ color:var(--navy); }
+
+  main{
+    max-width:900px;
+    margin:0 auto;
+    padding:32px 24px;
+  }
+
+  .panel{ display:none; }
+  .panel.active{ display:block; }
+
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:24px;
+    margin-bottom:20px;
+  }
+
+  h2{
+    font-family:'EB Garamond', serif;
+    font-weight:600;
+    font-size:24px;
+    margin-bottom:6px;
+    color:var(--navy);
+  }
+
+  h3{
+    font-family:'EB Garamond', serif;
+    font-weight:600;
+    font-size:19px;
+    margin-bottom:10px;
+    color:var(--navy);
+  }
+
+  p.desc{
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:18px;
+  }
+
+  table{ width:100%; border-collapse:collapse; }
+
+  th{
+    text-align:left;
+    font-size:11px;
+    letter-spacing:0.8px;
+    text-transform:uppercase;
+    color:var(--muted);
+    padding:8px 6px;
+    border-bottom:2px solid var(--line);
+  }
+
+  td{
+    padding:8px 6px;
+    border-bottom:1px solid var(--line);
+    vertical-align:middle;
+  }
+
+  input[type="text"], input[type="number"]{
+    width:100%;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:8px 10px;
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+    background:var(--cream);
+    color:var(--ink);
+  }
+
+  input:focus{ outline:none; border-color:var(--gold); }
+
+  .row-actions{ text-align:center; width:36px; }
+
+  .icon-btn{
+    background:none;
+    border:none;
+    color:var(--danger);
+    cursor:pointer;
+    font-size:16px;
+    padding:4px;
+  }
+
+  .btn{
+    display:inline-block;
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    padding:11px 20px;
+    border-radius:4px;
+    border:1px solid var(--navy);
+    background:var(--navy);
+    color:#fff;
+    cursor:pointer;
+    letter-spacing:0.3px;
+  }
+
+  .btn.secondary{
+    background:none;
+    color:var(--navy);
+    border:1px solid var(--line);
+  }
+
+  .btn.secondary:hover{ border-color:var(--navy); }
+
+  .btn:hover{ background:var(--navy-deep); }
+
+  .btn-row{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+
+  .metrics-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:14px;
+    margin:20px 0;
+  }
+
+  @media(max-width:640px){ .metrics-grid{ grid-template-columns:1fr; } }
+
+  .metric{
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-left:4px solid var(--gold);
+    border-radius:4px;
+    padding:16px;
+  }
+
+  .metric .val{
+    font-family:'EB Garamond', serif;
+    font-size:32px;
+    font-weight:600;
+    color:var(--navy);
+    line-height:1;
+  }
+
+  .metric .lbl{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:6px;
+    letter-spacing:0.2px;
+  }
+
+  .bar-row{
+    display:grid;
+    grid-template-columns:140px 1fr 70px;
+    align-items:center;
+    gap:10px;
+    padding:6px 0;
+    font-size:13px;
+  }
+
+  .bar-name{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    color:var(--ink);
+    font-weight:500;
+  }
+
+  .bar-track{
+    background:var(--line);
+    border-radius:3px;
+    height:18px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .bar-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius:3px 0 0 3px;
+  }
+
+  .bar-fill.vital{
+    background:linear-gradient(90deg, var(--navy), var(--navy-deep));
+  }
+
+  .bar-val{
+    text-align:right;
+    color:var(--muted);
+    font-size:12px;
+  }
+
+  .divider-note{
+    font-size:12px;
+    color:var(--muted);
+    text-align:center;
+    margin:14px 0 6px;
+    letter-spacing:0.3px;
+  }
+
+  .flag{
+    display:inline-block;
+    font-size:11px;
+    font-weight:600;
+    padding:2px 8px;
+    border-radius:10px;
+    letter-spacing:0.3px;
+  }
+
+  .flag.vital{ background:#e9e2cf; color:var(--navy); }
+  .flag.tail{ background:#f1e2dd; color:var(--danger); }
+  .flag.mid{ background:#eee; color:var(--muted); }
+
+  .readme-section{ margin-bottom:26px; }
+
+  .readme-section h3{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+
+  .readme-section h3 .num{
+    color:var(--gold);
+    font-family:'Inter', sans-serif;
+    font-size:13px;
+    font-weight:700;
+  }
+
+  .readme-section p{ margin-bottom:10px; font-size:15px; }
+
+  footer{
+    text-align:center;
+    padding:24px;
+    color:var(--muted);
+    font-size:12px;
+  }
+
+  .empty-state{
+    text-align:center;
+    padding:30px 10px;
+    color:var(--muted);
+    font-size:14px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">MOSei &middot; Field Pattern Diagnostics</div>
+  <h1>Pareto Law Tracer</h1>
+  <p class="sub">Find the slice of effort that is actually producing your results.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="tool">Tool</button>
+  <button class="tab-btn" data-tab="readme">Read Me</button>
+</nav>
+
+<main>
+
+  <div id="tool" class="panel active">
+
+    <div class="card">
+      <h2>Log Your Activities</h2>
+      <p class="desc">List what you and your team spend time on, the effort each one takes, and the result it produces. Ten to fifteen activities is usually enough to see the pattern.</p>
+
+      <table id="activity-table">
+        <thead>
+          <tr>
+            <th style="width:38%">Activity</th>
+            <th style="width:22%">Effort (hrs/wk)</th>
+            <th style="width:22%">Result (0&ndash;100)</th>
+            <th class="row-actions"></th>
+          </tr>
+        </thead>
+        <tbody id="activity-body"></tbody>
+      </table>
+
+      <div class="btn-row">
+        <button class="btn secondary" id="add-row">+ Add Activity</button>
+        <button class="btn" id="calculate">Trace It</button>
+        <button class="btn secondary" id="load-sample">Load Sample</button>
+      </div>
+    </div>
+
+    <div class="card" id="results-card" style="display:none;">
+      <h2>Your Pareto Trace</h2>
+      <p class="desc" id="results-summary"></p>
+
+      <div class="metrics-grid" id="metrics-grid"></div>
+
+      <h3 style="margin-top:8px;">Cumulative Result Curve</h3>
+      <p class="desc" style="margin-bottom:10px;">The classic Pareto curve. Each point is the running share of total result as you add activities, ranked strongest first. The dashed line marks 80 percent.</p>
+      <div id="cumulative-chart" style="margin-bottom:24px;"></div>
+
+      <h3 style="margin-top:8px;">Cumulative Pareto Curve</h3>
+      <p class="desc" style="margin-bottom:10px;">Gold bars show each activity's result. The navy line shows cumulative result as you move down the list. Where the line crosses the dashed 80% mark is your vital few cutoff.</p>
+      <div id="pareto-curve"></div>
+
+      <h3 style="margin-top:24px;">Activities Ranked by Result</h3>
+      <div id="bar-chart"></div>
+
+      <div class="divider-note" id="cutoff-note"></div>
+    </div>
+
+  </div>
+
+  <div id="readme" class="panel">
+    <div class="card">
+
+      <div class="readme-section">
+        <h3><span class="num">01</span>What This Tool Measures</h3>
+        <p>Most of your results come from a small slice of what you do. This tool finds that slice. It ranks your activities by the result each one produces, then shows how much effort it actually took to get there.</p>
+        <p>It does not tell you the answer. It shows you where to look.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">02</span>Where This Comes From</h3>
+        <p>The Pareto Principle is named for Vilfredo Pareto, an Italian economist who noticed in 1896 that roughly 80 percent of the land in Italy was owned by about 20 percent of the population. He found similar ratios in wealth, output, and property elsewhere, and the pattern held often enough that it earned his name.</p>
+        <p>It stayed a footnote in economics until Joseph Juran, working in quality management decades later, generalized it into what he called the vital few and the trivial many, and applied it to defects, causes, and effort across manufacturing and business. That is the lineage this tool works from: not a hard law of nature, but a reliable enough pattern that it is worth checking for directly rather than assuming your effort is evenly spread. We call it a Tracer because the tool does not assign the ratio for you, it traces where your own vital few actually sits.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">03</span>Why It Matters</h3>
+        <p>Teams under pressure default to treating every task as equally worth their time. It rarely is. A handful of activities carry most of the outcome, and a long tail of activities carry almost none, no matter how busy they keep people.</p>
+        <p>When you cannot see the slice, you cannot protect it. You end up managing hours instead of managing results.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">04</span>How To Use It</h3>
+        <p>List the real activities your team spends time on in a normal week. Estimate the effort honestly, not the plan, the actual hours. Score the result each one produces on a 0 to 100 scale, using whatever outcome matters most: revenue, throughput, quality, customer response, whatever the activity is meant to move.</p>
+        <p>Ten activities is a reasonable floor. Fewer than that and the pattern will not show itself clearly.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">05</span>Reading Your Results</h3>
+        <p><strong>Vital Few Count</strong> is how many activities it takes to reach 80 percent of your total result. A small number here means your results are concentrated, which is normal and often healthy.</p>
+        <p><strong>Effort Share of Vital Few</strong> is the share of total effort those same activities consume. If this number is high, your best results are also your most expensive ones. That is worth a second look.</p>
+        <p><strong>Long Tail Drag</strong> is the share of total effort going to activities that each produce under 5 percent of total result. This is your padding. It is the first place to cut, delegate, or stop.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">06</span>The Vital Few vs The Long Tail</h3>
+        <p>The bar marked navy in your chart is the vital few, the activities carrying the 80 percent line. The gold bars are the rest. Look at the gap between them. A steep drop-off is a concentrated system. A flat, even spread across every bar usually means nothing has been named as the priority, and everything is getting treated the same.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">07</span>Common Traps</h3>
+        <p>Do not score effort by what a task should take on paper. Score what it actually takes, including the meetings, the rework, and the waiting.</p>
+        <p>Do not treat a low-result activity as worthless without asking why it exists. Some low-yield activities are load-bearing in ways a single score will not show, compliance work, relationship maintenance, safety checks. Read the list before you cut from it.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">08</span>Connects To</h3>
+        <p>A long tail with high effort share is often a symptom of Norman's Gap, pressure to stay busy exceeding the internal regulation to prioritize. If your Long Tail Drag is high, check whether the gap is showing up elsewhere on your Signal Flow Dashboard before you treat this as an isolated effort problem.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">09</span>Field Note</h3>
+        <p>Every operation believes its effort is well distributed until it sees the trace. It rarely is. That is not a failure. It is just what unmanaged prioritization looks like once you can see it.</p>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>MOSei &middot; Field Pattern Diagnostics &middot; The Norman System</footer>
+
+<script>
+(function(){
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.panel');
+  tabBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      tabBtns.forEach(b=>b.classList.remove('active'));
+      panels.forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  const body = document.getElementById('activity-body');
+  let rowCount = 0;
+
+  function addRow(name, effort, result){
+    rowCount++;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" class="act-name" placeholder="e.g. Client onboarding calls" value="${name||''}"></td>
+      <td><input type="number" class="act-effort" min="0" step="0.5" placeholder="hrs" value="${effort!==undefined?effort:''}"></td>
+      <td><input type="number" class="act-result" min="0" max="100" step="1" placeholder="0-100" value="${result!==undefined?result:''}"></td>
+      <td class="row-actions"><button class="icon-btn" title="Remove">&times;</button></td>
+    `;
+    tr.querySelector('.icon-btn').addEventListener('click', ()=>{
+      tr.remove();
+    });
+    body.appendChild(tr);
+  }
+
+  for(let i=0;i<6;i++) addRow();
+
+  function buildParetoCurveSVG(activities, vitalCount){
+    const W = 680, H = 260;
+    const padL = 40, padR = 40, padT = 20, padB = 40;
+    const chartW = W - padL - padR;
+    const chartH = H - padT - padB;
+    const n = activities.length;
+    const barGap = 6;
+    const barW = Math.max((chartW - barGap * (n - 1)) / n, 4);
+    const maxResult = Math.max(...activities.map(a=>a.result), 1);
+
+    let cum = 0;
+    const points = activities.map((a, i)=>{
+      cum += a.resultShare;
+      const x = padL + i * (barW + barGap) + barW / 2;
+      const y = padT + chartH - (cum / 100) * chartH;
+      return {x, y, cum};
+    });
+
+    const barsSvg = activities.map((a, i)=>{
+      const x = padL + i * (barW + barGap);
+      const barH = (a.result / maxResult) * chartH;
+      const y = padT + chartH - barH;
+      const isVital = i < vitalCount;
+      const fill = isVital ? 'var(--navy)' : 'var(--gold)';
+      return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="${fill}" opacity="${isVital?1:0.85}" rx="2"></rect>`;
+    }).join('');
+
+    const linePoints = points.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+    const dotsSvg = points.map(p=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.5" fill="var(--gold-light)" stroke="var(--navy)" stroke-width="1.5"></circle>`).join('');
+
+    const eightyY = padT + chartH - 0.8 * chartH;
+
+    return `
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; font-family:'Inter',sans-serif;">
+        <line x1="${padL}" y1="${eightyY.toFixed(1)}" x2="${W - padR}" y2="${eightyY.toFixed(1)}" stroke="var(--danger)" stroke-width="1.2" stroke-dasharray="5,4"></line>
+        <text x="${W - padR + 4}" y="${(eightyY+4).toFixed(1)}" font-size="11" fill="var(--danger)">80%</text>
+        <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+chartH}" stroke="var(--line)" stroke-width="1"></line>
+        <line x1="${padL}" y1="${padT+chartH}" x2="${W-padR}" y2="${padT+chartH}" stroke="var(--line)" stroke-width="1"></line>
+        ${barsSvg}
+        <polyline points="${linePoints}" fill="none" stroke="var(--navy)" stroke-width="2"></polyline>
+        ${dotsSvg}
+        <text x="${padL}" y="14" font-size="11" fill="var(--muted)">Result</text>
+        <text x="${W-padR}" y="14" font-size="11" fill="var(--muted)" text-anchor="end">Cumulative %</text>
+      </svg>
+    `;
+  }
+
+  document.getElementById('add-row').addEventListener('click', ()=>addRow());
+
+  document.getElementById('load-sample').addEventListener('click', ()=>{
+    body.innerHTML = '';
+    const sample = [
+      ['Key account escalations', 8, 78],
+      ['New client onboarding', 10, 72],
+      ['Weekly status meetings', 6, 12],
+      ['Ad hoc reporting requests', 5, 8],
+      ['Core product delivery work', 14, 85],
+      ['Internal admin & email', 9, 6],
+      ['Referral partner outreach', 4, 55],
+      ['Low-priority ticket queue', 7, 4],
+      ['Process documentation', 3, 30],
+      ['Recurring vendor calls', 4, 5],
+    ];
+    sample.forEach(s=>addRow(s[0], s[1], s[2]));
+  });
+
+  document.getElementById('calculate').addEventListener('click', ()=>{
+    const rows = Array.from(body.querySelectorAll('tr'));
+    const activities = [];
+    rows.forEach(tr=>{
+      const name = tr.querySelector('.act-name').value.trim();
+      const effort = parseFloat(tr.querySelector('.act-effort').value);
+      const result = parseFloat(tr.querySelector('.act-result').value);
+      if(name && !isNaN(effort) && !isNaN(result) && effort > 0){
+        activities.push({name, effort, result});
+      }
+    });
+
+    const resultsCard = document.getElementById('results-card');
+    const metricsGrid = document.getElementById('metrics-grid');
+    const barChart = document.getElementById('bar-chart');
+    const summary = document.getElementById('results-summary');
+    const cutoffNote = document.getElementById('cutoff-note');
+
+    if(activities.length < 3){
+      resultsCard.style.display = 'block';
+      metricsGrid.innerHTML = '';
+      document.getElementById('pareto-curve').innerHTML = '';
+      barChart.innerHTML = '<div class="empty-state">Enter at least three complete activities (name, effort, and result) to generate a trace.</div>';
+      summary.textContent = '';
+      cutoffNote.textContent = '';
+      resultsCard.scrollIntoView({behavior:'smooth', block:'start'});
+      return;
+    }
+
+    activities.sort((a,b)=> b.result - a.result);
+
+    const totalResult = activities.reduce((s,a)=>s+a.result, 0);
+    const totalEffort = activities.reduce((s,a)=>s+a.effort, 0);
+    const maxResult = Math.max(...activities.map(a=>a.result));
+
+    let cumResult = 0, cumEffort = 0, vitalCount = 0, vitalEffort = 0;
+    let reached80 = false;
+
+    activities.forEach(a=>{
+      a.resultShare = totalResult > 0 ? (a.result/totalResult*100) : 0;
+      a.effortShare = totalEffort > 0 ? (a.effort/totalEffort*100) : 0;
+      a.yield = a.effort > 0 ? (a.result/a.effort) : 0;
+    });
+
+    activities.forEach(a=>{
+      if(!reached80){
+        vitalCount++;
+        vitalEffort += a.effort;
+        cumResult += a.resultShare;
+        if(cumResult >= 80) reached80 = true;
+      }
+    });
+
+    const vitalEffortShare = totalEffort > 0 ? (vitalEffort/totalEffort*100) : 0;
+    const longTail = activities.filter(a=>a.resultShare < 5);
+    const longTailEffort = longTail.reduce((s,a)=>s+a.effort, 0);
+    const longTailEffortShare = totalEffort > 0 ? (longTailEffort/totalEffort*100) : 0;
+
+    resultsCard.style.display = 'block';
+
+    summary.textContent = `Out of ${activities.length} activities, it takes ${vitalCount} of them to reach 80 percent of your total result.`;
+
+    metricsGrid.innerHTML = `
+      <div class="metric">
+        <div class="val">${vitalCount} of ${activities.length}</div>
+        <div class="lbl">Vital Few Count &mdash; activities producing 80% of result</div>
+      </div>
+      <div class="metric">
+        <div class="val">${vitalEffortShare.toFixed(0)}%</div>
+        <div class="lbl">Effort Share of Vital Few &mdash; effort spent on those activities</div>
+      </div>
+      <div class="metric" style="border-left-color:${longTailEffortShare > 30 ? 'var(--danger)' : 'var(--gold)'};">
+        <div class="val">${longTailEffortShare.toFixed(0)}%</div>
+        <div class="lbl">Long Tail Drag &mdash; effort on activities each under 5% of result</div>
+      </div>
+    `;
+
+    document.getElementById('pareto-curve').innerHTML = buildParetoCurveSVG(activities, vitalCount);
+
+    barChart.innerHTML = '';
+    activities.forEach((a, idx)=>{
+      const isVital = idx < vitalCount;
+      const widthPct = maxResult > 0 ? (a.result/maxResult*100) : 0;
+      const row = document.createElement('div');
+      row.className = 'bar-row';
+      const flagClass = isVital ? 'vital' : (a.resultShare < 5 ? 'tail' : 'mid');
+      const flagText = isVital ? 'Vital' : (a.resultShare < 5 ? 'Tail' : '');
+      row.innerHTML = `
+        <div class="bar-name" title="${a.name}">${a.name}</div>
+        <div class="bar-track"><div class="bar-fill ${isVital?'vital':''}" style="width:${widthPct}%"></div></div>
+        <div class="bar-val">${a.result} ${flagText?`<span class="flag ${flagClass}" style="margin-left:4px;">${flagText}</span>`:''}</div>
+      `;
+      barChart.appendChild(row);
+    });
+
+    cutoffNote.textContent = `Navy bars are your vital few. Gold bars are the rest. Effort logged: ${totalEffort} hrs/week across ${activities.length} activities.`;
+
+    resultsCard.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+})();
+</script>
+
+</body>
+</html>

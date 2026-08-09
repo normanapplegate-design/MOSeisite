@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Implementation Readiness Diagnostic | MOSei</title>
+<meta name="description" content="A readiness diagnostic and ROI calculator for AI tools and software rollouts, built on Norman's Gap.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#1a2744; --navy-deep:#111c33; --gold:#c9a84c; --gold-light:#e8c97a;
+    --accent:#2E75B6; --ink:#1d2230; --muted:#5a6072; --hint:#8b91a0;
+    --line:#e3e6ec; --surface:#ffffff; --surface2:#f5f7fa; --page:#f8f5ef;
+    --info-bg:#e6f1fb; --info-tx:#0c447c;
+    --teal-bg:#e1f5ee; --teal-tx:#085041;
+    --green-bg:#eaf3de; --green-tx:#27500a;
+    --amber-bg:#faeeda; --amber-tx:#633806;
+    --coral-bg:#faece7; --coral-tx:#712b13;
+    --red-bg:#fcebeb; --red-tx:#791f1f;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --radius: 10px; --radius-lg: 14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#e8ebf2; --muted:#a3aab9; --hint:#7b8294;
+      --line:#2a2f3c; --surface:#161a22; --surface2:#1d222c; --page:#11141b;
+      --info-bg:#0c2a44; --info-tx:#9cc6f0;
+      --teal-bg:#0a2c24; --teal-tx:#7fd9bb;
+      --green-bg:#1c2c0f; --green-tx:#a6cf6f;
+      --amber-bg:#332108; --amber-tx:#e8b878;
+      --coral-bg:#331409; --coral-tx:#e09a7c;
+      --red-bg:#330d0d; --red-tx:#e89494;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--page);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  /* ── Brand header ── */
+  .tool-header{background:var(--navy);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+  .tool-logo{font-family:var(--serif);font-size:1.15rem;color:#fff;}
+  .tool-logo span{color:var(--gold);}
+  .tool-tagline{font-size:0.7rem;color:rgba(255,255,255,0.45);margin-top:1px;}
+  .tool-badge{font-size:0.68rem;color:rgba(255,255,255,0.5);border:0.5px solid rgba(255,255,255,0.2);padding:3px 10px;border-radius:20px;}
+
+  /* ── Tabs ── */
+  .tab-bar{display:flex;border-bottom:1px solid var(--line);background:var(--surface);padding:0 1.25rem;}
+  .tab-btn{font-size:0.8rem;font-family:var(--sans);padding:8px 14px;cursor:pointer;color:var(--muted);border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .tab-btn.active{color:var(--navy);font-weight:500;border-bottom-color:var(--navy);}
+
+  /* ── Wrap ── */
+  .wrap{max-width:720px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+
+  /* ── Read Me ── */
+  .readme-hero{background:var(--navy);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.25rem;}
+  .readme-hero-title{font-family:var(--serif);font-size:1.35rem;color:#fff;margin-bottom:6px;}
+  .readme-hero-title span{color:var(--gold);}
+  .readme-hero-sub{font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.65;}
+  .readme-h3{font-size:0.9rem;font-weight:500;color:var(--ink);margin-bottom:0.5rem;margin-top:1.25rem;}
+  .readme-p{font-size:0.82rem;color:var(--muted);line-height:1.7;margin-bottom:0.5rem;}
+  .band-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+  .band-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .band-label{font-size:0.8rem;font-weight:500;color:var(--ink);width:200px;}
+  .band-desc{font-size:0.75rem;color:var(--muted);}
+  .step-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:0.75rem;}
+  .step-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;font-size:0.7rem;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .step-text{font-size:0.82rem;color:var(--muted);line-height:1.6;}
+  .step-text b{color:var(--ink);font-weight:500;}
+  .readme-divider{border:none;border-top:1px solid var(--line);margin:1.25rem 0;}
+  .readme-source{font-size:0.72rem;color:var(--hint);font-style:italic;}
+
+  /* ── Tool form ── */
+  .block{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+  .block-head{font-size:15px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+  .block-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--info-bg);color:var(--info-tx);font-size:13px;font-weight:600;flex-shrink:0;}
+  .block-sub{font-size:13px;color:var(--muted);margin-bottom:1rem;}
+  .sec-divider{border:none;border-top:1px solid var(--line);margin:1rem 0;}
+
+  /* Radio options */
+  .factor-block{margin-bottom:0.5rem;}
+  .fname{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+  .fhint{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:8px;}
+  .radio-group{display:flex;flex-direction:column;gap:5px;}
+  .radio-opt{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:var(--surface);transition:all 0.15s;user-select:none;}
+  .radio-opt:hover{border-color:var(--navy);background:var(--surface2);}
+  .radio-opt.selected{border:2px solid var(--accent);background:var(--info-bg);padding:8px 11px;}
+  .radio-opt input[type=radio]{margin-top:2px;accent-color:var(--accent);flex-shrink:0;width:14px;height:14px;cursor:pointer;}
+  .ro-label{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:1px;}
+  .ro-desc{font-size:12px;color:var(--muted);line-height:1.45;}
+  .radio-opt.selected .ro-label{color:var(--info-tx);}
+
+  /* Calculate button */
+  button.cta{width:100%;padding:14px;font-size:15px;font-weight:600;border-radius:10px;border:none;background:var(--navy);color:#fff;cursor:pointer;font-family:inherit;margin-top:8px;}
+  button.cta:hover{opacity:0.92;}
+  button.ghost{width:100%;padding:12px;font-size:14px;font-weight:500;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-family:inherit;}
+  button.ghost:hover{background:var(--surface2);}
+
+  /* Results */
+  .metricgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1rem;}
+  .metric{background:var(--surface2);border-radius:8px;padding:1rem;}
+  .metric .ml{font-size:12px;color:var(--muted);margin:0 0 3px;}
+  .metric .mv{font-size:22px;font-weight:600;margin:0;color:var(--ink);}
+  .metric .ms{font-size:11px;color:var(--hint);margin-top:2px;}
+  .dimrow{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:1rem;}
+  .dim{background:var(--surface2);border-radius:8px;padding:0.75rem;position:relative;}
+  .dim.weak{background:var(--coral-bg);}
+  .dim .cl{font-size:11px;color:var(--muted);margin-bottom:2px;}
+  .dim.weak .cl{color:var(--coral-tx);}
+  .dim .cv{font-size:16px;font-weight:600;color:var(--ink);}
+  .dim.weak .cv{color:var(--coral-tx);}
+  .scorecard{border-radius:12px;padding:1.25rem;margin-bottom:1rem;border:1px solid var(--line);}
+  .scorecard .sl{font-size:12px;margin:0 0 3px;opacity:0.8;}
+  .scorecard .sv{font-size:38px;font-weight:600;margin:0;line-height:1;}
+  .scorecard .sb{font-size:16px;font-weight:600;margin:10px 0 3px;}
+  .scorecard .sd{font-size:13px;margin:0;opacity:0.9;line-height:1.55;}
+  .verdict-bar{height:4px;border-radius:2px;background:var(--line);margin-bottom:1rem;overflow:hidden;}
+  .verdict-fill{height:100%;border-radius:2px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);}
+  .weakest-callout{border-radius:8px;padding:0.9rem 1rem;margin-bottom:1rem;background:var(--coral-bg);}
+  .weakest-callout .wl{font-size:11px;text-transform:uppercase;letter-spacing:0.04em;color:var(--coral-tx);font-weight:600;margin-bottom:3px;}
+  .weakest-callout .wv{font-size:14px;color:var(--coral-tx);line-height:1.5;}
+  .foot{margin-top:2.5rem;text-align:center;font-size:13px;color:var(--hint);}
+  .foot .tag{font-style:italic;color:var(--accent);}
+
+  /* ── ROI calculator ── */
+  .input-row{margin-bottom:0.9rem;}
+  .input-row label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+  .input-row .ihint{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:6px;}
+  .input-row input[type=number]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:14px;background:var(--surface);color:var(--ink);}
+  .input-row .prefix-wrap{position:relative;}
+  .input-row .prefix-wrap span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;}
+  .input-row .prefix-wrap input{padding-left:24px;}
+  .conf-note{border-radius:8px;padding:0.9rem 1rem;margin-bottom:1rem;}
+  .conf-note .cnl{font-size:11px;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-bottom:3px;}
+  .conf-note .cnv{font-size:13px;line-height:1.5;}
+  .rangebox{background:var(--surface2);border-radius:8px;padding:1rem;margin-bottom:0.75rem;}
+  .rangebox .rl{font-size:12px;color:var(--muted);margin:0 0 4px;}
+  .rangebox .rv{font-size:22px;font-weight:600;color:var(--ink);margin:0;}
+  .rangebox .rr{font-size:12px;color:var(--hint);margin-top:3px;}
+
+  @media (max-width:600px){
+    .metricgrid{grid-template-columns:1fr;}
+    .dimrow{grid-template-columns:repeat(2,1fr);}
+  }
+  @media print{
+    .tool-header,.tab-bar,.no-print{display:none !important;}
+    .wrap{padding:1rem;}
+  }
+</style>
+<script defer data-domain="mosei.org" src="https://plausible.io/js/script.js"></script>
+</head>
+<body>
+<div style="background:var(--page);padding:12px 24px;font-size:13px;">
+  <a href="/" style="color:var(--navy);text-decoration:none;font-weight:500;">&larr; MOSei Home</a>
+  <span style="color:var(--muted);margin:0 8px;">|</span>
+  <a href="/tools.html" style="color:var(--navy);text-decoration:none;font-weight:500;">All Tools</a>
+</div>
+  <!-- MOSei brand header -->
+<div class="tool-header">
+  <div>
+    <div class="tool-logo">MOS<span>ei</span></div>
+    <div class="tool-tagline">Implementation Readiness Diagnostic</div>
+  </div>
+  <div class="tool-badge">Norman&rsquo;s Gap Framework</div>
+</div>
+
+<div style="background:var(--surface);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+  <label for="mode-select" style="font-size:12px;color:var(--muted);font-weight:500;">This diagnostic is for:</label>
+  <select id="mode-select" onchange="setMode(this.value)" style="font-size:13px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);font-family:inherit;cursor:pointer;">
+    <option value="ai">An AI tool</option>
+    <option value="software">Any software implementation</option>
+  </select>
+</div>
+
+<!-- Tabs -->
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="readme" onclick="showTab('readme')">Read me</button>
+  <button class="tab-btn" data-tab="tool" onclick="showTab('tool')">Run diagnostic</button>
+  <button class="tab-btn" data-tab="roi" onclick="showTab('roi')">ROI calculator</button>
+</div>
+
+<!-- READ ME TAB -->
+<div id="tab-readme">
+  <div class="wrap">
+    <div class="readme-hero">
+<div class="readme-hero-title" id="hero-title">Can You Actually Prove Your AI Is Working?</div>
+<div class="readme-hero-sub" id="hero-sub">Most AI ROI calculators ask what the tool costs and guess at what it saves. This asks a harder question first: does your organization even have the structure in place to know? Four dimensions, one weakest link, no fake precision.</div>
+    </div>
+    <p class="readme-p" style="margin-bottom:1.25rem;">Works the same way whether you're evaluating an AI tool or rolling out any other software - switch the setting above to match.</p>
+
+    <div class="readme-h3">What this tool measures</div>
+    <p class="readme-p" id="measures-p1">Adopting AI is external pressure - competitors, boards, vendors all pushing in the same direction. Whether that pressure produces real return depends on internal regulation: a stable baseline to measure against, a decision it actually feeds, a named owner, and a recurring review. Skip any one of those and the ROI question can&rsquo;t be answered - not because the AI failed, but because nothing was in place to prove it either way.</p>
+    <p class="readme-p">This is Norman&rsquo;s Gap applied to a single, specific pressure source. The output isn&rsquo;t a dollar figure. It&rsquo;s a readiness score and a named weakest dimension - the one thing blocking you from ever knowing if this is paying off.</p>
+
+    <hr class="readme-divider">
+
+    <div class="readme-h3">The five readiness bands</div>
+    <div style="margin-top:0.6rem;">
+      <div class="band-row"><div class="band-dot" style="background:#A32D2D;"></div><span class="band-label">Dark (0&ndash;1)</span><span class="band-desc">No visibility. Any ROI claim right now is a guess.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#993C1D;"></div><span class="band-label">Named (2&ndash;3)</span><span class="band-desc">Aware of the gaps. Nothing measured yet.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#BA7517;"></div><span class="band-label">Started (4&ndash;5)</span><span class="band-desc">Partial visibility. At least one dimension still open.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#639922;"></div><span class="band-label">Compliant (6&ndash;7)</span><span class="band-desc">Most dimensions solid. ROI is mostly provable.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#1D9E75;"></div><span class="band-label">Regulating+ (8)</span><span class="band-desc">Full visibility. ROI provable and compounding.</span></div>
+    </div>
+
+    <hr class="readme-divider">
+
+    <div class="readme-h3">What this tool scores</div>
+    <div class="step-row"><div class="step-num">1</div><div class="step-text"><b>Signal baseline</b> - <span id="step1-desc">Did you have a stable, documented measure of this process before the AI arrived? No baseline, no honest before/after.</span></div></div>
+    <div class="step-row"><div class="step-num">2</div><div class="step-text"><b>Decision window fit</b> - Does the output feed a decision quickly, or just sit there? Task-time savings without decision-time savings rarely shows up as real return.</div></div>
+    <div class="step-row"><div class="step-num">3</div><div class="step-text"><b>Ownership clarity</b> - If the output was wrong for two weeks straight, would anyone named notice?</div></div>
+    <div class="step-row"><div class="step-num">4</div><div class="step-text"><b>Failure condition exposure</b> - Is there a scheduled review independent of whether something breaks, or does review only happen after the fact?</div></div>
+
+    <hr class="readme-divider">
+    <p class="readme-source">Based on Norman&rsquo;s Gap, Norman Failure Condition, and the Norman Decision Window frameworks by Norman Applegate. Published by MOSei.org.</p>
+
+    <div style="margin-top:1rem;">
+      <button class="cta no-print" onclick="showTab('tool')" style="max-width:220px;">Run diagnostic &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOOL TAB -->
+<div id="tab-tool" style="display:none;">
+  <div class="wrap">
+
+    <!-- SECTION 01 — SIGNAL BASELINE -->
+    <div class="block">
+      <div class="block-head"><span class="block-num">1</span> Signal baseline</div>
+      <p class="block-sub" id="tool-block-sub-1">Before this AI tool arrived, could you already measure the process it touches?</p>
+
+      <div class="factor-block">
+        <div class="radio-group" id="base-group">
+          <label class="radio-opt selected">
+            <input type="radio" name="base" value="2" checked onchange="selectRadio('base-group',this)">
+            <div><div class="ro-label">Strong - 2</div><div class="ro-desc">Yes. Stable, documented baseline existed before adoption.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="base" value="1" onchange="selectRadio('base-group',this)">
+            <div><div class="ro-label">Developing - 1</div><div class="ro-desc">Some data exists, but it wasn&rsquo;t a clean baseline before the tool showed up.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="base" value="0" onchange="selectRadio('base-group',this)">
+            <div><div class="ro-label">Absent - 0</div><div class="ro-desc">No baseline. Measurement only started after the tool was already in use.</div></div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 02 — DECISION WINDOW FIT -->
+    <div class="block">
+      <div class="block-head"><span class="block-num">2</span> Decision window fit</div>
+      <p class="block-sub">When the tool produces an output, how long before someone acts on it?</p>
+
+      <div class="factor-block">
+        <div class="radio-group" id="dwf-group">
+          <label class="radio-opt selected">
+            <input type="radio" name="dwf" value="2" checked onchange="selectRadio('dwf-group',this)">
+            <div><div class="ro-label">Strong - 2</div><div class="ro-desc">Feeds directly into a decision, usually the same day.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="dwf" value="1" onchange="selectRadio('dwf-group',this)">
+            <div><div class="ro-label">Developing - 1</div><div class="ro-desc">Output sits for days before anyone acts on it.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="dwf" value="0" onchange="selectRadio('dwf-group',this)">
+            <div><div class="ro-label">Absent - 0</div><div class="ro-desc">No clear link between the output and any specific decision.</div></div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 03 — OWNERSHIP CLARITY -->
+    <div class="block">
+      <div class="block-head"><span class="block-num">3</span> Ownership clarity</div>
+      <p class="block-sub">If the output was wrong for two weeks straight, who would notice first?</p>
+
+      <div class="factor-block">
+        <div class="radio-group" id="own-group">
+          <label class="radio-opt selected">
+            <input type="radio" name="own" value="2" checked onchange="selectRadio('own-group',this)">
+            <div><div class="ro-label">Strong - 2</div><div class="ro-desc">One named owner would catch it within days.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="own" value="1" onchange="selectRadio('own-group',this)">
+            <div><div class="ro-label">Developing - 1</div><div class="ro-desc">Someone would eventually notice, but no one owns it directly.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="own" value="0" onchange="selectRadio('own-group',this)">
+            <div><div class="ro-label">Absent - 0</div><div class="ro-desc">No one is watching. It could drift for months unnoticed.</div></div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 04 — FAILURE CONDITION EXPOSURE -->
+    <div class="block">
+      <div class="block-head"><span class="block-num">4</span> Failure condition exposure</div>
+      <p class="block-sub">Is there a recurring, scheduled review of what this tool produces?</p>
+
+      <div class="factor-block">
+        <div class="radio-group" id="fce-group">
+          <label class="radio-opt selected">
+            <input type="radio" name="fce" value="2" checked onchange="selectRadio('fce-group',this)">
+            <div><div class="ro-label">Strong - 2</div><div class="ro-desc">Scheduled review on a cadence, independent of whether anything breaks.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="fce" value="1" onchange="selectRadio('fce-group',this)">
+            <div><div class="ro-label">Developing - 1</div><div class="ro-desc">Reviewed occasionally, mostly informal.</div></div>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="fce" value="0" onchange="selectRadio('fce-group',this)">
+            <div><div class="ro-label">Absent - 0</div><div class="ro-desc">Only reviewed after something visibly breaks.</div></div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <button class="cta" onclick="calculate()">Calculate readiness &rarr;</button>
+
+    <!-- RESULTS -->
+    <div id="results" style="display:none;margin-top:1.5rem;">
+      <div class="block">
+        <div class="verdict-bar"><div class="verdict-fill" id="verdict-fill" style="width:0%;"></div></div>
+        <div class="scorecard" id="scorecard" style="border:none;padding:0.5rem 0 1rem;">
+          <p class="sl">Readiness score</p>
+          <p class="sv" id="r-score">-</p>
+          <p class="sb" id="verdict-state"></p>
+          <p class="sd" id="verdict-interp"></p>
+        </div>
+
+        <div class="weakest-callout">
+          <p class="wl">Weakest dimension</p>
+          <p class="wv" id="r-weakest">-</p>
+        </div>
+
+        <div class="metricgrid">
+          <div class="metric"><p class="ml">Readiness score</p><p class="mv" id="r-score-2">-</p><p class="ms">Out of 8</p></div>
+          <div class="metric"><p class="ml">Regulation band</p><p class="mv" id="r-band">-</p><p class="ms">Confidence tier</p></div>
+        </div>
+
+        <div class="dimrow" id="dim-grid">
+          <div class="dim" id="dim-base"><p class="cl">Signal baseline</p><p class="cv" id="r-base">-</p></div>
+          <div class="dim" id="dim-dwf"><p class="cl">Decision window fit</p><p class="cv" id="r-dwf">-</p></div>
+          <div class="dim" id="dim-own"><p class="cl">Ownership clarity</p><p class="cv" id="r-own">-</p></div>
+          <div class="dim" id="dim-fce"><p class="cl">Failure condition exposure</p><p class="cv" id="r-fce">-</p></div>
+        </div>
+
+        <div class="block" style="background:var(--info-bg);border:none;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div>
+            <p style="font-size:13px;font-weight:600;color:var(--info-tx);margin:0 0 2px;">Ready to turn this into a dollar number?</p>
+            <p style="font-size:12px;color:var(--info-tx);opacity:0.85;margin:0;">The ROI calculator uses your regulation band above to set how wide a range to trust.</p>
+          </div>
+          <button class="cta no-print" onclick="showTab('roi')" style="width:auto;margin-top:0;padding:10px 18px;white-space:nowrap;">Calculate ROI &rarr;</button>
+        </div>
+
+        <button class="ghost no-print" onclick="resetTool()">&#8635; &nbsp;Reset diagnostic</button>
+      </div>
+    </div>
+
+    <p class="foot">MOSei.org &middot; The Tempered Signal &middot; <span class="tag">Judgment Formed Under Pressure</span></p>
+  </div>
+</div>
+
+<!-- ROI CALCULATOR TAB -->
+<div id="tab-roi" style="display:none;">
+  <div class="wrap">
+
+    <div class="readme-hero" style="margin-bottom:1.25rem;">
+      <div class="readme-hero-title">What Is This Actually Worth?</div>
+      <div class="readme-hero-sub">Time saved, at scale, minus what it costs. The range you get depends on how much you can trust your own numbers - which is exactly what the diagnostic just measured.</div>
+    </div>
+
+    <div class="conf-note" id="roi-band-note" style="background:var(--info-bg);">
+      <p class="cnl" style="color:var(--info-tx);">Confidence range</p>
+      <p class="cnv" style="color:var(--info-tx);" id="roi-band-note-text">Run the diagnostic tab first for a range specific to your organization. Until then, this uses a conservative default.</p>
+    </div>
+
+    <div class="block">
+      <div class="block-head"><span class="block-num">1</span> Usage &amp; time saved</div>
+      <p class="block-sub">The honest numbers, not the optimistic ones - this is where most ROI claims quietly go wrong.</p>
+
+      <div class="input-row">
+        <label for="roi-users">Number of users</label>
+        <div class="ihint">People with access to the tool today.</div>
+        <input type="number" id="roi-users" min="0" step="1" value="25">
+      </div>
+
+      <div class="input-row">
+        <label for="roi-hours">Hours saved per user, per week</label>
+        <div class="ihint">Per active user - be conservative, this is the number people inflate.</div>
+        <input type="number" id="roi-hours" min="0" step="0.5" value="2">
+      </div>
+
+      <div class="input-row">
+        <label for="roi-adoption">Adoption rate (%)</label>
+        <div class="ihint">Of licensed users, how many actually use it regularly - not how many have access.</div>
+        <input type="number" id="roi-adoption" min="0" max="100" step="5" value="60">
+      </div>
+
+      <div class="input-row">
+        <label for="roi-hourly">Fully-loaded hourly cost</label>
+        <div class="ihint">Salary plus overhead, not just base pay.</div>
+        <div class="prefix-wrap"><span>$</span><input type="number" id="roi-hourly" min="0" step="1" value="45"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-head"><span class="block-num">2</span> Costs</div>
+      <p class="block-sub">Annual, all-in.</p>
+
+      <div class="input-row">
+        <label for="roi-toolcost">Annual tool cost</label>
+        <div class="ihint">Licensing / subscription, total for all users.</div>
+        <div class="prefix-wrap"><span>$</span><input type="number" id="roi-toolcost" min="0" step="100" value="12000"></div>
+      </div>
+
+      <div class="input-row">
+        <label for="roi-implcost">Implementation cost (one-time)</label>
+        <div class="ihint">Training, setup, integration - whatever it took to get live.</div>
+        <div class="prefix-wrap"><span>$</span><input type="number" id="roi-implcost" min="0" step="100" value="5000"></div>
+      </div>
+    </div>
+
+    <button class="cta" onclick="calculateROI()">Calculate ROI &rarr;</button>
+
+    <div id="roi-results" style="display:none;margin-top:1.5rem;">
+      <div class="block">
+        <div class="rangebox">
+          <p class="rl">Gross annual savings</p>
+          <p class="rv" id="roi-gross">-</p>
+          <p class="rr" id="roi-gross-hours">-</p>
+        </div>
+
+        <div class="rangebox">
+          <p class="rl">Net annual benefit (after costs)</p>
+          <p class="rv" id="roi-net">-</p>
+          <p class="rr" id="roi-net-range">-</p>
+        </div>
+
+        <div class="metricgrid">
+          <div class="metric"><p class="ml">ROI</p><p class="mv" id="roi-pct">-</p><p class="ms" id="roi-pct-range">-</p></div>
+          <div class="metric"><p class="ml">Payback period</p><p class="mv" id="roi-payback">-</p><p class="ms">Time to break even</p></div>
+        </div>
+
+        <div class="conf-note" id="roi-result-band" style="background:var(--surface2);">
+          <p class="cnl" style="color:var(--muted);">Why the range</p>
+          <p class="cnv" style="color:var(--muted);" id="roi-result-band-text">-</p>
+        </div>
+
+        <button class="ghost no-print" onclick="resetROI()">&#8635; &nbsp;Reset ROI calculator</button>
+      </div>
+    </div>
+
+    <p class="foot">MOSei.org &middot; The Tempered Signal &middot; <span class="tag">Judgment Formed Under Pressure</span></p>
+  </div>
+</div>
+
+<script>
+var copy = {
+  ai: {
+    heroTitle: 'Can You Actually Prove Your AI Is Working?',
+    heroSub: 'Most AI ROI calculators ask what the tool costs and guess at what it saves. This asks a harder question first: does your organization even have the structure in place to know? Four dimensions, one weakest link, no fake precision.',
+    measuresP1: 'Adopting AI is external pressure - competitors, boards, vendors all pushing in the same direction. Whether that pressure produces real return depends on internal regulation: a stable baseline to measure against, a decision it actually feeds, a named owner, and a recurring review. Skip any one of those and the ROI question can\u2019t be answered - not because the AI failed, but because nothing was in place to prove it either way.',
+    step1: 'Did you have a stable, documented measure of this process before the AI arrived? No baseline, no honest before/after.',
+    toolBlockSub: 'Before this AI tool arrived, could you already measure the process it touches?'
+  },
+  software: {
+    heroTitle: 'Can You Actually Prove This Software Is Working?',
+    heroSub: 'Most software ROI calculators ask what the tool costs and guess at what it saves. This asks a harder question first: does your organization even have the structure in place to know? Four dimensions, one weakest link, no fake precision.',
+    measuresP1: 'Adopting new software is external pressure - competitors, boards, vendors all pushing in the same direction. Whether that pressure produces real return depends on internal regulation: a stable baseline to measure against, a decision it actually feeds, a named owner, and a recurring review. Skip any one of those and the ROI question can\u2019t be answered - not because the software failed, but because nothing was in place to prove it either way.',
+    step1: 'Did you have a stable, documented measure of this process before this software arrived? No baseline, no honest before/after.',
+    toolBlockSub: 'Before this tool arrived, could you already measure the process it touches?'
+  }
+};
+
+function setMode(mode) {
+  var c = copy[mode] || copy.ai;
+  document.getElementById('hero-title').textContent = c.heroTitle;
+  document.getElementById('hero-sub').textContent = c.heroSub;
+  document.getElementById('measures-p1').textContent = c.measuresP1;
+  document.getElementById('step1-desc').textContent = c.step1;
+  document.getElementById('tool-block-sub-1').textContent = c.toolBlockSub;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var params = new URLSearchParams(window.location.search);
+  var initMode = params.get('mode') === 'software' ? 'software' : 'ai';
+  document.getElementById('mode-select').value = initMode;
+  setMode(initMode);
+});
+
+function showTab(name) {
+  ['readme','tool','roi'].forEach(function(id) {
+    document.getElementById('tab-' + id).style.display = (id === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(t) {
+    t.classList.toggle('active', t.getAttribute('data-tab') === name);
+  });
+  if (name === 'roi') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    var noteEl = document.getElementById('roi-band-note-text');
+    if (noteEl) {
+      noteEl.textContent = lastBand
+        ? 'Your diagnostic score puts you in the ' + lastBand.state + ' band - results below will use a \u00b1' + Math.round(lastBand.confWidth * 100) + '% range.'
+        : 'Run the diagnostic tab first for a range specific to your organization. Until then, this uses a conservative default.';
+    }
+  }
+}
+
+var lastScore = null, lastWeakest = '', lastBand = null;
+
+var bands = [
+  { max: 1, state: 'Dark',        color: '#A32D2D', fillPct: 8,   confWidth: 0.60,
+    interp: 'No visibility into whether this is working. Any dollar figure quoted right now is a guess dressed as data.',
+    roiNote: 'Nothing here is verified yet, so the range is wide on purpose. Treat this as a rough guess, not a number to present.' },
+  { max: 3, state: 'Named',       color: '#993C1D', fillPct: 30,  confWidth: 0.40,
+    interp: 'The gaps are known but nothing is measured yet. Fix the weakest dimension before spending more on the tool itself.',
+    roiNote: 'The gaps are known but unverified, so this still carries a wide range. Fixing the weakest dimension is the fastest way to tighten it.' },
+  { max: 5, state: 'Started',     color: '#BA7517', fillPct: 55,  confWidth: 0.25,
+    interp: 'Partial visibility. At least one dimension is still open, and it\u2019s quietly capping what you can prove.',
+    roiNote: 'One open dimension is quietly capping how tight this range can get.' },
+  { max: 7, state: 'Compliant',   color: '#639922', fillPct: 80,  confWidth: 0.12,
+    interp: 'Most of the structure is in place. ROI is mostly provable - close the last gap to trust the number fully.',
+    roiNote: 'Most of the structure is in place, so this range is fairly tight.' },
+  { max: 8, state: 'Regulating+', color: '#1D9E75', fillPct: 100, confWidth: 0.05,
+    interp: 'Full visibility. ROI is provable now, and the structure is in place for it to compound.',
+    roiNote: 'Full structure is in place. This is close to a hard number.' }
+];
+
+function getBand(total) {
+  for (var i = 0; i < bands.length; i++) { if (total <= bands[i].max) return bands[i]; }
+  return bands[bands.length - 1];
+}
+
+var dimLabels = {
+  base: 'Signal baseline',
+  dwf:  'Decision window fit',
+  own:  'Ownership clarity',
+  fce:  'Failure condition exposure'
+};
+
+var weakestCopy = {
+  base: 'You don\u2019t have a clean before/after. Build a stable baseline before trying to prove anything else.',
+  dwf:  'The output isn\u2019t reaching a decision fast enough to count as real return. Trace where it stalls.',
+  own:  'No one is directly on the hook for this. Name an owner before you measure anything further.',
+  fce:  'Nothing catches drift until it breaks. Put a recurring review on the calendar, independent of incidents.'
+};
+
+function selectRadio(groupId, input) {
+  var group = document.getElementById(groupId);
+  group.querySelectorAll('.radio-opt').forEach(function(o) { o.classList.remove('selected'); });
+  input.closest('.radio-opt').classList.add('selected');
+}
+
+function getRadioVal(name) {
+  var el = document.querySelector('input[name="' + name + '"]:checked');
+  return el ? parseInt(el.value) : 0;
+}
+
+function calculate() {
+  var base = getRadioVal('base');
+  var dwf = getRadioVal('dwf');
+  var own = getRadioVal('own');
+  var fce = getRadioVal('fce');
+
+  var scores = { base: base, dwf: dwf, own: own, fce: fce };
+  var total = base + dwf + own + fce;
+
+  var weakestKey = 'base';
+  var weakestVal = base;
+  ['dwf','own','fce'].forEach(function(k) {
+    if (scores[k] < weakestVal) { weakestKey = k; weakestVal = scores[k]; }
+  });
+
+  lastScore = total;
+  lastWeakest = dimLabels[weakestKey];
+  lastBand = getBand(total);
+
+  document.getElementById('r-score').textContent = total + ' / 8';
+  document.getElementById('r-score-2').textContent = total + ' / 8';
+  document.getElementById('r-band').textContent = lastBand.state;
+  document.getElementById('r-weakest').textContent = dimLabels[weakestKey] + ' - ' + weakestCopy[weakestKey];
+
+  document.getElementById('r-base').textContent = base + ' / 2';
+  document.getElementById('r-dwf').textContent = dwf + ' / 2';
+  document.getElementById('r-own').textContent = own + ' / 2';
+  document.getElementById('r-fce').textContent = fce + ' / 2';
+
+  ['base','dwf','own','fce'].forEach(function(k) {
+    document.getElementById('dim-' + k).classList.toggle('weak', k === weakestKey);
+  });
+
+  var fill = document.getElementById('verdict-fill');
+  fill.style.background = lastBand.color;
+  setTimeout(function() { fill.style.width = lastBand.fillPct + '%'; }, 50);
+
+  document.getElementById('verdict-state').style.color = lastBand.color;
+  document.getElementById('verdict-state').textContent = lastBand.state;
+  document.getElementById('verdict-interp').textContent = lastBand.interp;
+
+  document.getElementById('results').style.display = 'block';
+  setTimeout(function() { document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+}
+
+function resetTool() {
+  ['base','dwf','own','fce'].forEach(function(n) {
+    var first = document.querySelector('input[name="' + n + '"]');
+    if (first) { first.checked = true; selectRadio(n + '-group', first); }
+  });
+  document.getElementById('verdict-fill').style.width = '0%';
+  document.getElementById('results').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function fmtUSD(n) {
+  var sign = n < 0 ? '-' : '';
+  return sign + '$' + Math.round(Math.abs(n)).toLocaleString('en-US');
+}
+
+function calculateROI() {
+  var users     = parseFloat(document.getElementById('roi-users').value) || 0;
+  var hours     = parseFloat(document.getElementById('roi-hours').value) || 0;
+  var adoptionP = parseFloat(document.getElementById('roi-adoption').value);
+  var hourly    = parseFloat(document.getElementById('roi-hourly').value) || 0;
+  var toolCost  = parseFloat(document.getElementById('roi-toolcost').value) || 0;
+  var implCost  = parseFloat(document.getElementById('roi-implcost').value) || 0;
+
+  if (isNaN(adoptionP)) adoptionP = 100;
+  adoptionP = Math.max(0, Math.min(100, adoptionP));
+  var adoption = adoptionP / 100;
+
+  var annualHours = users * hours * adoption * 52;
+  var grossSavings = annualHours * hourly;
+  var totalCost = toolCost + implCost;
+  var netBenefit = grossSavings - totalCost;
+  var roiPct = totalCost > 0 ? (netBenefit / totalCost) * 100 : null;
+
+  var band = lastBand || getBand(3); // default: conservative "Named"-level width if diagnostic hasn't been run
+  var width = band.confWidth;
+  var swing = Math.abs(grossSavings * width);
+
+  var netLow = netBenefit - swing;
+  var netHigh = netBenefit + swing;
+  var roiLow = totalCost > 0 ? (netLow / totalCost) * 100 : null;
+  var roiHigh = totalCost > 0 ? (netHigh / totalCost) * 100 : null;
+
+  document.getElementById('roi-gross').textContent = fmtUSD(grossSavings);
+  document.getElementById('roi-gross-hours').textContent = Math.round(annualHours).toLocaleString('en-US') + ' hours/year across ' + users + ' user' + (users === 1 ? '' : 's') + ' at ' + adoptionP + '% adoption';
+
+  document.getElementById('roi-net').textContent = fmtUSD(netBenefit);
+  document.getElementById('roi-net-range').textContent = 'Range: ' + fmtUSD(netLow) + ' to ' + fmtUSD(netHigh);
+
+  document.getElementById('roi-pct').textContent = (roiPct === null ? '-' : Math.round(roiPct) + '%');
+  document.getElementById('roi-pct-range').textContent = (roiLow === null ? 'Enter a tool cost to see ROI %' : Math.round(roiLow) + '% to ' + Math.round(roiHigh) + '%');
+
+  var paybackMonths = grossSavings > 0 ? (totalCost / (grossSavings / 12)) : null;
+  var paybackText;
+  if (paybackMonths === null || totalCost === 0) { paybackText = '-'; }
+  else if (paybackMonths > 36) { paybackText = '36+ mo'; }
+  else { paybackText = (Math.round(paybackMonths * 10) / 10) + ' mo'; }
+  document.getElementById('roi-payback').textContent = paybackText;
+
+  var bandNoteText = lastBand
+    ? 'Your diagnostic score (' + lastBand.state + ') sets this range at \u00b1' + Math.round(width * 100) + '%. ' + band.roiNote
+    : 'No diagnostic score on file, so this uses a conservative default \u00b1' + Math.round(width * 100) + '% range. Run the diagnostic tab for a range specific to your organization.';
+  document.getElementById('roi-result-band-text').textContent = bandNoteText;
+
+  document.getElementById('roi-results').style.display = 'block';
+  setTimeout(function() { document.getElementById('roi-results').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+}
+
+function resetROI() {
+  document.getElementById('roi-results').style.display = 'none';
+}
+</script>
+</body>
+</html>
