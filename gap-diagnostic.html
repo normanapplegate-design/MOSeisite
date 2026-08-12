@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -202,6 +203,9 @@
     <div class="step-row"><div class="step-num">4</div><div class="step-text"><b>Results</b> &mdash; Gap Score (pressure minus regulation), Gap Index (pressure divided by regulation), Severity band, Effectiveness %, and the single weakest constraint &mdash; ownership, decision speed, or information quality.</div></div>
 
     <hr class="readme-divider">
+    <p class="readme-p" style="font-style:italic;">The Gap Diagnostic is a management decision model, not a precision instrument. Weightings, tier multipliers, and band cutoffs reflect deliberate design choices, not statistical validation against a dataset of organizations. Scores are directional indicators meant to identify relative operating risk and where to investigate first &mdash; not exact measurements.</p>
+
+    <hr class="readme-divider">
     <p class="readme-source">Based on Norman&rsquo;s Gap, Signal Compression, and the Norman Decision Window frameworks by Norman Applegate. Published by MOSei.org.</p>
 
     <div style="margin-top:1rem;">
@@ -400,6 +404,10 @@
           </div>
           <p class="sd" id="r-primary-desc" style="color:var(--muted);margin-top:6px;">&mdash;</p>
           <p class="sd" id="r-primary-action" style="font-weight:600;margin-top:8px;">&mdash;</p>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,0,0,0.08);">
+            <p class="sl" style="color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;font-size:10.5px;margin-bottom:4px;">Verify before acting</p>
+            <p class="sd" id="r-primary-verify" style="color:var(--ink);">&mdash;</p>
+          </div>
         </div>
 
         <div class="scorecard" id="regfocus-card" style="background:var(--surface2);border:1px solid var(--line);">
@@ -531,23 +539,26 @@ function calculate() {
   var infoQuality = Math.min(esc, kpi);
   var weakInfoFactor = esc <= kpi ? 'escalation discipline' : 'KPI truth';
   var constraints = [
-    { name: 'Ownership', score: own, desc: 'Issues are not landing on a named owner. Accountability diffuses as soon as pressure rises.' },
-    { name: 'Decision speed', score: spd, desc: 'The signal-to-decision cycle is too slow. Problems are seen, but no one acts on them in time.' },
-    { name: 'Information quality', score: infoQuality, desc: 'Signal is being lost specifically through ' + weakInfoFactor + '. That single weak link is enough to distort what leadership sees.' }
+    { name: 'Ownership', score: own, desc: 'Issues are not landing on a named owner. Accountability diffuses as soon as pressure rises.', verify: 'Review five open problems right now. For each one, ask: who has the authority and obligation to close it? If the answer is unclear or shared, that\'s the evidence.' },
+    { name: 'Decision speed', score: spd, desc: 'The signal-to-decision cycle is too slow. Problems are seen, but no one acts on them in time.', verify: 'Review the last five significant operating problems. Time how long it took from first signal to decision. Count how many approval levels each one crossed.' },
+    { name: 'Information quality', score: infoQuality, desc: 'Signal is being lost specifically through ' + weakInfoFactor + '. That single weak link is enough to distort what leadership sees.', verify: 'Compare the original floor-level signal against what senior leadership actually received. Look for missing severity, missing timestamps, softened language, or changed metrics.' }
   ];
   var minScore = Math.min(constraints[0].score, constraints[1].score, constraints[2].score);
   var tied = constraints.filter(function(c) { return c.score === minScore; });
-  var primaryName, primaryDesc;
+  var primaryName, primaryDesc, primaryVerify;
   if (tied.length === 1) {
     primaryName = tied[0].name;
     primaryDesc = tied[0].desc;
+    primaryVerify = tied[0].verify;
   } else {
     primaryName = tied.map(function(c) { return c.name; }).join(' & ');
     primaryDesc = 'Tied for weakest. ' + tied.map(function(c) { return '<b>' + c.name + ':</b> ' + c.desc; }).join(' ');
+    primaryVerify = tied.map(function(c) { return '<b>' + c.name + ':</b> ' + c.verify; }).join(' ');
   }
   lastPrimaryConstraint = primaryName;
   document.getElementById('r-primary').textContent = primaryName;
   document.getElementById('r-primary-desc').innerHTML = primaryDesc;
+  document.getElementById('r-primary-verify').innerHTML = primaryVerify;
 
   var sevMap = {
     weak:   { bg: 'var(--red-bg)',   tx: 'var(--red-tx)',   label: 'Weak &mdash; act now',      action: 'This is actively working against you. Fix this first, before anything else.' },
@@ -658,6 +669,7 @@ function resetTool() {
   document.getElementById('r-primary-desc').textContent = '\u2014';
   document.getElementById('r-primary-action').textContent = '\u2014';
   document.getElementById('r-primary-action').style.color = 'var(--muted)';
+  document.getElementById('r-primary-verify').textContent = '\u2014';
   document.getElementById('r-primary-badge').textContent = '';
   document.getElementById('r-eff-sub').textContent = 'Regulation / pressure';
   document.getElementById('r-gap-footnote').textContent = '\u2014';
