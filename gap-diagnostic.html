@@ -199,7 +199,7 @@
     <div class="step-row"><div class="step-num">1</div><div class="step-text"><b>External pressure</b> &mdash; Tier classification (behavioral, operational, or system-level) multiplied by severity (6.0&ndash;9.0 scale).</div></div>
     <div class="step-row"><div class="step-num">2</div><div class="step-text"><b>System regulation</b> &mdash; Four factors scored: ownership clarity, decision speed, escalation discipline, and KPI truth.</div></div>
     <div class="step-row"><div class="step-num">3</div><div class="step-text"><b>Leader regulation</b> &mdash; Three sliders: self-regulation under pressure, decision composure, and trade-off discipline.</div></div>
-    <div class="step-row"><div class="step-num">4</div><div class="step-text"><b>Results</b> &mdash; Gap Score (pressure minus regulation), Gap Index (pressure divided by regulation), Severity band, and Effectiveness %.</div></div>
+    <div class="step-row"><div class="step-num">4</div><div class="step-text"><b>Results</b> &mdash; Gap Score (pressure minus regulation), Gap Index (pressure divided by regulation), Severity band, Effectiveness %, and the single weakest constraint &mdash; ownership, decision speed, or information quality.</div></div>
 
     <hr class="readme-divider">
     <p class="readme-source">Based on Norman&rsquo;s Gap, Signal Compression, and the Norman Decision Window frameworks by Norman Applegate. Published by MOSei.org.</p>
@@ -389,18 +389,34 @@
           <p class="sv" id="r-index">&mdash;</p>
           <p class="sb" id="verdict-state"></p>
           <p class="sd" id="verdict-interp"></p>
+          <p class="ms" id="r-gap-footnote" style="margin-top:8px;">&mdash;</p>
         </div>
 
-        <div class="metricgrid">
+        <div class="scorecard" id="constraint-card" style="background:var(--surface2);border:1px solid var(--line);">
+          <p class="sl" style="color:var(--muted);">Primary constraint</p>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:2px;">
+            <p class="sb" id="r-primary" style="color:var(--navy);font-size:19px;margin:0;">&mdash;</p>
+            <span id="r-primary-badge" style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;"></span>
+          </div>
+          <p class="sd" id="r-primary-desc" style="color:var(--muted);margin-top:6px;">&mdash;</p>
+          <p class="sd" id="r-primary-action" style="font-weight:600;margin-top:8px;">&mdash;</p>
+        </div>
+
+        <div class="scorecard" id="regfocus-card" style="background:var(--surface2);border:1px solid var(--line);">
+          <p class="sl" style="color:var(--muted);">Bigger drag</p>
+          <p class="sb" id="r-regfocus" style="font-size:19px;margin:4px 0 6px;">&mdash;</p>
+          <p class="sd" id="r-regfocus-desc" style="color:var(--muted);">&mdash;</p>
+        </div>
+
+        <div class="metricgrid" style="grid-template-columns:repeat(3,1fr);">
           <div class="metric"><p class="ml">External pressure</p><p class="mv" id="r-pressure">&mdash;</p><p class="ms" id="r-pressure-sub"></p></div>
           <div class="metric"><p class="ml">Internal regulation</p><p class="mv" id="r-regulation">&mdash;</p><p class="ms" id="r-reg-sub"></p></div>
-          <div class="metric"><p class="ml">Gap Score</p><p class="mv" id="r-gap">&mdash;</p><p class="ms">Pressure minus regulation</p></div>
-          <div class="metric"><p class="ml">Effectiveness</p><p class="mv" id="r-eff">&mdash;</p><p class="ms">Regulation / pressure</p></div>
+          <div class="metric"><p class="ml">Effectiveness</p><p class="mv" id="r-eff">&mdash;</p><p class="ms" id="r-eff-sub">Regulation / pressure</p></div>
         </div>
 
         <div class="comprow">
-          <div class="comp"><p class="cl">System regulation</p><p class="cv" id="r-sys">&mdash;</p></div>
-          <div class="comp"><p class="cl">Leader regulation</p><p class="cv" id="r-ldr">&mdash;</p></div>
+          <div class="comp"><p class="cl">System regulation</p><p class="cv" id="r-sys">&mdash;</p><p class="ms" id="r-sys-status"></p></div>
+          <div class="comp"><p class="cl">Leader regulation</p><p class="cv" id="r-ldr">&mdash;</p><p class="ms" id="r-ldr-status"></p></div>
           <div class="comp"><p class="cl">Tier weight</p><p class="cv" id="r-tier">&mdash;</p></div>
         </div>
 
@@ -432,7 +448,7 @@ function showTab(name) {
 var tierWeight = 1.0;
 var severity = 7.0;
 var srVal = 7, dcVal = 7, tdVal = 7;
-var lastGapScore = null, lastGapIndex = null, lastDimension = '';
+var lastGapScore = null, lastGapIndex = null, lastDimension = '', lastPrimaryConstraint = '';
 var sevDescs = {
   '6':   'Monitored — early signal present. 0 of 3 dimensions confirmed. Watch, not act.',
   '6.5': 'Elevated — signal visible. 1 of 3 confirmed. Pattern emerging, not yet structural.',
@@ -480,6 +496,7 @@ function updateSeverity(v) {
 }
 
 function leaderBand(n) { return n >= 7 ? 'high' : n >= 4 ? 'mid' : 'low'; }
+function regBand(n) { return n >= 7 ? 'strong' : (n >= 4 ? 'mixed' : 'weak'); }
 
 function updateLeader(key, v) {
   var n = parseInt(v);
@@ -510,16 +527,83 @@ function calculate() {
   lastGapScore = gapScore;
   lastGapIndex = gapIndex;
   lastDimension = sysReg <= ldrReg ? 'System Regulation' : 'Leader Regulation';
+
+  var infoQuality = Math.min(esc, kpi);
+  var weakInfoFactor = esc <= kpi ? 'escalation discipline' : 'KPI truth';
+  var constraints = [
+    { name: 'Ownership', score: own, desc: 'Issues are not landing on a named owner. Accountability diffuses as soon as pressure rises.' },
+    { name: 'Decision speed', score: spd, desc: 'The signal-to-decision cycle is too slow. Problems are seen, but no one acts on them in time.' },
+    { name: 'Information quality', score: infoQuality, desc: 'Signal is being lost specifically through ' + weakInfoFactor + '. That single weak link is enough to distort what leadership sees.' }
+  ];
+  var minScore = Math.min(constraints[0].score, constraints[1].score, constraints[2].score);
+  var tied = constraints.filter(function(c) { return c.score === minScore; });
+  var primaryName, primaryDesc;
+  if (tied.length === 1) {
+    primaryName = tied[0].name;
+    primaryDesc = tied[0].desc;
+  } else {
+    primaryName = tied.map(function(c) { return c.name; }).join(' & ');
+    primaryDesc = 'Tied for weakest. ' + tied.map(function(c) { return '<b>' + c.name + ':</b> ' + c.desc; }).join(' ');
+  }
+  lastPrimaryConstraint = primaryName;
+  document.getElementById('r-primary').textContent = primaryName;
+  document.getElementById('r-primary-desc').innerHTML = primaryDesc;
+
+  var sevMap = {
+    weak:   { bg: 'var(--red-bg)',   tx: 'var(--red-tx)',   label: 'Weak &mdash; act now',      action: 'This is actively working against you. Fix this first, before anything else.' },
+    mixed:  { bg: 'var(--amber-bg)', tx: 'var(--amber-tx)', label: 'Mixed &mdash; inconsistent', action: 'Inconsistent under pressure. Tighten this before it becomes structural.' },
+    strong: { bg: 'var(--green-bg)', tx: 'var(--green-tx)', label: 'No clear constraint',        action: 'All three system factors score strong. If the gap is still wide, look at leader regulation or the pressure tier instead.' }
+  };
+  var sevKey = minScore <= 0.5 ? 'weak' : (minScore <= 1.5 ? 'mixed' : 'strong');
+  var sev = sevMap[sevKey];
+  var card = document.getElementById('constraint-card');
+  var badge = document.getElementById('r-primary-badge');
+  var action = document.getElementById('r-primary-action');
+  card.style.background = sev.bg;
+  badge.innerHTML = sev.label;
+  badge.style.background = 'rgba(255,255,255,0.55)';
+  badge.style.color = sev.tx;
+  action.innerHTML = sev.action;
+  action.style.color = sev.tx;
   document.getElementById('r-pressure').textContent = pressure.toFixed(1);
   document.getElementById('r-pressure-sub').textContent = 'Severity ' + severity.toFixed(1) + ' × tier ' + tierWeight.toFixed(1);
   document.getElementById('r-regulation').textContent = intReg.toFixed(2);
   document.getElementById('r-reg-sub').textContent = 'Sys ' + sysReg.toFixed(1) + ' (×0.6) + Ldr ' + ldrReg.toFixed(1) + ' (×0.4)';
-  document.getElementById('r-gap').textContent = (gapScore > 0 ? '+' : '') + gapScore.toFixed(2);
+  document.getElementById('r-gap-footnote').textContent = 'Raw gap: ' + (gapScore > 0 ? '+' : '') + gapScore.toFixed(2) + ' (pressure minus regulation)';
   document.getElementById('r-index').textContent = gapIndex.toFixed(2);
   document.getElementById('r-eff').textContent = effectiveness + '%';
+  var effRead;
+  if (effectiveness >= 100) { effRead = 'Regulation matches or exceeds pressure'; }
+  else if (effectiveness >= 85) { effRead = 'Close to matched. Minor slack'; }
+  else if (effectiveness >= 65) { effRead = 'Real gap, not yet acute'; }
+  else { effRead = 'Covering under two-thirds of the load'; }
+  document.getElementById('r-eff-sub').textContent = effRead + ' · Ideal: 100%+';
+
+  var sysBandKey = regBand(sysReg);
+  var ldrBandKey = regBand(ldrReg);
+  var bandLabel = { weak: 'Weak', mixed: 'Mixed', strong: 'Strong' };
   document.getElementById('r-sys').textContent = sysReg.toFixed(1) + ' / 10';
+  document.getElementById('r-sys').style.color = sevMap[sysBandKey].tx;
+  document.getElementById('r-sys-status').textContent = bandLabel[sysBandKey];
+  document.getElementById('r-sys-status').style.color = sevMap[sysBandKey].tx;
   document.getElementById('r-ldr').textContent = ldrReg.toFixed(1) + ' / 10';
+  document.getElementById('r-ldr').style.color = sevMap[ldrBandKey].tx;
+  document.getElementById('r-ldr-status').textContent = bandLabel[ldrBandKey];
+  document.getElementById('r-ldr-status').style.color = sevMap[ldrBandKey].tx;
   document.getElementById('r-tier').textContent = '×' + tierWeight.toFixed(1);
+
+  var weaker = sysReg <= ldrReg ? 'system' : 'leader';
+  var regfocusDesc;
+  if (weaker === 'system') {
+    regfocusDesc = 'System regulation (' + sysReg.toFixed(1) + '/10) is weaker than leader regulation (' + ldrReg.toFixed(1) + '/10). The structures &mdash; ownership, escalation, decision speed &mdash; aren\'t converting signal into action fast enough. Fix the system before asking leaders to compensate for it.';
+  } else {
+    regfocusDesc = 'Leader regulation (' + ldrReg.toFixed(1) + '/10) is weaker than system regulation (' + sysReg.toFixed(1) + '/10). Composure, decisiveness, and follow-through under pressure need attention before structural fixes will move the score.';
+  }
+  var regfocusBandKey = regBand(Math.min(sysReg, ldrReg));
+  document.getElementById('regfocus-card').style.background = sevMap[regfocusBandKey].bg;
+  document.getElementById('r-regfocus').textContent = lastDimension;
+  document.getElementById('r-regfocus').style.color = sevMap[regfocusBandKey].tx;
+  document.getElementById('r-regfocus-desc').innerHTML = regfocusDesc;
 
   var state, interp, color, fillPct;
   if (gapIndex < 1.0) {
@@ -570,6 +654,22 @@ function resetTool() {
     if (first) { first.checked = true; selectRadio(n + '-group', first); }
   });
 
+  document.getElementById('r-primary').textContent = '\u2014';
+  document.getElementById('r-primary-desc').textContent = '\u2014';
+  document.getElementById('r-primary-action').textContent = '\u2014';
+  document.getElementById('r-primary-action').style.color = 'var(--muted)';
+  document.getElementById('r-primary-badge').textContent = '';
+  document.getElementById('r-eff-sub').textContent = 'Regulation / pressure';
+  document.getElementById('r-gap-footnote').textContent = '\u2014';
+  document.getElementById('constraint-card').style.background = 'var(--surface2)';
+  document.getElementById('r-regfocus').textContent = '\u2014';
+  document.getElementById('r-regfocus').style.color = 'var(--navy)';
+  document.getElementById('r-regfocus-desc').textContent = '\u2014';
+  document.getElementById('regfocus-card').style.background = 'var(--surface2)';
+  document.getElementById('r-sys-status').textContent = '';
+  document.getElementById('r-ldr-status').textContent = '';
+  document.getElementById('r-sys').style.color = 'var(--ink)';
+  document.getElementById('r-ldr').style.color = 'var(--ink)';
   document.getElementById('verdict-fill').style.width = '0%';
   document.getElementById('results').style.display = 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
