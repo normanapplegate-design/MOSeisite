@@ -1,0 +1,49 @@
+# MOSei
+
+> MOSei is a management operating system platform for manufacturing and operations leaders, built around the Norman System, a proprietary framework for diagnosing and closing the gap between external pressure and internal regulation in an organization. MOSei is created by Norm Applegate, a consultant with over 30 years of MOS implementation experience.
+
+MOSei helps operations and plant leaders name, measure, and close the gaps that cause instability under pressure: unclear ownership, slow decisions, and degraded information as it moves through an organization. The core diagnostic tools score these gaps directly and point to a specific constraint to fix first.
+
+## Core Concepts
+
+- [What Is Norman's Gap?](https://mosei.org/normans-gap.html): the instability that results when external pressure exceeds an organization's internal regulation.
+- [What Is Signal Compression?](https://mosei.org/signal-compression.html): how organizations lose the truth, clarity, and urgency of a problem as it moves through layers.
+- [What Is a Management Operating System (MOS)?](https://mosei.org/management-operating-system.html)
+- [How to Build a Management Operating System](https://mosei.org/how-to-build-a-management-operating-system.html)
+- [Management Operating Systems in Manufacturing](https://mosei.org/manufacturing-management-operating-system.html)
+- [What Is a Daily Management System?](https://mosei.org/daily-management-system.html)
+- [Tier Meeting System for Plant Managers](https://mosei.org/tier-meeting-governance.html)
+
+## Diagnostic Tools
+
+- [Gap Diagnostic](https://mosei.org/gap-diagnostic.html): scores the gap between external pressure and internal regulation across Ownership, Decision Speed, and Information Quality, and returns a Primary Constraint and a Bigger Drag.
+- [MOS Assessment](https://mosei.org/mos-assessment.html): scores Management Operating System maturity against the Implementation Maturity Index (IMI) and returns a level and priority recommendations.
+- [Implementation Readiness Diagnostic](https://mosei.org/implementation-readiness-diagnostic.html)
+- [AI Gap Diagnostic](https://mosei.org/ai-gap-diagnostic.html): whether AI-driven pressure is outrunning an organization's regulation.
+- [Gap Index Scorer](https://mosei.org/gap-index.html)
+- [Scenario Finder](https://mosei.org/scenario-finder.html)
+
+## Root Cause Tools
+
+- [Is/Is-Not Tracer](https://mosei.org/is-is-not-tracer.html)
+- [Fishbone Tracer](https://mosei.org/fishbone-tracer.html)
+- [5 Whys Tracer](https://mosei.org/five-whys-tracer.html)
+- [Pareto Law Tracer](https://mosei.org/pareto-law-tracer.html)
+- [Countermeasure Tracker](https://mosei.org/countermeasure-tracker.html)
+
+## Other Tools
+
+- [14 Tools Every Manager Must Have](https://mosei.org/14-tools.html)
+- [Takt-Cycle Tracer](https://mosei.org/takt-cycle-tracer.html)
+- [KPI Cascade Workshop Template](https://mosei.org/kpi-cascade-workshop.html)
+- [Full Tools Directory](https://mosei.org/tools.html)
+
+## About
+
+- [Homepage](https://mosei.org/index.html)
+- [Knowledge](https://mosei.org/knowledge.html)
+
+## Optional
+
+- [Regulate](https://mosei.org/regulate/): a breathing and regulation app for leaders under pressure.
+- [Norman's Law Trend Tracker](https://mosei.org/trend-tracker/)
