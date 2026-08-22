@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -526,7 +527,7 @@ function calculate() {
   }
 
   lastMode = currentMode;
-  lastGapScore = gapScore;
+  lastGapScore = Math.round(gapScore * 10) / 10;
   lastPrimary = primaryName;
   lastDrag = dragName;
 
