@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Gap Diagnostic: Is AI Pressure Outrunning Your Regulation? | MOSei</title>
+<meta name="description" content="A short diagnostic that scores AI pressure against AI regulation, for individuals and for organizations. Built on Norman's Gap.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#1a2744; --navy-deep:#111c33; --gold:#c9a84c; --gold-light:#e8c97a;
+    --accent:#2E75B6; --ink:#1d2230; --muted:#5a6072; --hint:#8b91a0;
+    --line:#e3e6ec; --surface:#ffffff; --surface2:#f5f7fa; --page:#f8f5ef;
+    --info-bg:#e6f1fb; --info-tx:#0c447c;
+    --teal-bg:#e1f5ee; --teal-tx:#085041;
+    --green-bg:#eaf3de; --green-tx:#27500a;
+    --amber-bg:#faeeda; --amber-tx:#633806;
+    --coral-bg:#faece7; --coral-tx:#712b13;
+    --red-bg:#fcebeb; --red-tx:#791f1f;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --radius: 10px; --radius-lg: 14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#e8ebf2; --muted:#a3aab9; --hint:#7b8294;
+      --line:#2a2f3c; --surface:#161a22; --surface2:#1d222c; --page:#11141b;
+      --info-bg:#0c2a44; --info-tx:#9cc6f0;
+      --teal-bg:#0a2c24; --teal-tx:#7fd9bb;
+      --green-bg:#1c2c0f; --green-tx:#a6cf6f;
+      --amber-bg:#332108; --amber-tx:#e8b878;
+      --coral-bg:#331409; --coral-tx:#e09a7c;
+      --red-bg:#330d0d; --red-tx:#e89494;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--page);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  .tool-header{background:var(--navy);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+  .tool-logo{font-family:var(--serif);font-size:1.15rem;color:#fff;}
+  .tool-logo span{color:var(--gold);}
+  .tool-tagline{font-size:0.7rem;color:rgba(255,255,255,0.45);margin-top:1px;}
+  .tool-badge{font-size:0.68rem;color:rgba(255,255,255,0.5);border:0.5px solid rgba(255,255,255,0.2);padding:3px 10px;border-radius:20px;}
+
+  .tab-bar{display:flex;border-bottom:1px solid var(--line);background:var(--surface);padding:0 1.25rem;}
+  .tab-btn{font-size:0.8rem;font-family:var(--sans);padding:8px 14px;cursor:pointer;color:var(--muted);border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .tab-btn.active{color:var(--navy);font-weight:500;border-bottom-color:var(--navy);}
+
+  .wrap{max-width:720px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+
+  .readme-hero{background:var(--navy);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.25rem;}
+  .readme-hero-title{font-family:var(--serif);font-size:1.35rem;color:#fff;margin-bottom:6px;}
+  .readme-hero-title span{color:var(--gold);}
+  .readme-hero-sub{font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.65;}
+  .readme-h3{font-size:0.9rem;font-weight:500;color:var(--ink);margin-bottom:0.5rem;margin-top:1.25rem;}
+  .readme-p{font-size:0.82rem;color:var(--muted);line-height:1.7;margin-bottom:0.5rem;}
+  .band-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+  .band-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .band-label{font-size:0.8rem;font-weight:500;color:var(--ink);width:190px;}
+  .band-desc{font-size:0.75rem;color:var(--muted);}
+  .step-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:0.75rem;}
+  .step-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;font-size:0.7rem;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .step-text{font-size:0.82rem;color:var(--muted);line-height:1.6;}
+  .step-text b{color:var(--ink);font-weight:500;}
+  .readme-divider{border:none;border-top:1px solid var(--line);margin:1.25rem 0;}
+  .readme-source{font-size:0.72rem;color:var(--hint);font-style:italic;}
+
+  .block{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+  .block-head{font-size:15px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+  .block-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--info-bg);color:var(--info-tx);font-size:13px;font-weight:600;flex-shrink:0;}
+  .block-sub{font-size:13px;color:var(--muted);margin-bottom:1rem;}
+  .sec-divider{border:none;border-top:1px solid var(--line);margin:1rem 0;}
+
+  .mode-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .mode-opt{border:1px solid var(--line);border-radius:8px;padding:14px 10px;cursor:pointer;background:var(--surface);transition:all 0.15s;text-align:center;user-select:none;}
+  .mode-opt:hover{border-color:var(--navy);background:var(--surface2);}
+  .mode-opt.selected{border:2px solid var(--navy);background:var(--info-bg);}
+  .mode-opt .m-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+  .mode-opt.selected .m-name{color:var(--info-tx);}
+  .mode-opt .m-desc{font-size:11px;color:var(--hint);line-height:1.4;}
+
+  .factor-block{margin-bottom:0.5rem;}
+  .fname{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+  .fhint{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:10px;}
+
+  .q-row{margin-bottom:16px;}
+  .q-text{font-size:13px;color:var(--ink);margin-bottom:8px;line-height:1.5;}
+  .scale-row{display:flex;gap:6px;}
+  .scale-btn{flex:1;padding:9px 0;text-align:center;border:1px solid var(--line);border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);background:var(--surface);font-family:inherit;transition:all 0.12s;}
+  .scale-btn:hover{border-color:var(--navy);}
+  .scale-btn.selected{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .scale-caption{display:flex;justify-content:space-between;font-size:10px;color:var(--hint);margin-top:4px;}
+  .scale-legend{font-size:11px;color:var(--hint);font-style:italic;margin-bottom:1rem;}
+
+  button.cta{width:100%;padding:14px;font-size:15px;font-weight:600;border-radius:10px;border:none;background:var(--navy);color:#fff;cursor:pointer;font-family:inherit;margin-top:8px;}
+  button.cta:hover{opacity:0.92;}
+  button.ghost{width:100%;padding:12px;font-size:14px;font-weight:500;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-family:inherit;}
+  button.ghost:hover{background:var(--surface2);}
+
+  .metricgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:1rem;}
+  .metric{background:var(--surface2);border-radius:10px;padding:1.4rem 1.25rem;border:1px solid var(--line);transition:background 0.2s,border-color 0.2s;}
+  .metric .ml{font-size:13px;color:var(--muted);margin:0 0 6px;font-weight:500;}
+  .metric .mv{font-size:40px;font-weight:700;margin:0;color:var(--ink);line-height:1;}
+  .metric .ms{font-size:12px;color:var(--hint);margin-top:8px;font-weight:500;}
+  .scorecard{border-radius:12px;padding:1.25rem;margin-bottom:1rem;border:1px solid var(--line);}
+  .scorecard .sl{font-size:12px;margin:0 0 3px;opacity:0.8;}
+  .scorecard .sv{font-size:38px;font-weight:600;margin:0;line-height:1;}
+  .scorecard .sb{font-size:16px;font-weight:600;margin:10px 0 3px;}
+  .scorecard .sd{font-size:13px;margin:0;opacity:0.9;line-height:1.55;}
+  .verdict-bar{height:4px;border-radius:2px;background:var(--line);margin-bottom:1rem;overflow:hidden;}
+  .verdict-fill{height:100%;border-radius:2px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);}
+  .foot{margin-top:2.5rem;text-align:center;font-size:13px;color:var(--hint);}
+  .foot .tag{font-style:italic;color:var(--accent);}
+
+  @media (max-width:600px){
+    .metricgrid{grid-template-columns:1fr;}
+    .scale-btn{padding:11px 0;}
+  }
+  @media print{
+    .tool-header,.tab-bar,.no-print{display:none !important;}
+    .wrap{padding:1rem;}
+  }
+</style>
+<script defer data-domain="mosei.org" src="https://plausible.io/js/script.js"></script>
+</head>
+<body>
+<div style="background:var(--page);padding:12px 24px;font-size:13px;">
+  <a href="/" style="color:var(--navy);text-decoration:none;font-weight:500;">&larr; MOSei Home</a>
+  <span style="color:var(--muted);margin:0 8px;">|</span>
+  <a href="/tools.html" style="color:var(--navy);text-decoration:none;font-weight:500;">All Tools</a>
+</div>
+
+<div class="tool-header">
+  <div>
+    <div class="tool-logo">MOS<span>ei</span></div>
+    <div class="tool-tagline">AI Gap Diagnostic</div>
+  </div>
+  <div class="tool-badge">Norman&rsquo;s Gap Framework</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('readme')">Read me</button>
+  <button class="tab-btn" onclick="showTab('tool')">Run diagnostic</button>
+</div>
+
+<!-- READ ME TAB -->
+<div id="tab-readme">
+  <div class="wrap">
+    <div class="readme-hero">
+      <div class="readme-hero-title">Is AI Pressure Outrunning Your Regulation?</div>
+      <div class="readme-hero-sub">Two versions of the same measurement. One for how you experience AI pressure personally. One for whether your organization's AI rollout is building regulation as fast as it's creating pressure. Same law underneath both: instability grows when pressure outruns regulation.</div>
+    </div>
+
+    <div class="readme-h3">What this tool measures</div>
+    <p class="readme-p">Norman's Gap is the distance between external pressure and internal regulation. Applied here, pressure is the pace of AI change, the ambiguity about what's coming, and the noise arriving from outside. Regulation is what exists to absorb it.</p>
+    <p class="readme-p">This tool scores both sides and reports the gap between them. It does not judge whether AI itself is good or bad. It reports whether pressure and regulation are currently in balance.</p>
+
+    <hr class="readme-divider">
+
+    <div class="readme-h3">Two views, one measurement</div>
+    <p class="readme-p"><b>Individual</b> measures how you personally experience AI pressure in your role right now. <b>Organization</b> measures whether the AI rollout your organization is running is generating pressure faster than it's building the structure to absorb it. Same underlying math, two different altitudes.</p>
+
+    <hr class="readme-divider">
+
+    <div class="readme-h3">The four Gap Score bands</div>
+    <div style="margin-top:0.6rem;">
+      <div class="band-row"><div class="band-dot" style="background:#A32D2D;"></div><span class="band-label">Gap open (+2.5 to +4)</span><span class="band-desc">Pressure is significantly ahead of regulation.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#BA7517;"></div><span class="band-label">Gap forming (+1 to +2.4)</span><span class="band-desc">Pressure is ahead. Regulation hasn't caught up.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#639922;"></div><span class="band-label">Holding (&minus;0.9 to +0.9)</span><span class="band-desc">Pressure and regulation are roughly matched.</span></div>
+      <div class="band-row"><div class="band-dot" style="background:#1D9E75;"></div><span class="band-label">Regulated (&minus;4 to &minus;1)</span><span class="band-desc">Regulation is ahead of pressure.</span></div>
+    </div>
+
+    <hr class="readme-divider">
+
+    <div class="readme-h3">What this tool scores</div>
+    <div class="step-row"><div class="step-num">1</div><div class="step-text"><b>Pressure</b> -- three dimensions, each built from a short set of questions, each averaged and reported on a 1 to 5 scale.</div></div>
+    <div class="step-row"><div class="step-num">2</div><div class="step-text"><b>Regulation</b> -- three dimensions, scored the same way, on the same scale.</div></div>
+    <div class="step-row"><div class="step-num">3</div><div class="step-text"><b>Gap Score</b> -- Pressure minus Regulation. Positive means pressure is ahead. Negative means regulation is ahead.</div></div>
+    <div class="step-row"><div class="step-num">4</div><div class="step-text"><b>Primary Constraint and Bigger Drag</b> -- the single highest-scoring pressure dimension, and the single lowest-scoring regulation dimension.</div></div>
+
+    <hr class="readme-divider">
+
+    <div class="readme-h3">Primary Constraint and Bigger Drag, explained</div>
+    <p class="readme-p">Primary Constraint names where pressure is concentrated. Bigger Drag names where regulation is weakest. Together they point at where the gap is opening, not just how wide it is.</p>
+
+    <hr class="readme-divider">
+
+    <p class="readme-p" style="font-style:italic;">This is a directional read, not a diagnosis. Scores reflect self-reported perception at a single point in time, not a measurement of actual job risk or organizational health. Weightings and band cutoffs reflect deliberate design choices, not statistical validation against a dataset. If AI-related stress is affecting your wellbeing, this tool is not a substitute for talking with someone you trust.</p>
+
+    <hr class="readme-divider">
+    <p class="readme-source">Based on Norman&rsquo;s Gap, by Norman Applegate. Published by MOSei.org.</p>
+
+    <div style="margin-top:1rem;">
+      <button class="cta no-print" onclick="showTab('tool')" style="max-width:220px;">Run diagnostic &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOOL TAB -->
+<div id="tab-tool" style="display:none;">
+  <div class="wrap">
+
+    <div class="block">
+      <div class="fname" style="margin-bottom:10px;">Choose your view</div>
+      <div class="mode-grid">
+        <div class="mode-opt selected" data-mode="individual" onclick="selectMode(this,'individual')">
+          <div class="m-name">Individual</div>
+          <div class="m-desc">How you personally experience AI pressure in your role</div>
+        </div>
+        <div class="mode-opt" data-mode="org" onclick="selectMode(this,'org')">
+          <div class="m-name">Organization / Leader</div>
+          <div class="m-desc">Whether your org's AI rollout is regulated or just pressure</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="question-mount"></div>
+
+    <button class="cta" onclick="calculate()">Calculate Gap Score &rarr;</button>
+
+    <div id="results" style="display:none;margin-top:1.5rem;">
+      <div class="block">
+        <div class="verdict-bar"><div class="verdict-fill" id="verdict-fill" style="width:0%;"></div></div>
+        <div class="scorecard" id="scorecard" style="border:none;padding:0.5rem 0 1rem;">
+          <p class="sl" id="r-mode-label">Gap Score</p>
+          <p class="sv" id="r-gapscore">--</p>
+          <p class="sb" id="verdict-state"></p>
+          <p class="sd" id="verdict-interp"></p>
+        </div>
+
+        <div class="scorecard" id="constraint-card" style="background:var(--surface2);border:1px solid var(--line);">
+          <p class="sl" style="color:var(--muted);">Primary constraint</p>
+          <p class="sb" id="r-primary" style="color:var(--navy);font-size:19px;margin:4px 0 6px;">--</p>
+          <p class="sd" id="r-primary-desc" style="color:var(--muted);">--</p>
+        </div>
+
+        <div class="scorecard" id="drag-card" style="background:var(--surface2);border:1px solid var(--line);">
+          <p class="sl" style="color:var(--muted);">Bigger drag</p>
+          <p class="sb" id="r-drag" style="font-size:19px;margin:4px 0 6px;">--</p>
+          <p class="sd" id="r-drag-desc" style="color:var(--muted);">--</p>
+        </div>
+
+        <div class="metricgrid">
+          <div class="metric" id="pressure-card"><p class="ml">Pressure</p><p class="mv" id="r-pressure">--</p><p class="ms" id="r-pressure-label">Average, 1 to 5</p></div>
+          <div class="metric" id="regulation-card"><p class="ml">Regulation</p><p class="mv" id="r-regulation">--</p><p class="ms" id="r-regulation-label">Average, 1 to 5</p></div>
+        </div>
+
+        <div id="email-capture" style="background:var(--surface2);border-radius:8px;padding:1rem;margin-bottom:1rem;">
+          <p style="font-size:13px;font-weight:600;color:var(--ink);margin:0 0 8px;">Email me this result</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <input type="email" id="capture-email" placeholder="you@company.com" style="flex:1;min-width:180px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:14px;background:var(--surface);color:var(--ink);">
+            <button class="cta no-print" onclick="submitEmailCapture()" style="width:auto;margin-top:0;padding:10px 18px;">Send &rarr;</button>
+          </div>
+          <p id="capture-status" style="font-size:12px;color:var(--hint);margin-top:6px;min-height:16px;"></p>
+        </div>
+
+        <button class="ghost no-print" onclick="resetTool()">&#8635; &nbsp;Reset diagnostic</button>
+      </div>
+    </div>
+
+    <p class="foot">MOSei.org &middot; The Tempered Signal &middot; <span class="tag">Judgment Formed Under Pressure</span></p>
+  </div>
+</div>
+
+<script>
+function showTab(name) {
+  document.getElementById('tab-readme').style.display = name === 'readme' ? '' : 'none';
+  document.getElementById('tab-tool').style.display = name === 'tool' ? '' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(function(t, i) {
+    t.classList.toggle('active', ['readme','tool'][i] === name);
+  });
+}
+
+/* ---------- Question data ---------- */
+var questionData = {
+  individual: {
+    pressure: {
+      label: 'Pressure',
+      sub: 'How much AI-related pressure you are carrying right now. Rate each 1 (low) to 5 (high).',
+      subfactors: [
+        { key:'pace', name:'Pace', hint:'How fast AI-related change is arriving in your role.',
+          desc:'Change is arriving faster than it is being absorbed.',
+          q:[
+            {t:'How often do new AI tools or expectations show up in your work without warning.', r:false},
+            {t:'How much has the pace of AI-related change in your role increased in the last six months.', r:false},
+            {t:'How often do you feel behind before you have had a chance to catch up.', r:false}
+          ]},
+        { key:'ambiguity', name:'Ambiguity', hint:'How unclear AI\u2019s impact on your role feels.',
+          desc:'Uncertainty about your role and future is carrying more weight than any single event.',
+          q:[
+            {t:'How often do you worry that AI could replace what you do.', r:false},
+            {t:'How clear is it to you which parts of your job AI is expected to change.', r:true},
+            {t:'How confident are you in what your job will look like a year from now.', r:true}
+          ]},
+        { key:'comparison', name:'Comparison Exposure', hint:'Pressure arriving from outside your own workload.',
+          desc:'Pressure is arriving more from comparison and outside noise than from the work itself.',
+          q:[
+            {t:'How often do you compare your own AI use to a coworker\u2019s or a peer\u2019s.', r:false},
+            {t:'How much pressure do you feel from outside your organization, industry news or social media, about falling behind on AI.', r:false},
+            {t:'How much does thinking about AI\u2019s broader trajectory, beyond just your job, add to your day to day stress.', r:false}
+          ]}
+      ]
+    },
+    regulation: {
+      label: 'Regulation',
+      sub: 'What is actually in place to help you absorb AI-related pressure. Rate each 1 (low) to 5 (high).',
+      subfactors: [
+        { key:'skill', name:'Skill Access', hint:'Training and support actually available to you.',
+          desc:'Training and support have not kept pace with what is being asked.',
+          q:[
+            {t:'How much training or structured time have you been given to learn relevant AI tools.', r:false},
+            {t:'How easy is it to get help when you are stuck using an AI tool for work.', r:false},
+            {t:'How adequate do you feel your current AI skills are for what is being asked of you.', r:false}
+          ]},
+        { key:'leadership', name:'Leadership Clarity', hint:'Whether your leader has explained the what and why.',
+          desc:'Direction on AI has not been communicated clearly or consistently.',
+          q:[
+            {t:'How clearly has your direct leader explained why AI is being introduced in your area.', r:false},
+            {t:'How often does leadership follow through on what they said about AI plans.', r:false},
+            {t:'How well do you understand what decisions about AI are, and are not, yours to make.', r:false}
+          ]},
+        { key:'safety', name:'Psychological Safety', hint:'Whether questions about AI get a real answer.',
+          desc:'Questions about AI are not being met with safety or a real answer.',
+          q:[
+            {t:'How comfortable would you be asking your manager directly if AI threatens your job.', r:false},
+            {t:'How safe do you feel raising concerns about AI without it being held against you.', r:false},
+            {t:'How often are questions about AI met with a real answer instead of deflection.', r:false}
+          ]}
+      ]
+    }
+  },
+  org: {
+    pressure: {
+      label: 'Pressure',
+      sub: 'How much AI-related pressure your organization is generating. Rate each 1 (low) to 5 (high).',
+      subfactors: [
+        { key:'speed', name:'Rollout Speed', hint:'How fast AI tools are being deployed.',
+          desc:'Tools are arriving faster than teams can absorb them.',
+          q:[
+            {t:'How many AI tools or systems have been introduced to your teams in the last six months.', r:false},
+            {t:'How much time is typically given between announcing an AI change and expecting adoption.', r:true},
+            {t:'How often does a new AI initiative launch before the last one has been absorbed.', r:false}
+          ]},
+        { key:'mandate', name:'Mandate Volume', hint:'How many AI directives are active at once.',
+          desc:'Multiple AI initiatives are running without visible coordination.',
+          q:[
+            {t:'How many separate AI-related directives or initiatives are currently active across your teams.', r:false},
+            {t:'How often do AI mandates come from more than one source without coordination.', r:false},
+            {t:'How aware is leadership of how many AI initiatives are running at once.', r:true}
+          ]},
+        { key:'competitive', name:'Competitive Pass-Through', hint:'How much outside urgency reaches teams unfiltered.',
+          desc:'Outside urgency is moving straight to teams without being filtered.',
+          q:[
+            {t:'How often do AI decisions get made in direct reaction to a competitor or industry news.', r:false},
+            {t:'How much of the urgency behind AI initiatives comes from outside pressure versus internal readiness.', r:false},
+            {t:'How often do you sense your team feels threatened by AI, regardless of what is said out loud.', r:false}
+          ]}
+      ]
+    },
+    regulation: {
+      label: 'Regulation',
+      sub: 'What is actually in place to absorb AI-related pressure across the organization. Rate each 1 (low) to 5 (high).',
+      subfactors: [
+        { key:'cadence', name:'Communication Cadence', hint:'Whether AI decisions are explained on a defined rhythm.',
+          desc:'There is no consistent, defined point where AI decisions are explained.',
+          q:[
+            {t:'How defined and consistent is the recurring point where AI decisions and changes are communicated.', r:false},
+            {t:'How consistently does that communication actually happen on schedule.', r:false},
+            {t:'How well do frontline teams understand the reasoning behind AI decisions, not just the decisions themselves.', r:false}
+          ]},
+        { key:'training', name:'Training Investment', hint:'Real time and budget behind AI skill-building.',
+          desc:'Tool access is outrunning the time and budget given to build skill.',
+          q:[
+            {t:'What proportion of AI initiatives include dedicated training time, not just tool access.', r:false},
+            {t:'How much budget or protected time has been allocated to AI skill-building this year.', r:false},
+            {t:'How available is support when someone is struggling to adopt a new AI tool.', r:false}
+          ]},
+        { key:'feedback', name:'Feedback Loop', hint:'Whether concerns raised about AI go anywhere.',
+          desc:'Concerns raised about AI are not visibly going anywhere.',
+          q:[
+            {t:'When someone raises a concern about AI, how often does it visibly go anywhere.', r:false},
+            {t:'How clearly defined is the channel for raising AI-related feedback, rather than it depending on who you know.', r:false},
+            {t:'How often does leadership adjust an AI initiative based on frontline feedback.', r:false}
+          ]}
+      ]
+    }
+  }
+};
+
+var currentMode = 'individual';
+var answers = { individual: {}, org: {} };
+
+function qid(mode, dim, sfKey, qi) { return mode + '-' + dim + '-' + sfKey + '-' + qi; }
+
+function renderMode(mode) {
+  var data = questionData[mode];
+  var mount = document.getElementById('question-mount');
+  var html = '';
+  ['pressure','regulation'].forEach(function(dim, dimIdx) {
+    var d = data[dim];
+    html += '<div class="block"><div class="block-head"><span class="block-num">' + (dimIdx+1) + '</span> ' + d.label + '</div>';
+    html += '<p class="block-sub">' + d.sub + '</p>';
+    d.subfactors.forEach(function(sf, sfIdx) {
+      html += '<div class="factor-block"><span class="fname">' + sf.name + '</span><div class="fhint">' + sf.hint + '</div>';
+      sf.q.forEach(function(q, qi) {
+        var id = qid(mode, dim, sf.key, qi);
+        html += '<div class="q-row"><div class="q-text">' + q.t + '</div>';
+        html += '<div class="scale-row" id="scale-' + id + '">';
+        for (var v = 1; v <= 5; v++) {
+          html += '<button type="button" class="scale-btn' + (v === 3 ? ' selected' : '') + '" data-val="' + v + '" onclick="selectScale(\'' + id + '\',' + v + ',this)">' + v + '</button>';
+        }
+        html += '</div><div class="scale-caption"><span>Low</span><span>High</span></div></div>';
+        answers[mode][id] = 3;
+      });
+      html += '</div>';
+      if (sfIdx < d.subfactors.length - 1) html += '<div class="sec-divider"></div>';
+    });
+    html += '</div>';
+  });
+  mount.innerHTML = html;
+}
+
+function selectScale(id, val, btn) {
+  answers[currentMode][id] = val;
+  var row = document.getElementById('scale-' + id);
+  row.querySelectorAll('.scale-btn').forEach(function(b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+}
+
+function selectMode(el, mode) {
+  document.querySelectorAll('.mode-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  currentMode = mode;
+  renderMode(mode);
+  document.getElementById('results').style.display = 'none';
+}
+
+function metricBand(value, kind) {
+  if (kind === 'pressure') {
+    if (value >= 3.5) return { bg: 'var(--red-bg)', tx: 'var(--red-tx)', label: 'Elevated' };
+    if (value >= 2.5) return { bg: 'var(--amber-bg)', tx: 'var(--amber-tx)', label: 'Moderate' };
+    return { bg: 'var(--green-bg)', tx: 'var(--green-tx)', label: 'Low' };
+  }
+  if (value >= 3.5) return { bg: 'var(--green-bg)', tx: 'var(--green-tx)', label: 'Strong' };
+  if (value >= 2.5) return { bg: 'var(--amber-bg)', tx: 'var(--amber-tx)', label: 'Moderate' };
+  return { bg: 'var(--red-bg)', tx: 'var(--red-tx)', label: 'Weak' };
+}
+
+function applyMetricBand(cardId, valueId, labelId, value, kind) {
+  var band = metricBand(value, kind);
+  var card = document.getElementById(cardId);
+  card.style.background = band.bg;
+  card.style.borderColor = band.tx;
+  document.getElementById(valueId).style.color = band.tx;
+  document.getElementById(labelId).textContent = band.label + ' \u00b7 average, 1 to 5';
+  document.getElementById(labelId).style.color = band.tx;
+}
+
+function joinWithAnd(arr) {
+  if (arr.length <= 1) return arr.join('');
+  if (arr.length === 2) return arr[0] + ' and ' + arr[1];
+  return arr.slice(0, -1).join(', ') + ', and ' + arr[arr.length - 1];
+}
+
+function subfactorScore(mode, dim, sf) {
+  var total = 0;
+  sf.q.forEach(function(q, qi) {
+    var raw = answers[mode][qid(mode, dim, sf.key, qi)];
+    total += q.r ? (6 - raw) : raw;
+  });
+  return total / sf.q.length;
+}
+
+function calculate() {
+  var data = questionData[currentMode];
+  var pressureScores = data.pressure.subfactors.map(function(sf) { return { sf: sf, score: subfactorScore(currentMode, 'pressure', sf) }; });
+  var regulationScores = data.regulation.subfactors.map(function(sf) { return { sf: sf, score: subfactorScore(currentMode, 'regulation', sf) }; });
+
+  var pressureAvg = pressureScores.reduce(function(s, x) { return s + x.score; }, 0) / pressureScores.length;
+  var regulationAvg = regulationScores.reduce(function(s, x) { return s + x.score; }, 0) / regulationScores.length;
+  var gapScore = pressureAvg - regulationAvg;
+
+  var maxP = Math.max.apply(null, pressureScores.map(function(x) { return x.score; }));
+  var minR = Math.min.apply(null, regulationScores.map(function(x) { return x.score; }));
+  var primary = pressureScores.filter(function(x) { return x.score === maxP; });
+  var drag = regulationScores.filter(function(x) { return x.score === minR; });
+
+  var primaryName, primaryDesc, dragName, dragDesc;
+
+  if (primary.length === pressureScores.length) {
+    primaryName = 'No dimension stands out';
+    primaryDesc = 'Pressure is evenly split across ' + joinWithAnd(pressureScores.map(function(x) { return x.sf.name; })) + '. None is carrying more weight than the others right now.';
+  } else if (primary.length === 1) {
+    primaryName = primary[0].sf.name;
+    primaryDesc = primary[0].sf.name + ' is your leading pressure source. ' + primary[0].sf.desc;
+  } else {
+    primaryName = primary.map(function(x) { return x.sf.name; }).join(' and ');
+    primaryDesc = primaryName + ' are tied as your leading pressure sources. ' + primary.map(function(x) { return x.sf.desc; }).join(' ');
+  }
+
+  if (drag.length === regulationScores.length) {
+    dragName = 'No dimension stands out';
+    dragDesc = 'Regulation is evenly matched across ' + joinWithAnd(regulationScores.map(function(x) { return x.sf.name; })) + '. None is weaker than the others right now.';
+  } else if (drag.length === 1) {
+    dragName = drag[0].sf.name;
+    dragDesc = drag[0].sf.name + ' is your biggest drag. ' + drag[0].sf.desc;
+  } else {
+    dragName = drag.map(function(x) { return x.sf.name; }).join(' and ');
+    dragDesc = dragName + ' are tied as your biggest drag. ' + drag.map(function(x) { return x.sf.desc; }).join(' ');
+  }
+
+  var band, color, fillPct, interp;
+  if (gapScore >= 2.5) {
+    band = 'Gap open'; color = '#A32D2D'; fillPct = 92;
+    interp = 'Pressure is significantly ahead of regulation.';
+  } else if (gapScore >= 1) {
+    band = 'Gap forming'; color = '#BA7517'; fillPct = 66;
+    interp = 'Pressure is ahead. Regulation has not caught up.';
+  } else if (gapScore > -1) {
+    band = 'Holding'; color = '#639922'; fillPct = 40;
+    interp = 'Pressure and regulation are roughly matched.';
+  } else {
+    band = 'Regulated'; color = '#1D9E75'; fillPct = 14;
+    interp = 'Regulation is ahead of pressure.';
+  }
+
+  lastMode = currentMode;
+  lastGapScore = gapScore;
+  lastPrimary = primaryName;
+  lastDrag = dragName;
+
+  document.getElementById('r-mode-label').textContent = (currentMode === 'individual' ? 'Individual' : 'Organization') + ' Gap Score';
+  document.getElementById('r-gapscore').textContent = (gapScore > 0 ? '+' : '') + gapScore.toFixed(1);
+  document.getElementById('verdict-state').textContent = band;
+  document.getElementById('verdict-state').style.color = color;
+  document.getElementById('verdict-interp').textContent = interp;
+  var fill = document.getElementById('verdict-fill');
+  fill.style.background = color;
+  setTimeout(function() { fill.style.width = fillPct + '%'; }, 50);
+
+  document.getElementById('r-primary').textContent = primaryName;
+  document.getElementById('r-primary-desc').textContent = primaryDesc;
+  document.getElementById('r-drag').textContent = dragName;
+  document.getElementById('r-drag-desc').textContent = dragDesc;
+
+  document.getElementById('r-pressure').textContent = pressureAvg.toFixed(1);
+  document.getElementById('r-regulation').textContent = regulationAvg.toFixed(1);
+  applyMetricBand('pressure-card', 'r-pressure', 'r-pressure-label', pressureAvg, 'pressure');
+  applyMetricBand('regulation-card', 'r-regulation', 'r-regulation-label', regulationAvg, 'regulation');
+
+  document.getElementById('results').style.display = 'block';
+  setTimeout(function() { document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+}
+
+var lastMode = '', lastGapScore = null, lastPrimary = '', lastDrag = '';
+
+function resetTool() {
+  answers = { individual: {}, org: {} };
+  renderMode(currentMode);
+  document.getElementById('results').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function submitEmailCapture() {
+  var emailEl = document.getElementById('capture-email');
+  var statusEl = document.getElementById('capture-status');
+  var email = emailEl.value.trim();
+
+  if (!email || email.indexOf('@') === -1) {
+    statusEl.textContent = 'Enter a valid email address.';
+    statusEl.style.color = '#993C1D';
+    return;
+  }
+
+  statusEl.textContent = 'Sending...';
+  statusEl.style.color = 'var(--hint)';
+
+  fetch('/.netlify/functions/gap-score-capture', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, dimension: lastPrimary, score: lastGapScore, mode: lastMode })
+  })
+  .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, data: data }; }); })
+  .then(function(result) {
+    if (result.ok) {
+      statusEl.textContent = 'Sent -- check your inbox.';
+      statusEl.style.color = '#1D9E75';
+      emailEl.value = '';
+      if (window.plausible) { window.plausible('AI Gap Diagnostic Completed', { props: { dimension: lastPrimary, mode: lastMode } }); }
+    } else {
+      statusEl.textContent = 'Something went wrong. Try again.';
+      statusEl.style.color = '#993C1D';
+    }
+  })
+  .catch(function() {
+    statusEl.textContent = 'Something went wrong. Try again.';
+    statusEl.style.color = '#993C1D';
+  });
+}
+
+renderMode('individual');
+</script>
+</body>
+</html>
