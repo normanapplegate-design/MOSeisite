@@ -224,6 +224,28 @@
     .at-print-rdate { font-size: 0.75rem; color: #444; text-align: right; margin-top: 2px; }
     #at-print-footer { display: none; border-top: 1px solid #ccc; margin-top: 1.5rem; padding-top: 0.75rem; }
     .at-print-footer-row { display: flex; justify-content: space-between; font-size: 0.65rem; color: #aaa; }
+    .price-section { background: var(--cream-dark); }
+    .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
+    .price-card { background: #fff; border-radius: var(--radius-lg); padding: 1.75rem; display: flex; flex-direction: column; }
+    .price-card.popular { background: var(--navy); color: #fff; position: relative; }
+    .price-popular-badge { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: var(--gold); color: var(--navy-deep); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
+    .price-tier-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.6rem; }
+    .price-card.popular .price-tier-label { color: var(--gold-light); }
+    .price-amount { font-family: var(--serif); font-size: 2.1rem; color: var(--navy); margin-bottom: 0.2rem; }
+    .price-card.popular .price-amount { color: #fff; }
+    .price-note { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.1rem; }
+    .price-card.popular .price-note { color: rgba(255,255,255,0.6); }
+    .price-list { list-style: none; font-size: 0.82rem; line-height: 1.9; margin-bottom: 1.4rem; flex-grow: 1; }
+    .price-list li::before { content: "+ "; color: var(--gold); font-weight: 600; }
+    .price-card.popular .price-list li::before { color: var(--gold-light); }
+    .price-cta { display: inline-block; text-align: center; font-size: 0.82rem; font-weight: 600; padding: 11px 20px; border-radius: var(--radius); border: 1px solid var(--navy); color: var(--navy); transition: background 0.2s; }
+    .price-cta:hover { background: var(--navy); color: #fff; }
+    .price-cta.gold { background: var(--gold); color: var(--navy-deep); border: none; }
+    .price-cta.gold:hover { background: var(--gold-light); }
+    .price-footnote { text-align: center; font-size: 0.85rem; color: var(--text-muted); }
+    .price-footnote a { color: var(--gold); font-weight: 500; }
+    .price-footnote a:hover { text-decoration: underline; }
+    @media (max-width: 720px) { .price-grid { grid-template-columns: 1fr; } }
   </style>
 <!-- Privacy-friendly analytics by Plausible -->
 <script async src="https://plausible.io/js/pa-b-1uuch-s9T7Xidbld01P.js"></script>
@@ -273,6 +295,56 @@
   <p class="hero-law" style="margin-top:1.25rem;font-size:1.05rem;color:rgba(255,255,255,0.55);border:none;padding-top:0;">Organizations don&rsquo;t fail because pressure exists. They fail when <em>pressure exceeds regulation.</em></p>  <a href="#ask-mosei" class="hero-cta">Ask MOSei &rarr;</a>
   <p class="hero-law">&ldquo;Norman&rsquo;s Law: When external pressure exceeds internal regulation, instability follows.&rdquo;</p>
   <p style="margin-top:1.5rem;font-size:0.8rem;"><a href="/management-operating-system" style="color:rgba(255,255,255,0.6);text-decoration:underline;">What Is a Management Operating System?</a><span style="color:rgba(255,255,255,0.3);margin:0 10px;">&middot;</span><a href="/manufacturing-management-operating-system" style="color:rgba(255,255,255,0.6);text-decoration:underline;">MOS in Manufacturing</a></p></header>
+<section class="price-section" style="padding-top:3.5rem;padding-bottom:3.5rem;">
+  <div class="container">
+    <p class="section-eyebrow">The Core System</p>
+    <h2 class="section-title">Tools built on the Norman System</h2>
+    <p class="section-sub">Foundation, MOS Bundle, and Enterprise build on each other, pick how much of the system you need. Every tool is immediate download.</p>
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-tier-label">FOUNDATION TOOLKIT</div>
+        <div class="price-amount">$29</div>
+        <div class="price-note">5 tools &middot; immediate download</div>
+        <ul class="price-list">
+          <li>Operating Foundation</li>
+          <li>Meeting Decision Framework</li>
+          <li>Meeting Signal Review</li>
+          <li>Simple Signal Walk Log</li>
+          <li>Shift Handover Log</li>
+        </ul>
+        <a href="https://moseiorg.gumroad.com/l/foundation-toolkit" class="price-cta">Get Foundation &rarr;</a>
+      </div>
+      <div class="price-card popular">
+        <div class="price-popular-badge">MOST POPULAR</div>
+        <div class="price-tier-label">MOS BUNDLE</div>
+        <div class="price-amount">$99</div>
+        <div class="price-note">18 tools &middot; immediate download</div>
+        <ul class="price-list">
+          <li>Everything in Foundation</li>
+          <li>Governance (4 tools)</li>
+          <li>Execution (3 tools)</li>
+          <li>Performance (3 tools)</li>
+          <li>Health (3 tools)</li>
+        </ul>
+        <a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="price-cta gold">Get MOS Bundle &rarr;</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier-label">ENTERPRISE / CONSULTANT</div>
+        <div class="price-amount">$249</div>
+        <div class="price-note">25 tools &middot; client-ready</div>
+        <ul class="price-list">
+          <li>Everything in MOS Bundle</li>
+          <li>Gap Scoring Tool</li>
+          <li>Signal Compression Tracer</li>
+          <li>Leader Regulation Scorecard</li>
+          <li>Consultant&rsquo;s Coaching Guide</li>
+        </ul>
+        <a href="https://moseiorg.gumroad.com/l/Enterprise-Consultant" class="price-cta">Get Enterprise &rarr;</a>
+      </div>
+    </div>
+    <p class="price-footnote">Not sure which bundle is right? <a href="tools.html">See every tool and the problem it solves &rarr;</a> &middot; also sold individually, see the <a href="14-tools.html">14 Tools</a>, <a href="https://moseiorg.gumroad.com/l/implementation-readiness">Implementation Readiness Diagnostic</a>, and <a href="https://moseiorg.gumroad.com/l/rca-bundle">RCA Bundle</a>.</p>
+  </div>
+</section>
 <section style="background:#fff;padding:3rem 2rem 0;">
   <div class="container">
     <div style="background:var(--navy);border-radius:var(--radius-lg);padding:2.25rem 2.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
