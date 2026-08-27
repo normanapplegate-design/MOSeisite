@@ -712,10 +712,11 @@ document.getElementById('td-slider').addEventListener('input', function() { upda
   .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, data: data }; }); })
   .then(function(result) {
     if (result.ok) {
-      statusEl.textContent = 'Sent -- check your inbox.';
+      statusEl.textContent = 'Thanks -- redirecting...';
       statusEl.style.color = '#1D9E75';
       emailEl.value = '';
       if (window.plausible) { window.plausible('Gap Diagnostic Completed', { props: { dimension: lastDimension } }); }
+      window.location.href = 'https://mosei.org/gap-signup.html';
     } else {
       statusEl.textContent = 'Something went wrong. Try again.';
       statusEl.style.color = '#993C1D';
