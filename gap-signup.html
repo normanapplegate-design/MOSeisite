@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>See more at MOSei</title>
+<style>
+  :root {
+    --cream: #F2EEE3;
+    --navy: #14213D;
+    --navy-light: #1E2E52;
+    --gold: #C9A227;
+    --gold-light: #E0C468;
+    --ink: #2A2A2A;
+    --muted: #6B6B6B;
+    --white: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Georgia', 'Times New Roman', serif;
+  }
+
+  .sans {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  .rule {
+    height: 4px;
+    background: var(--navy);
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  .hero {
+    padding: 72px 0 48px;
+  }
+
+  .eyebrow {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: 44px;
+    line-height: 1.15;
+    color: var(--navy);
+    margin: 0 0 20px;
+    font-weight: 400;
+  }
+
+  .sub {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 640px;
+    line-height: 1.6;
+    margin: 0 0 32px;
+  }
+
+  .cta-primary {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--navy);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 16px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+
+  section {
+    padding: 56px 0;
+  }
+
+  .section-eyebrow {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-size: 32px;
+    color: var(--navy);
+    margin: 0 0 14px;
+    font-weight: 400;
+  }
+
+  .section-sub {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 700px;
+    line-height: 1.6;
+    margin: 0 0 36px;
+  }
+
+  .grid {
+    display: grid;
+    gap: 24px;
+  }
+
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  @media (max-width: 900px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    h1 { font-size: 32px; }
+  }
+
+  .icon-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .icon-badge {
+    width: 44px;
+    height: 44px;
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 18px;
+  }
+
+  .icon-card h3 {
+    font-size: 19px;
+    color: var(--navy);
+    margin: 0 0 10px;
+    font-weight: 400;
+  }
+
+  .icon-card p {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0 0 18px;
+    flex-grow: 1;
+  }
+
+  .icon-card a {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .book-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .book-cover {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: var(--navy);
+    border-radius: 8px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-align: center;
+    padding: 16px;
+    line-height: 1.4;
+  }
+
+  .book-card h3 {
+    font-size: 17px;
+    color: var(--navy);
+    margin: 0 0 6px;
+    font-weight: 400;
+  }
+
+  .book-card p {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .tool-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border-top: 3px solid var(--navy);
+  }
+
+  .tool-card.featured {
+    border-top: 3px solid var(--gold);
+  }
+
+  .start-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold-light);
+    color: var(--navy);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 6px 16px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  .tool-card .icon-badge { margin-bottom: 18px; }
+
+  .tool-card h3 {
+    font-size: 19px;
+    color: var(--navy);
+    margin: 0 0 6px;
+    font-weight: 400;
+  }
+
+  .tool-card .prompt {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 14px;
+  }
+
+  .tool-card .desc {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.6;
+    margin: 0 0 22px;
+    flex-grow: 1;
+  }
+
+  .btn-navy {
+    display: inline-block;
+    background: var(--navy);
+    color: var(--white);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 14px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  .ask-card {
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--white);
+  }
+
+  .ask-header {
+    background: var(--navy);
+    padding: 24px 28px;
+    color: var(--white);
+  }
+
+  .ask-header .brand {
+    font-size: 20px;
+    margin: 0 0 4px;
+  }
+
+  .ask-header .brand span { color: var(--gold); }
+
+  .ask-header p {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #C7CEDE;
+    margin: 0;
+  }
+
+  .ask-body {
+    padding: 28px;
+  }
+
+  .ask-body .label {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .ask-input-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .ask-input-row input {
+    flex-grow: 1;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    padding: 14px 16px;
+    border: 1px solid #DDD6C4;
+    border-radius: 8px;
+    background: var(--cream);
+  }
+
+  .price-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .price-card.popular {
+    background: var(--navy);
+    color: var(--white);
+    position: relative;
+  }
+
+  .popular-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--navy);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 6px 16px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  .price-card .tier-label {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .price-card .price {
+    font-size: 36px;
+    margin: 0 0 4px;
+  }
+
+  .price-card .price-note {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    opacity: 0.75;
+    margin: 0 0 20px;
+  }
+
+  .price-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 2;
+    flex-grow: 1;
+  }
+
+  .price-card ul li::before {
+    content: "+ ";
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .btn-gold {
+    display: block;
+    background: var(--gold);
+    color: var(--navy);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 14px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  .btn-outline {
+    display: block;
+    background: transparent;
+    color: var(--navy);
+    border: 1px solid var(--navy);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 14px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  .check-list {
+    list-style: none;
+    padding: 0;
+    margin: 18px 0 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 2;
+    color: var(--ink);
+  }
+
+  .check-list li::before {
+    content: "\2713  ";
+    color: #3E7D4F;
+    font-weight: 700;
+  }
+
+  .tag-pill {
+    display: inline-block;
+    background: #EDE7D8;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-left: 6px;
+  }
+
+  .more-note {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--muted);
+    margin: 6px 0 20px;
+  }
+
+  .fine-print {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 14px 0 0;
+  }
+
+  footer {
+    background: var(--navy);
+    padding: 40px 0;
+    text-align: center;
+  }
+
+  footer a {
+    color: var(--gold);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+  }
+
+  footer .tag {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    color: #8A93A8;
+    font-size: 13px;
+    margin-top: 18px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="rule"></div>
+
+  <div class="wrap hero">
+    <div class="eyebrow sans">YOU'RE IN</div>
+    <h1>See more at MOSei, starting<br>with where to focus first.</h1>
+    <p class="sub">You just scored your gap. Here is everything else Norman's Gap can show you, tools, books, and a system built to be used, not just read.</p>
+    <a href="https://mosei.org" class="cta-primary">Go to MOSei &rarr;</a>
+  </div>
+
+  <!-- CORE SYSTEM PRICING (LEADS) -->
+  <section style="background: #EDE7D8;">
+    <div class="wrap">
+      <div class="section-eyebrow">THE CORE SYSTEM</div>
+      <h2>Foundation, MOS Bundle, and Enterprise build on each other</h2>
+      <p class="section-sub">You just saw where your gap is. Here is the system built to close it. Pick how much you need.</p>
+      <div class="grid grid-3">
+
+        <div class="price-card">
+          <div class="tier-label">FOUNDATION TOOLKIT</div>
+          <div class="price">$29</div>
+          <div class="price-note">5 tools &middot; immediate download</div>
+          <ul>
+            <li>Operating Foundation</li>
+            <li>Meeting Decision Framework</li>
+            <li>Meeting Signal Review</li>
+            <li>Simple Signal Walk Log</li>
+            <li>Shift Handover Log</li>
+          </ul>
+          <a href="https://moseiorg.gumroad.com/l/foundation-toolkit" class="btn-outline">Get Foundation &rarr;</a>
+        </div>
+
+        <div class="price-card popular">
+          <div class="popular-badge">MOST POPULAR</div>
+          <div class="tier-label">MOS BUNDLE</div>
+          <div class="price">$99</div>
+          <div class="price-note">18 tools &middot; immediate download</div>
+          <ul>
+            <li>Everything in Foundation</li>
+            <li>Governance (4 tools)</li>
+            <li>Execution (3 tools)</li>
+            <li>Performance (3 tools)</li>
+            <li>Health (3 tools)</li>
+          </ul>
+          <a href="https://moseiorg.gumroad.com/l/MOS-Bundle" class="btn-gold">Get MOS Bundle &rarr;</a>
+        </div>
+
+        <div class="price-card">
+          <div class="tier-label">ENTERPRISE / CONSULTANT</div>
+          <div class="price">$249</div>
+          <div class="price-note">25 tools &middot; client-ready</div>
+          <ul>
+            <li>Everything in MOS Bundle</li>
+            <li>Gap Scoring Tool</li>
+            <li>Signal Compression Tracer</li>
+            <li>Leader Regulation Scorecard</li>
+            <li>Consultant's Coaching Guide</li>
+          </ul>
+          <a href="https://moseiorg.gumroad.com/l/Enterprise-Consultant" class="btn-outline">Get Enterprise &rarr;</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- STANDALONE TOOLS -->
+  <section>
+    <div class="wrap">
+      <div class="section-eyebrow">STANDALONE TOOLS</div>
+      <h2>Not steps in a ladder</h2>
+      <p class="section-sub">Grab-and-go packs for a specific problem.</p>
+      <div class="grid grid-3">
+
+        <div class="tool-card" style="border-top: 3px solid var(--gold);">
+          <div class="start-badge" style="background: var(--gold); color: var(--navy);">NEW</div>
+          <div class="tier-label sans" style="margin-top: 6px;">14 TOOLS EVERY MANAGER MUST HAVE</div>
+          <div class="price" style="color: var(--navy); font-size: 30px; margin: 6px 0 2px;">$129</div>
+          <div class="price-note" style="color: var(--muted); opacity: 1;">14 tools &middot; immediate download</div>
+          <ul class="check-list">
+            <li>Pareto Law Tracer</li>
+            <li>Goodhart's Law Tracer</li>
+            <li>Theory of Constraints Tracer</li>
+            <li>Little's Law Tracer</li>
+            <li>Norman's Law Tracer <span class="tag-pill">FLAGSHIP</span></li>
+          </ul>
+          <p class="more-note">+ 9 more tools</p>
+          <a href="https://mosei.org/tools" class="btn-outline">See The 14 Tools &rarr;</a>
+          <p class="fine-print">Every tool is also sold individually for $19, buy just what you need or get all 14 for less.</p>
+        </div>
+
+        <div class="tool-card" style="border-top: 3px solid var(--gold);">
+          <div class="start-badge" style="background: var(--gold); color: var(--navy);">NEW</div>
+          <div class="tier-label sans" style="margin-top: 6px;">IMPLEMENTATION READINESS DIAGNOSTIC</div>
+          <div class="price" style="color: var(--navy); font-size: 30px; margin: 6px 0 2px;">$24</div>
+          <div class="price-note" style="color: var(--muted); opacity: 1;">1 tool &middot; immediate download</div>
+          <ul class="check-list">
+            <li>Readiness diagnostic + linked ROI calculator</li>
+          </ul>
+          <a href="https://mosei.org/tools" class="btn-outline">Get the Diagnostic &mdash; $24 &rarr;</a>
+          <p class="fine-print">Works for an AI tool or any software rollout, see the dollar range before you spend more on either.</p>
+        </div>
+
+        <div class="tool-card">
+          <div class="tier-label sans">RCA BUNDLE</div>
+          <div class="price" style="color: var(--navy); font-size: 30px; margin: 6px 0 2px;">$59</div>
+          <div class="price-note" style="color: var(--muted); opacity: 1;">5 tools &middot; immediate download</div>
+          <ul class="check-list">
+            <li>Is/Is-Not Tracer</li>
+            <li>Fishbone Tracer</li>
+            <li>5 Whys Tracer</li>
+            <li>Pareto Law Tracer</li>
+            <li>Countermeasure Tracker</li>
+          </ul>
+          <a href="https://mosei.org/tools" class="btn-outline">Get RCA Bundle &mdash; $59 &rarr;</a>
+          <p class="fine-print">Scope it, map it, drill it, prioritize it, close it, the full root cause loop in one sequence.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FREE DIAGNOSTIC TOOLS -->
+  <section style="background: #EDE7D8;">
+    <div class="wrap">
+      <div class="section-eyebrow">FREE DIAGNOSTIC TOOLS</div>
+      <h2>Not ready to buy? Try two more, free</h2>
+      <p class="section-sub">You already ran the Full Gap Diagnostic. These two go deeper on specific fractures.</p>
+      <div class="grid grid-3">
+
+        <div class="tool-card">
+          <div class="icon-badge">P</div>
+          <h3>Plant Change Readiness Assessment</h3>
+          <p class="prompt">Am I ready to lead change at this plant?</p>
+          <p class="desc">Site-level diagnostic. Five dimensions, Gap Score, dimension breakdown, and a printable PDF report.</p>
+          <a href="https://mosei.org/#plant-assessment" class="btn-navy">Use Tool &darr;</a>
+        </div>
+
+        <div class="tool-card featured">
+          <div class="start-badge">YOUR RESULT</div>
+          <div class="icon-badge">D</div>
+          <h3>Full Gap Diagnostic</h3>
+          <p class="prompt">Where exactly is my organization breaking down?</p>
+          <p class="desc">The deep precision instrument you just ran. Slider-based scoring. Gap Index, Gap Score, Gap Severity, and Effectiveness %.</p>
+          <a href="https://mosei.org/gap-diagnostic" class="btn-navy">Revisit Result &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <div class="icon-badge">M</div>
+          <h3>MOS Assessment Tool</h3>
+          <p class="prompt">How mature is my Management Operating System?</p>
+          <p class="desc">Self-score 12 MOS elements across four pillars, Governance, Execution, Performance, and Health.</p>
+          <a href="https://mosei.org/mos-assessment" class="btn-navy">Take Assessment &rarr;</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ASK MOSEI -->
+  <section>
+    <div class="wrap">
+      <div class="section-eyebrow">THE NORMAN SYSTEM</div>
+      <h2>Ask a question, get a grounded answer</h2>
+      <div class="ask-card">
+        <div class="ask-header">
+          <p class="brand">MOS<span>ei</span></p>
+          <p>Search the complete Norman System knowledge base</p>
+        </div>
+        <div class="ask-body">
+          <div class="label">ASK MOSEI</div>
+          <div class="ask-input-row">
+            <input type="text" placeholder="Ask about the Norman System..." disabled>
+            <a href="https://mosei.org/#ask-mosei" class="btn-navy" style="white-space: nowrap; align-self: center;">Ask &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KNOWLEDGE LAYER -->
+  <section style="background: #EDE7D8;">
+    <div class="wrap">
+      <div class="section-eyebrow">PUBLISHED WORKS</div>
+      <h2>The knowledge layer</h2>
+      <p class="section-sub">Four books that form a complete operating system, diagnostic, operational, human, and physiological layers.</p>
+      <div class="grid grid-4">
+
+        <div class="book-card">
+          <div class="book-cover">BUILDING A<br>MANAGEMENT<br>OPERATING SYSTEM</div>
+          <h3>Building a Management Operating System</h3>
+          <p>The operational prescription layer. How to build the MOS.</p>
+          <a href="https://a.co/d/07TrZE9C" style="display:block; margin-top:10px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:13px; font-weight:700; color:var(--gold); text-decoration:none;">Buy on Amazon &rarr;</a>
+        </div>
+
+        <div class="book-card">
+          <div class="book-cover">THE EIGHT<br>LIMBS OF<br>CONSULTING</div>
+          <h3>The Eight Limbs of Consulting</h3>
+          <p>The human and leadership layer. Eight disciplines for effective consulting under pressure.</p>
+          <a href="https://a.co/d/0e7P1hcP" style="display:block; margin-top:10px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:13px; font-weight:700; color:var(--gold); text-decoration:none;">Buy on Amazon &rarr;</a>
+        </div>
+
+        <div class="book-card">
+          <div class="book-cover">REGULATE</div>
+          <h3>Regulate</h3>
+          <p>The physiological and individual regulation layer. How leaders regulate themselves under pressure.</p>
+          <a href="https://a.co/d/0bojFIcV" style="display:block; margin-top:10px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:13px; font-weight:700; color:var(--gold); text-decoration:none;">Buy on Amazon &rarr;</a>
+        </div>
+
+        <div class="book-card">
+          <div class="book-cover">NORMAN'S<br>LAW</div>
+          <h3>Norman's Law</h3>
+          <p>The foundational layer. Seven laws that trace the full path from pressure to failure.</p>
+          <a href="https://a.co/d/07PdBz5t" style="display:block; margin-top:10px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:13px; font-weight:700; color:var(--gold); text-decoration:none;">Buy on Amazon &rarr;</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="https://mosei.org">Back to MOSei home &rarr;</a>
+    <p class="tag">MOSei.org &middot; The Norman System &middot; Judgment Formed Under Pressure</p>
+  </footer>
+
+</body>
+</html>
