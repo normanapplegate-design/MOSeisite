@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Signal Walk Scorecard</title>
+<style>
+  :root {
+    --bg: #1B1F1E;
+    --surface: #242A28;
+    --surface-raised: #2B322F;
+    --line: #3A423F;
+    --text: #EDEDE7;
+    --text-dim: #9CA39F;
+    --text-faint: #6C736F;
+    --amber: #E8A33D;
+    --amber-soft: rgba(232, 163, 61, 0.35);
+    --good: #4F8B5B;
+    --good-bg: rgba(79, 139, 91, 0.14);
+    --drift: #B08A2E;
+    --drift-bg: rgba(176, 138, 46, 0.14);
+    --fail: #B8452E;
+    --fail-bg: rgba(184, 69, 46, 0.14);
+    --radius: 10px;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  .shell { max-width: 480px; margin: 0 auto; padding: 20px 16px 100px; }
+  header.app-header { padding: 6px 2px 18px; border-bottom: 1px solid var(--line); margin-bottom: 18px; }
+  .wordmark { font-size: 22px; font-weight: 650; letter-spacing: -0.01em; margin: 0; }
+  .wordmark span { color: var(--amber); }
+  .subtitle { color: var(--text-dim); font-size: 13px; margin: 4px 0 0; }
+
+  nav.tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surface); padding: 4px; border-radius: var(--radius); }
+  nav.tabs button { flex: 1; background: transparent; border: none; color: var(--text-dim); font-family: var(--sans); font-size: 12.5px; padding: 9px 4px; border-radius: 7px; cursor: pointer; }
+  nav.tabs button.active { background: var(--surface-raised); color: var(--text); font-weight: 600; }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .field-row { display: flex; gap: 10px; margin-bottom: 14px; }
+  .field { flex: 1; }
+  .field label { display: block; font-size: 11.5px; color: var(--text-dim); margin-bottom: 5px; }
+  .field input, .field select {
+    width: 100%; background: var(--surface); border: 1px solid var(--line); color: var(--text);
+    padding: 10px 10px; border-radius: 8px; font-family: var(--sans); font-size: 14px;
+  }
+
+  .dim-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+  .dim-title { font-size: 15px; font-weight: 650; margin: 0 0 2px; }
+  .dim-question { font-size: 12.5px; color: var(--text-dim); margin: 0 0 12px; }
+  .rate-row { display: flex; gap: 6px; margin-bottom: 10px; }
+  .rate-btn {
+    flex: 1; padding: 10px 4px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--text-dim); font-size: 12px; font-weight: 600;
+    font-family: var(--sans); cursor: pointer; text-align: center;
+  }
+  .rate-btn[data-r="good"].sel { background: var(--good-bg); border-color: var(--good); color: var(--good); }
+  .rate-btn[data-r="drift"].sel { background: var(--drift-bg); border-color: var(--drift); color: var(--drift); }
+  .rate-btn[data-r="fail"].sel { background: var(--fail-bg); border-color: var(--fail); color: var(--fail); }
+  .evidence { width: 100%; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 8px 10px; font-family: var(--sans); font-size: 13px; resize: vertical; min-height: 40px; }
+
+  .btn-primary { width: 100%; padding: 14px; background: var(--amber); color: #1B1F1E; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; font-family: var(--sans); cursor: pointer; margin-top: 8px; }
+  .btn-secondary { width: 100%; padding: 12px; background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 10px; font-size: 14px; font-weight: 600; font-family: var(--sans); cursor: pointer; margin-top: 10px; }
+
+  .result-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; margin-bottom: 16px; text-align: center; }
+  .band-name { font-size: 26px; font-weight: 750; color: var(--amber); margin: 4px 0; }
+  .band-sub { font-size: 12.5px; color: var(--text-dim); }
+
+  .gauge { display: flex; gap: 3px; margin: 16px 0 6px; }
+  .gauge-seg { flex: 1; height: 8px; border-radius: 3px; background: var(--line); }
+  .gauge-seg.on { background: var(--amber); }
+  .gauge-labels { display: flex; justify-content: space-between; font-size: 9.5px; color: var(--text-faint); margin-bottom: 4px; }
+
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .bar-label { width: 70px; font-size: 12px; color: var(--text-dim); flex-shrink: 0; }
+  .bar-track { flex: 1; height: 16px; background: var(--bg); border-radius: 5px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 5px; }
+  .bar-fill.good { background: var(--good); }
+  .bar-fill.drift { background: var(--drift); }
+  .bar-fill.fail { background: var(--fail); }
+
+  .evidence-list { margin-top: 18px; }
+  .ev-item { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+  .ev-dim { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 3px; }
+  .ev-dim.good { color: var(--good); }
+  .ev-dim.drift { color: var(--drift); }
+  .ev-dim.fail { color: var(--fail); }
+  .ev-text { font-size: 13px; color: var(--text-dim); }
+
+  .history-item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 10px; }
+  .history-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .history-site { font-weight: 650; font-size: 14px; }
+  .history-date { font-size: 11.5px; color: var(--text-faint); }
+  .history-band { font-size: 12.5px; color: var(--amber); font-weight: 600; }
+  .history-tier { font-size: 11.5px; color: var(--text-dim); }
+  .sparkline { margin-top: 8px; }
+
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--text-dim); font-size: 13.5px; }
+
+  .readme-section { margin-bottom: 20px; }
+  .readme-section h3 { font-size: 14px; color: var(--amber); margin: 0 0 6px; }
+  .readme-section p { font-size: 13.5px; color: var(--text-dim); line-height: 1.5; margin: 0 0 6px; }
+  .readme-wrong { font-size: 12.5px; color: var(--fail); margin: 6px 0 0; padding-left: 12px; border-left: 2px solid var(--fail); }
+
+  .site-select { margin-bottom: 10px; }
+  .delete-link { display: block; text-align: center; font-size: 12px; color: var(--text-faint); margin-top: 6px; background: none; border: none; font-family: var(--sans); cursor: pointer; padding: 4px; }
+
+  @media print {
+    nav.tabs, .btn-primary, .btn-secondary, .delete-link { display: none !important; }
+    body { background: white; color: black; }
+    .dim-card, .result-card, .ev-item, .history-item { background: white; border: 1px solid #ccc; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="app-header">
+    <p class="wordmark">Signal<span>Walk</span></p>
+    <p class="subtitle">Tier meeting observation scorecard</p>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-view="score">Score</button>
+    <button class="tab-btn" data-view="result">Result</button>
+    <button class="tab-btn" data-view="history">History</button>
+    <button class="tab-btn" data-view="readme">Read Me</button>
+  </nav>
+
+  <!-- SCORE VIEW -->
+  <div class="view active" id="view-score">
+    <div class="field-row">
+      <div class="field">
+        <label for="site-name">Site / client</label>
+        <input type="text" id="site-name" placeholder="e.g. Riverside Plant">
+      </div>
+      <div class="field">
+        <label for="obs-date">Date</label>
+        <input type="date" id="obs-date">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="tier-select">Tier observed</label>
+        <select id="tier-select">
+          <option>Tier 1</option>
+          <option>Tier 2</option>
+          <option>Tier 3</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="dim-cards"></div>
+
+    <button class="btn-primary" id="btn-score">Score this walk</button>
+  </div>
+
+  <!-- RESULT VIEW -->
+  <div class="view" id="view-result">
+    <div id="result-content">
+      <div class="empty-state">Score a walk first, then your result shows here.</div>
+    </div>
+  </div>
+
+  <!-- HISTORY VIEW -->
+  <div class="view" id="view-history">
+    <div id="history-content"></div>
+  </div>
+
+  <!-- README VIEW -->
+  <div class="view" id="view-readme">
+    <div class="readme-section">
+      <h3>Why this exists</h3>
+      <p>This is a personal field tool, not a client deliverable. It scores a live tier meeting against the six dimensions that separate a meeting that regulates from one that just occupies a slot on the calendar. It produces a diagnosis on the spot, not just an impression you have to write up later.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Purpose</h3>
+      <p>Sit in on any Tier 1, 2, or 3 meeting at a client site. Rate each dimension in real time using the three-button scale, drop a short evidence note, and walk out with a scored profile and an IMI read for that tier.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Inputs</h3>
+      <p>Site name, date, tier observed, and a Good, Drifting, or Failure mode rating for each of the six dimensions below. The evidence note is optional but is what turns the score into client-ready language.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Outputs</h3>
+      <p>A profile bar chart across the six dimensions, an overall IMI maturity band for that meeting, and a saved history entry so repeat visits to the same site show drift or improvement.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Cadence</h3>
+      <p>Use it every time you observe a tier meeting in the field. Score the same site again on a later visit to see whether the meeting is regulating better or worse than last time.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Escalation path</h3>
+      <p>This tool does not escalate anything itself. A low score or a Failure mode rating on Escalation or Actions is the signal to raise the pattern directly with the chair or the client sponsor before the next scheduled walk.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Supporting documents</h3>
+      <p>Pairs with the Tier Meeting Diagnostic and the Meeting Signal Review. This tool is the only one of the three meant for your own use in the room rather than for the client to fill out.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Three things most likely to fail in year one</h3>
+      <p>Scoring from memory after the meeting instead of live, in the room. Skipping the evidence note because the meeting felt rushed, which erases the exact language you need later. Treating one weak visit as the verdict instead of checking it against the history trend.</p>
+    </div>
+
+    <div class="readme-section">
+      <h3>The six dimensions</h3>
+    </div>
+
+    <div class="readme-section">
+      <h3>Start</h3>
+      <p>Good: starts on time, every time, attendees pre-prepared.</p>
+      <p class="readme-wrong">What can go wrong: the meeting starts late waiting for one person, or the pre-read never got done, so the first several minutes are spent catching people up instead of deciding anything.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Focus</h3>
+      <p>Good: driven by the board or the data. Numbers first, opinions second.</p>
+      <p class="readme-wrong">What can go wrong: driven by personalities instead of data. The loudest voice in the room sets the agenda regardless of what the board actually shows.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Energy</h3>
+      <p>Good: short, sharp, standing, time-boxed by topic.</p>
+      <p class="readme-wrong">What can go wrong: long, seated, and sliding into problem-solving in the room instead of assigning it and moving on.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Actions</h3>
+      <p>Good: every action has a named owner and a due date. Closed actions get checked for whether they actually worked.</p>
+      <p class="readme-wrong">What can go wrong: "we should look into that" gets said and the meeting moves on. No owner, no date, and it quietly disappears.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Escalation</h3>
+      <p>Good: issues move up to the next tier at the defined threshold, before they cost more time or money to fix.</p>
+      <p class="readme-wrong">What can go wrong: the chair holds the issue instead of escalating it. "We'll handle it ourselves" becomes the answer, and by the time it does surface it has grown into a bigger problem, cost more to fix, or already affected the customer.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Tone</h3>
+      <p>Good: problems are welcomed. Surfacing one early is rewarded, not punished.</p>
+      <p class="readme-wrong">What can go wrong: problems get punished. Whoever brings the bad news gets shot at, so the next person learns to stay quiet instead.</p>
+    </div>
+
+    <div class="readme-section">
+      <h3>IMI bands used for the overall read</h3>
+      <p>Dark, Named, Started, Compliant, Regulating, Embedded, Compounding. The overall score across all six dimensions places the meeting on this scale for that visit.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const DIMENSIONS = [
+  { id: 'start', title: 'Start', question: 'Did it start on time with attendees prepared?' },
+  { id: 'focus', title: 'Focus', question: 'Was the conversation driven by the board or the data?' },
+  { id: 'energy', title: 'Energy', question: 'Was it short, sharp, and standing?' },
+  { id: 'actions', title: 'Actions', question: 'Did every action get an owner and a date?' },
+  { id: 'escalation', title: 'Escalation', question: 'Were issues surfaced at the threshold, before they became a bigger problem?' },
+  { id: 'tone', title: 'Tone', question: 'Were problems welcomed rather than punished?' }
+];
+
+const IMI_BANDS = ['Dark', 'Named', 'Started', 'Compliant', 'Regulating', 'Embedded', 'Compounding'];
+
+const RATE_VALUES = { good: 1, drift: 0.5, fail: 0 };
+const RATE_LABELS = { good: 'Good', drift: 'Drifting', fail: 'Failure mode' };
+
+let currentRatings = {};
+let currentNotes = {};
+
+function todayISO() {
+  const d = new Date();
+  return d.toISOString().split('T')[0];
+}
+
+function buildDimCards() {
+  const wrap = document.getElementById('dim-cards');
+  wrap.innerHTML = '';
+  DIMENSIONS.forEach(dim => {
+    const card = document.createElement('div');
+    card.className = 'dim-card';
+    card.innerHTML = `
+      <p class="dim-title">${dim.title}</p>
+      <p class="dim-question">${dim.question}</p>
+      <div class="rate-row" data-dim="${dim.id}">
+        <button class="rate-btn" data-r="good">Good</button>
+        <button class="rate-btn" data-r="drift">Drifting</button>
+        <button class="rate-btn" data-r="fail">Failure mode</button>
+      </div>
+      <textarea class="evidence" data-dim="${dim.id}" placeholder="Evidence note (optional)"></textarea>
+    `;
+    wrap.appendChild(card);
+  });
+
+  wrap.querySelectorAll('.rate-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const row = btn.closest('.rate-row');
+      const dimId = row.dataset.dim;
+      row.querySelectorAll('.rate-btn').forEach(b => b.classList.remove('sel'));
+      btn.classList.add('sel');
+      currentRatings[dimId] = btn.dataset.r;
+    });
+  });
+
+  wrap.querySelectorAll('.evidence').forEach(ta => {
+    ta.addEventListener('input', () => {
+      currentNotes[ta.dataset.dim] = ta.value;
+    });
+  });
+}
+
+function getHistory() {
+  try {
+    return JSON.parse(localStorage.getItem('signalWalkHistory') || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveHistory(entries) {
+  localStorage.setItem('signalWalkHistory', JSON.stringify(entries));
+}
+
+function bandForScore(pct) {
+  const idx = Math.min(IMI_BANDS.length - 1, Math.floor(pct / (100 / IMI_BANDS.length)));
+  return IMI_BANDS[idx];
+}
+
+function renderResult(entry) {
+  const content = document.getElementById('result-content');
+  const total = DIMENSIONS.reduce((sum, d) => sum + (RATE_VALUES[entry.ratings[d.id]] ?? 0), 0);
+  const pct = Math.round((total / DIMENSIONS.length) * 100);
+  const band = bandForScore(pct);
+  const bandIdx = IMI_BANDS.indexOf(band);
+
+  let gaugeSegs = '';
+  for (let i = 0; i < IMI_BANDS.length; i++) {
+    gaugeSegs += `<div class="gauge-seg ${i <= bandIdx ? 'on' : ''}"></div>`;
+  }
+
+  let bars = '';
+  DIMENSIONS.forEach(d => {
+    const r = entry.ratings[d.id] || 'fail';
+    const fillPct = r === 'good' ? 100 : r === 'drift' ? 55 : 15;
+    bars += `
+      <div class="bar-row">
+        <div class="bar-label">${d.title}</div>
+        <div class="bar-track"><div class="bar-fill ${r}" style="width:${fillPct}%"></div></div>
+      </div>
+    `;
+  });
+
+  let evidence = '';
+  DIMENSIONS.forEach(d => {
+    const note = entry.notes[d.id];
+    if (note && note.trim()) {
+      const r = entry.ratings[d.id] || 'fail';
+      evidence += `
+        <div class="ev-item">
+          <div class="ev-dim ${r}">${d.title}, ${RATE_LABELS[r]}</div>
+          <div class="ev-text">${note}</div>
+        </div>
+      `;
+    }
+  });
+
+  content.innerHTML = `
+    <div class="result-card">
+      <div class="band-sub">${entry.site || 'Unnamed site'}, ${entry.tier}, ${entry.date}</div>
+      <div class="band-name">${band}</div>
+      <div class="gauge">${gaugeSegs}</div>
+      <div class="gauge-labels">${IMI_BANDS.map(b => `<span>${b[0]}</span>`).join('')}</div>
+      <div class="band-sub">${pct}% across the six dimensions</div>
+    </div>
+    ${bars}
+    ${evidence ? `<div class="evidence-list">${evidence}</div>` : ''}
+    <button class="btn-secondary" id="btn-new-walk">Score another walk</button>
+  `;
+
+  document.getElementById('btn-new-walk').addEventListener('click', () => {
+    switchView('score');
+  });
+}
+
+function sparklinePath(scores, w, h) {
+  if (scores.length < 2) return '';
+  const max = 100, min = 0;
+  const step = w / (scores.length - 1);
+  const points = scores.map((s, i) => {
+    const x = i * step;
+    const y = h - ((s - min) / (max - min)) * h;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+  return points.join(' ');
+}
+
+function renderHistory() {
+  const content = document.getElementById('history-content');
+  const history = getHistory();
+
+  if (history.length === 0) {
+    content.innerHTML = '<div class="empty-state">No scored walks yet. Score one and it will show up here, grouped by site.</div>';
+    return;
+  }
+
+  const bySite = {};
+  history.forEach(e => {
+    const key = e.site || 'Unnamed site';
+    if (!bySite[key]) bySite[key] = [];
+    bySite[key].push(e);
+  });
+
+  let html = '';
+  Object.keys(bySite).sort().forEach(site => {
+    const entries = bySite[site].sort((a, b) => a.date.localeCompare(b.date));
+    const scores = entries.map(e => {
+      const total = DIMENSIONS.reduce((sum, d) => sum + (RATE_VALUES[e.ratings[d.id]] ?? 0), 0);
+      return Math.round((total / DIMENSIONS.length) * 100);
+    });
+
+    entries.slice().reverse().forEach((e, i) => {
+      const total = DIMENSIONS.reduce((sum, d) => sum + (RATE_VALUES[e.ratings[d.id]] ?? 0), 0);
+      const pct = Math.round((total / DIMENSIONS.length) * 100);
+      const band = bandForScore(pct);
+      const isLatest = i === 0;
+      html += `
+        <div class="history-item" data-id="${e.id}">
+          <div class="history-top">
+            <span class="history-site">${site}</span>
+            <span class="history-date">${e.date}</span>
+          </div>
+          <div class="history-tier">${e.tier}</div>
+          <div class="history-band">${band}, ${pct}%</div>
+          ${isLatest && scores.length > 1 ? `<div class="sparkline">${renderSparkline(scores)}</div>` : ''}
+          <button class="delete-link" data-del="${e.id}">Delete this entry</button>
+        </div>
+      `;
+    });
+  });
+
+  content.innerHTML = html;
+
+  content.querySelectorAll('[data-del]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.del;
+      const updated = getHistory().filter(e => e.id !== id);
+      saveHistory(updated);
+      renderHistory();
+    });
+  });
+}
+
+function renderSparkline(scores) {
+  const w = 200, h = 30;
+  const points = sparklinePath(scores, w, h);
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <polyline points="${points}" fill="none" stroke="#E8A33D" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function switchView(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  document.querySelector(`.tab-btn[data-view="${view}"]`).classList.add('active');
+  if (view === 'history') renderHistory();
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchView(btn.dataset.view));
+});
+
+document.getElementById('btn-score').addEventListener('click', () => {
+  const missing = DIMENSIONS.filter(d => !currentRatings[d.id]);
+  if (missing.length > 0) {
+    alert('Rate all six dimensions before scoring: ' + missing.map(d => d.title).join(', '));
+    return;
+  }
+
+  const entry = {
+    id: Date.now().toString(),
+    site: document.getElementById('site-name').value.trim(),
+    date: document.getElementById('obs-date').value || todayISO(),
+    tier: document.getElementById('tier-select').value,
+    ratings: { ...currentRatings },
+    notes: { ...currentNotes }
+  };
+
+  const history = getHistory();
+  history.push(entry);
+  saveHistory(history);
+
+  renderResult(entry);
+  switchView('result');
+
+  currentRatings = {};
+  currentNotes = {};
+  buildDimCards();
+  document.getElementById('site-name').value = '';
+});
+
+document.getElementById('obs-date').value = todayISO();
+buildDimCards();
+</script>
+</body>
+</html>
