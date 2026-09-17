@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -115,8 +116,15 @@
   .site-select { margin-bottom: 10px; }
   .delete-link { display: block; text-align: center; font-size: 12px; color: var(--text-faint); margin-top: 6px; background: none; border: none; font-family: var(--sans); cursor: pointer; padding: 4px; }
 
+  .export-box { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .export-actions { display: flex; gap: 8px; }
+  .export-actions .btn-secondary { margin-top: 0; }
+  .export-output { width: 100%; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 10px; font-family: var(--mono); font-size: 11.5px; margin-top: 10px; min-height: 120px; resize: vertical; display: none; }
+  .export-hint { font-size: 11.5px; color: var(--text-faint); margin: 8px 0 10px; }
+  .copy-toast { text-align: center; font-size: 12px; color: var(--good); margin-top: 6px; display: none; }
+
   @media print {
-    nav.tabs, .btn-primary, .btn-secondary, .delete-link { display: none !important; }
+    nav.tabs, .btn-primary, .btn-secondary, .delete-link, .export-box { display: none !important; }
     body { background: white; color: black; }
     .dim-card, .result-card, .ev-item, .history-item { background: white; border: 1px solid #ccc; }
   }
@@ -174,6 +182,15 @@
   <!-- HISTORY VIEW -->
   <div class="view" id="view-history">
     <div id="history-content"></div>
+    <div class="export-box">
+      <div class="export-hint">Export the raw history data below, then copy it and paste it wherever you need it.</div>
+      <div class="export-actions">
+        <button class="btn-secondary" id="btn-export">Show export data</button>
+        <button class="btn-secondary" id="btn-copy" style="display:none;">Copy to clipboard</button>
+      </div>
+      <textarea class="export-output" id="export-output" readonly></textarea>
+      <div class="copy-toast" id="copy-toast">Copied.</div>
+    </div>
   </div>
 
   <!-- README VIEW -->
@@ -466,7 +483,13 @@ function switchView(view) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('view-' + view).classList.add('active');
   document.querySelector(`.tab-btn[data-view="${view}"]`).classList.add('active');
-  if (view === 'history') renderHistory();
+  if (view === 'history') {
+    renderHistory();
+    document.getElementById('export-output').style.display = 'none';
+    document.getElementById('btn-copy').style.display = 'none';
+    document.getElementById('btn-export').textContent = 'Show export data';
+    document.getElementById('copy-toast').style.display = 'none';
+  }
 }
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -500,6 +523,36 @@ document.getElementById('btn-score').addEventListener('click', () => {
   currentNotes = {};
   buildDimCards();
   document.getElementById('site-name').value = '';
+});
+
+document.getElementById('btn-export').addEventListener('click', () => {
+  const output = document.getElementById('export-output');
+  const isHidden = output.style.display === 'none' || !output.style.display;
+  if (isHidden) {
+    const history = getHistory();
+    output.value = JSON.stringify(history, null, 2);
+    output.style.display = 'block';
+    document.getElementById('btn-copy').style.display = 'block';
+    document.getElementById('btn-export').textContent = 'Hide export data';
+  } else {
+    output.style.display = 'none';
+    document.getElementById('btn-copy').style.display = 'none';
+    document.getElementById('btn-export').textContent = 'Show export data';
+    document.getElementById('copy-toast').style.display = 'none';
+  }
+});
+
+document.getElementById('btn-copy').addEventListener('click', async () => {
+  const output = document.getElementById('export-output');
+  const toast = document.getElementById('copy-toast');
+  try {
+    await navigator.clipboard.writeText(output.value);
+  } catch (e) {
+    output.select();
+    document.execCommand('copy');
+  }
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 1800);
 });
 
 document.getElementById('obs-date').value = todayISO();
