@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,22 +52,50 @@
   .field label { display: block; font-size: 11.5px; color: var(--text-dim); margin-bottom: 5px; }
   .field input, .field select {
     width: 100%; background: var(--surface); border: 1px solid var(--line); color: var(--text);
-    padding: 10px 10px; border-radius: 8px; font-family: var(--sans); font-size: 14px;
+    padding: 10px 10px; border-radius: 8px; font-family: var(--sans); font-size: 16px;
   }
 
   .dim-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+  .dim-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
   .dim-title { font-size: 15px; font-weight: 650; margin: 0 0 2px; }
   .dim-question { font-size: 12.5px; color: var(--text-dim); margin: 0 0 12px; }
-  .rate-row { display: flex; gap: 6px; margin-bottom: 10px; }
-  .rate-btn {
+  .badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px; border: 1px solid var(--line); color: var(--text-faint); white-space: nowrap; }
+  .badge.good { background: var(--good-bg); border-color: var(--good); color: var(--good); }
+  .badge.drift { background: var(--drift-bg); border-color: var(--drift); color: var(--drift); }
+  .badge.fail { background: var(--fail-bg); border-color: var(--fail); color: var(--fail); }
+
+  .check { border-top: 1px solid var(--line); padding: 10px 0; }
+  .check:first-of-type { border-top: none; padding-top: 0; }
+  .check-label { font-size: 13.5px; font-weight: 600; margin: 0 0 2px; }
+  .check-desc { font-size: 12px; color: var(--text-dim); margin: 0 0 8px; line-height: 1.4; }
+  .yn-row { display: flex; gap: 6px; }
+  .yn-btn {
     flex: 1; padding: 10px 4px; border-radius: 8px; border: 1px solid var(--line);
-    background: var(--bg); color: var(--text-dim); font-size: 12px; font-weight: 600;
+    background: var(--bg); color: var(--text-dim); font-size: 12.5px; font-weight: 600;
     font-family: var(--sans); cursor: pointer; text-align: center;
   }
-  .rate-btn[data-r="good"].sel { background: var(--good-bg); border-color: var(--good); color: var(--good); }
-  .rate-btn[data-r="drift"].sel { background: var(--drift-bg); border-color: var(--drift); color: var(--drift); }
-  .rate-btn[data-r="fail"].sel { background: var(--fail-bg); border-color: var(--fail); color: var(--fail); }
-  .evidence { width: 100%; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 8px 10px; font-family: var(--sans); font-size: 13px; resize: vertical; min-height: 40px; }
+  .yn-btn.sel-yes { background: var(--good-bg); border-color: var(--good); color: var(--good); }
+  .yn-btn.sel-no { background: var(--fail-bg); border-color: var(--fail); color: var(--fail); }
+  .yn-btn.sel-neutral { background: var(--surface-raised); border-color: var(--amber); color: var(--amber); }
+
+  .num-row { display: flex; align-items: center; gap: 10px; }
+  .num-input { width: 90px; background: var(--bg); border: 1px solid var(--line); color: var(--text); padding: 10px; border-radius: 8px; font-family: var(--sans); font-size: 16px; }
+  .num-hint { font-size: 12px; color: var(--text-dim); }
+
+  .role-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+  .role-name { flex: 1; font-size: 13px; }
+  .role-name small { color: var(--text-faint); }
+  .role-btns { display: flex; gap: 4px; }
+  .role-btn { padding: 8px 8px; min-width: 64px; border-radius: 7px; border: 1px solid var(--line); background: var(--bg); color: var(--text-dim); font-size: 11.5px; font-weight: 600; font-family: var(--sans); cursor: pointer; }
+  .role-btn.sel-present { background: var(--good-bg); border-color: var(--good); color: var(--good); }
+  .role-btn.sel-delegate { background: var(--drift-bg); border-color: var(--drift); color: var(--drift); }
+  .role-btn.sel-absent { background: var(--fail-bg); border-color: var(--fail); color: var(--fail); }
+  .link-btn { background: none; border: none; color: var(--amber); font-family: var(--sans); font-size: 12px; padding: 6px 0; cursor: pointer; }
+  .role-edit { width: 100%; min-height: 120px; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 8px 10px; font-family: var(--sans); font-size: 14px; margin-top: 6px; }
+  .ref-box { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 12px; color: var(--text-dim); margin: 0 0 10px; line-height: 1.45; }
+  .ref-box b { color: var(--text); }
+
+  .evidence { width: 100%; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 8px 10px; font-family: var(--sans); font-size: 14px; resize: vertical; min-height: 40px; margin-top: 10px; }
 
   .btn-primary { width: 100%; padding: 14px; background: var(--amber); color: #1B1F1E; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; font-family: var(--sans); cursor: pointer; margin-top: 8px; }
   .btn-secondary { width: 100%; padding: 12px; background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 10px; font-size: 14px; font-weight: 600; font-family: var(--sans); cursor: pointer; margin-top: 10px; }
@@ -83,7 +110,7 @@
   .gauge-labels { display: flex; justify-content: space-between; font-size: 9.5px; color: var(--text-faint); margin-bottom: 4px; }
 
   .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .bar-label { width: 70px; font-size: 12px; color: var(--text-dim); flex-shrink: 0; }
+  .bar-label { width: 84px; font-size: 12px; color: var(--text-dim); flex-shrink: 0; }
   .bar-track { flex: 1; height: 16px; background: var(--bg); border-radius: 5px; overflow: hidden; }
   .bar-fill { height: 100%; border-radius: 5px; }
   .bar-fill.good { background: var(--good); }
@@ -91,12 +118,14 @@
   .bar-fill.fail { background: var(--fail); }
 
   .evidence-list { margin-top: 18px; }
+  .list-head { font-size: 12px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.04em; margin: 18px 0 8px; }
   .ev-item { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
   .ev-dim { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 3px; }
   .ev-dim.good { color: var(--good); }
   .ev-dim.drift { color: var(--drift); }
   .ev-dim.fail { color: var(--fail); }
   .ev-text { font-size: 13px; color: var(--text-dim); }
+  .ev-text ul { margin: 2px 0 0; padding-left: 18px; }
 
   .history-item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 10px; }
   .history-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
@@ -104,6 +133,10 @@
   .history-date { font-size: 11.5px; color: var(--text-faint); }
   .history-band { font-size: 12.5px; color: var(--amber); font-weight: 600; }
   .history-tier { font-size: 11.5px; color: var(--text-dim); }
+  .history-miss { font-size: 11.5px; color: var(--fail); margin-top: 4px; }
+  .history-tag { font-size: 10.5px; color: var(--text-faint); margin-top: 4px; }
+  .pattern-box { background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 10px; font-size: 12.5px; color: var(--text-dim); }
+  .pattern-box b { color: var(--text); }
   .sparkline { margin-top: 8px; }
 
   .empty-state { text-align: center; padding: 40px 20px; color: var(--text-dim); font-size: 13.5px; }
@@ -111,9 +144,9 @@
   .readme-section { margin-bottom: 20px; }
   .readme-section h3 { font-size: 14px; color: var(--amber); margin: 0 0 6px; }
   .readme-section p { font-size: 13.5px; color: var(--text-dim); line-height: 1.5; margin: 0 0 6px; }
+  .readme-section ol, .readme-section ul { font-size: 13px; color: var(--text-dim); line-height: 1.5; margin: 0 0 6px; padding-left: 20px; }
   .readme-wrong { font-size: 12.5px; color: var(--fail); margin: 6px 0 0; padding-left: 12px; border-left: 2px solid var(--fail); }
 
-  .site-select { margin-bottom: 10px; }
   .delete-link { display: block; text-align: center; font-size: 12px; color: var(--text-faint); margin-top: 6px; background: none; border: none; font-family: var(--sans); cursor: pointer; padding: 4px; }
 
   .export-box { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
@@ -144,7 +177,6 @@
     <button class="tab-btn" data-view="readme">Read Me</button>
   </nav>
 
-  <!-- SCORE VIEW -->
   <div class="view active" id="view-score">
     <div class="field-row">
       <div class="field">
@@ -172,14 +204,12 @@
     <button class="btn-primary" id="btn-score">Score this walk</button>
   </div>
 
-  <!-- RESULT VIEW -->
   <div class="view" id="view-result">
     <div id="result-content">
       <div class="empty-state">Score a walk first, then your result shows here.</div>
     </div>
   </div>
 
-  <!-- HISTORY VIEW -->
   <div class="view" id="view-history">
     <div id="history-content"></div>
     <div class="export-box">
@@ -193,23 +223,22 @@
     </div>
   </div>
 
-  <!-- README VIEW -->
   <div class="view" id="view-readme">
     <div class="readme-section">
       <h3>Why this exists</h3>
-      <p>This is a personal field tool, not a client deliverable. It scores a live tier meeting against the six dimensions that separate a meeting that regulates from one that just occupies a slot on the calendar. It produces a diagnosis on the spot, not just an impression you have to write up later.</p>
+      <p>This is a personal field tool, not a client deliverable. It scores a live tier meeting against seven dimensions that separate a meeting that regulates from one that just occupies a slot on the calendar. Every dimension is scored from things you can see or count in the room, not from an impression.</p>
     </div>
     <div class="readme-section">
       <h3>Purpose</h3>
-      <p>Sit in on any Tier 1, 2, or 3 meeting at a client site. Rate each dimension in real time using the three-button scale, drop a short evidence note, and walk out with a scored profile and an IMI read for that tier.</p>
+      <p>Sit in on any Tier 1, 2, or 3 meeting at a client site. Answer each yes or no check as it happens, enter the minutes late and the run time, mark who was in the room, and walk out with a scored profile and an IMI read for that tier.</p>
     </div>
     <div class="readme-section">
       <h3>Inputs</h3>
-      <p>Site name, date, tier observed, and a Good, Drifting, or Failure mode rating for each of the six dimensions below. The evidence note is optional but is what turns the score into client-ready language.</p>
+      <p>Site name, date, tier observed, minutes late, total run time, a yes or no answer on each check, and Present, Delegate, or Absent for each required role. The evidence note under each dimension is optional, but it is what turns the score into client-ready language.</p>
     </div>
     <div class="readme-section">
       <h3>Outputs</h3>
-      <p>A profile bar chart across the six dimensions, an overall IMI maturity band for that meeting, and a saved history entry so repeat visits to the same site show drift or improvement.</p>
+      <p>A rating for each dimension that the tool works out from your answers, a profile bar chart, an overall IMI maturity band, the list of checks that missed, and a saved history entry. Repeat visits to the same site show the trend and which roles keep missing the meeting.</p>
     </div>
     <div class="readme-section">
       <h3>Cadence</h3>
@@ -217,7 +246,7 @@
     </div>
     <div class="readme-section">
       <h3>Escalation path</h3>
-      <p>This tool does not escalate anything itself. A low score or a Failure mode rating on Escalation or Actions is the signal to raise the pattern directly with the chair or the client sponsor before the next scheduled walk.</p>
+      <p>This tool does not escalate anything itself. A Failure mode on Escalation, Actions, or Attendance is the signal to raise the pattern directly with the chair or the client sponsor before the next scheduled walk.</p>
     </div>
     <div class="readme-section">
       <h3>Supporting documents</h3>
@@ -225,264 +254,536 @@
     </div>
     <div class="readme-section">
       <h3>Three things most likely to fail in year one</h3>
-      <p>Scoring from memory after the meeting instead of live, in the room. Skipping the evidence note because the meeting felt rushed, which erases the exact language you need later. Treating one weak visit as the verdict instead of checking it against the history trend.</p>
+      <p>Answering the checks from memory after the meeting instead of live, in the room. Not using a watch, so minutes late and run time become guesses. Treating one weak visit as the verdict instead of checking it against the history trend.</p>
     </div>
 
     <div class="readme-section">
-      <h3>The six dimensions</h3>
+      <h3>How each dimension is rated</h3>
+      <p>Most dimensions are a set of yes or no checks. The tool counts the misses: none is Good, one is Drifting, two or more is Failure mode. You never pick the rating yourself.</p>
+      <p>One time rule runs through the whole tool: 1 minute. A meeting starting more than 1 minute late, a run time more than 1 minute over the limit, an off-board topic running past 1 minute, or a deep dive not parked within 1 minute all count against the meeting.</p>
     </div>
 
     <div class="readme-section">
-      <h3>Start</h3>
-      <p>Good: starts on time, every time, attendees pre-prepared.</p>
-      <p class="readme-wrong">What can go wrong: the meeting starts late waiting for one person, or the pre-read never got done, so the first several minutes are spent catching people up instead of deciding anything.</p>
+      <h3>1. Start</h3>
+      <p>Enter the minutes late and whether the meeting was held for someone. Within 1 minute is Good. More than 1 and up to 3 minutes is Drifting. More than 3 minutes, or held for a specific person, is Failure mode.</p>
+      <p class="readme-wrong">What can go wrong: the meeting waits for one person. A Tier 1 huddle that starts 3 minutes late has lost a fifth of its time, usually the Top 3 issues block.</p>
     </div>
     <div class="readme-section">
-      <h3>Focus</h3>
-      <p>Good: driven by the board or the data. Numbers first, opinions second.</p>
-      <p class="readme-wrong">What can go wrong: driven by personalities instead of data. The loudest voice in the room sets the agenda regardless of what the board actually shows.</p>
+      <h3>2. Preparation</h3>
+      <ol>
+        <li>Board updated before the meeting started.</li>
+        <li>Attendees had their numbers ready, not looked up in the room.</li>
+        <li>Pre-read done. Tier 3 only.</li>
+      </ol>
+      <p class="readme-wrong">What can go wrong: the first several minutes are spent catching people up instead of deciding anything.</p>
     </div>
     <div class="readme-section">
-      <h3>Energy</h3>
-      <p>Good: short, sharp, standing, time-boxed by topic.</p>
-      <p class="readme-wrong">What can go wrong: long, seated, and sliding into problem-solving in the room instead of assigning it and moving on.</p>
+      <h3>3. Focus</h3>
+      <ol>
+        <li>Board walked in order: Safety, Quality, Delivery, Cost.</li>
+        <li>Every issue tied to a number, a trend, or a red item. Miss if any issue ran over 1 minute on story or opinion alone.</li>
+        <li>No hijack. No off-board topic ran over 1 minute without being parked with an owner.</li>
+        <li>Board, not slides, email, laptops, or phones. At Tier 3 the site dashboard or weekly pack counts as the board.</li>
+      </ol>
+      <p class="readme-wrong">What can go wrong: the loudest voice sets the agenda regardless of what the board shows.</p>
     </div>
     <div class="readme-section">
-      <h3>Actions</h3>
-      <p>Good: every action has a named owner and a due date. Closed actions get checked for whether they actually worked.</p>
+      <h3>4. Energy</h3>
+      <ol>
+        <li>Within the time box. Enter the run time. Limit is 15 minutes for Tier 1 and Tier 2, 30 minutes for Tier 3. Miss if more than 1 minute over.</li>
+        <li>Held at the board. All tiers.</li>
+        <li>Problem-solving parked. When talk turned to causes or fixes, the chair parked it with an owner within 1 minute.</li>
+      </ol>
+      <p class="readme-wrong">What can go wrong: the meeting slides into problem-solving in the room, runs long, and the team learns the meeting is where work goes to wait.</p>
+    </div>
+    <div class="readme-section">
+      <h3>5. Actions</h3>
+      <ol>
+        <li>Owner and date on every new action.</li>
+        <li>Accepted in the room. The owner was present and agreed out loud.</li>
+        <li>Written down live, on the board or the Action Log during the meeting.</li>
+        <li>Log read. The Supervisor or SQDPP owner went through the log, and each item was closed, confirmed against its countermeasure, or recommitted.</li>
+      </ol>
+      <p>If no new actions were raised, checks 1 to 3 are skipped and Actions is rated on the log read alone. Not every problem belongs on the log, so a meeting with nothing new can still be healthy.</p>
       <p class="readme-wrong">What can go wrong: "we should look into that" gets said and the meeting moves on. No owner, no date, and it quietly disappears.</p>
     </div>
     <div class="readme-section">
-      <h3>Escalation</h3>
-      <p>Good: issues move up to the next tier at the defined threshold, before they cost more time or money to fix.</p>
-      <p class="readme-wrong">What can go wrong: the chair holds the issue instead of escalating it. "We'll handle it ourselves" becomes the answer, and by the time it does surface it has grown into a bigger problem, cost more to fix, or already affected the customer.</p>
+      <h3>6. Escalation</h3>
+      <ol>
+        <li>Skip-the-log items went up now. Safety repeats, customer escapes, ship date risk, and anything needing authority or money this room doesn't have.</li>
+        <li>Day 3 rule held. Every log item on day 3 or later has a confirmed countermeasure (owner, date, recovery plan) or was escalated.</li>
+        <li>Sent up for a reason. Every escalation was a skip-the-log item or a day 3 miss, not just a hard problem.</li>
+        <li>Three-line format: What, Why, Need.</li>
+      </ol>
+      <p>If nothing was escalated, checks 3 and 4 are skipped.</p>
+      <p class="readme-wrong">What can go wrong: the chair holds the issue. "We'll handle it ourselves" becomes the answer, and by the time it surfaces it costs more to fix or has already reached the customer.</p>
     </div>
     <div class="readme-section">
-      <h3>Tone</h3>
-      <p>Good: problems are welcomed. Surfacing one early is rewarded, not punished.</p>
-      <p class="readme-wrong">What can go wrong: problems get punished. Whoever brings the bad news gets shot at, so the next person learns to stay quiet instead.</p>
+      <h3>7. Attendance</h3>
+      <p>Mark each required role Present, Delegate, or Absent. A delegate counts only if they can decide: if they defer anything in the meeting ("I'll have to check"), mark them Absent. All roles covered is Good. One role missing is Drifting. Two or more missing, or the chair absent with no stand-in, is Failure mode.</p>
+      <ul>
+        <li>Tier 1: Team Lead (chair), Crew.</li>
+        <li>Tier 2: Supervisor (chair), Safety, Quality, Delivery, Production, People, Engineering, Materials, Project Manager.</li>
+        <li>Tier 3: VP Ops (chair), Leadership team.</li>
+      </ul>
+      <p>Role lists can be edited per site with Edit roles. History shows which roles keep missing.</p>
+      <p class="readme-wrong">What can go wrong: the meeting runs well with the wrong people. A Tier 2 without Materials cannot clear a material shortage, however good the meeting looks.</p>
     </div>
 
     <div class="readme-section">
+      <h3>Action Log rules</h3>
+      <p>Not every problem goes on the log. Only a repeat within 30 days, or a miss too big to wait, that this room can fix. The day it is logged is day 1, counting meeting days, not calendar days. An item with a countermeasure confirmed by day 3 (owner, date, recovery plan) is held to its due date and does not escalate.</p>
+    </div>
+    <div class="readme-section">
       <h3>IMI bands used for the overall read</h3>
-      <p>Dark, Named, Started, Compliant, Regulating, Embedded, Compounding. The overall score across all six dimensions places the meeting on this scale for that visit.</p>
+      <p>Dark, Named, Started, Compliant, Regulating, Embedded, Compounding. The overall score across all seven dimensions places the meeting on this scale for that visit.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Earlier entries</h3>
+      <p>Walks scored before October 2026 used six dimensions rated by hand, including Tone. They stay in History, marked as the earlier format, and their percentages still feed the site trend.</p>
     </div>
   </div>
 </div>
 
 <script>
-const DIMENSIONS = [
-  { id: 'start', title: 'Start', question: 'Did it start on time with attendees prepared?' },
-  { id: 'focus', title: 'Focus', question: 'Was the conversation driven by the board or the data?' },
-  { id: 'energy', title: 'Energy', question: 'Was it short, sharp, and standing?' },
-  { id: 'actions', title: 'Actions', question: 'Did every action get an owner and a date?' },
-  { id: 'escalation', title: 'Escalation', question: 'Were issues surfaced at the threshold, before they became a bigger problem?' },
-  { id: 'tone', title: 'Tone', question: 'Were problems welcomed rather than punished?' }
-];
-
 const IMI_BANDS = ['Dark', 'Named', 'Started', 'Compliant', 'Regulating', 'Embedded', 'Compounding'];
-
 const RATE_VALUES = { good: 1, drift: 0.5, fail: 0 };
 const RATE_LABELS = { good: 'Good', drift: 'Drifting', fail: 'Failure mode' };
+const TIME_LIMITS = { 'Tier 1': 15, 'Tier 2': 15, 'Tier 3': 30 };
+const DEFAULT_ROLES = {
+  'Tier 1': ['Team Lead', 'Crew'],
+  'Tier 2': ['Supervisor', 'Safety', 'Quality', 'Delivery', 'Production', 'People', 'Engineering', 'Materials', 'Project Manager'],
+  'Tier 3': ['VP Ops', 'Leadership team']
+};
 
-let currentRatings = {};
-let currentNotes = {};
+const CHECKS = {
+  prep_board: { label: 'Board updated before start', desc: 'All numbers on the board were current when the meeting began.' },
+  prep_numbers: { label: 'Numbers ready', desc: 'Attendees brought their own numbers. Nobody looked them up in the room.' },
+  prep_preread: { label: 'Pre-read done', desc: 'Attendees had read the pack before the meeting.', tiers: ['Tier 3'] },
+  focus_order: { label: 'Board walked in order', desc: 'Safety, Quality, Delivery, Cost in sequence, not whatever someone raised.' },
+  focus_data: { label: 'Every issue tied to data', desc: 'Each issue pointed to a number, trend, or red item. No issue ran over 1 minute on story or opinion alone.' },
+  focus_hijack: { label: 'No hijack', desc: 'No off-board topic ran over 1 minute without being parked with an owner.' },
+  focus_board: { label: 'Board, not slides', desc: 'Ran from the board, not slides, email, laptops, or phones. Tier 3: dashboard or weekly pack counts.' },
+  energy_board: { label: 'Held at the board', desc: 'The meeting happened at the board.' },
+  energy_parked: { label: 'Problem-solving parked', desc: 'When talk turned to causes or fixes, the chair parked it with an owner within 1 minute. Yes if it never came up.' },
+  act_owner: { label: 'Owner and date on every action', desc: 'Every new action got a named person and a due date.' },
+  act_accepted: { label: 'Accepted in the room', desc: 'Each owner was present and agreed out loud.' },
+  act_live: { label: 'Written down live', desc: 'Actions went onto the board or Action Log during the meeting.' },
+  act_log: { label: 'Log read', desc: 'Supervisor or SQDPP owner went through the log. Each item closed, confirmed against its countermeasure, or recommitted.' },
+  esc_skip: { label: 'Skip-the-log items went up now', desc: 'Any safety repeat, customer escape, ship date risk, or need for authority or money was escalated, not logged. Yes if none came up.' },
+  esc_day3: { label: 'Day 3 rule held', desc: 'Every log item on day 3 or later has a confirmed countermeasure (owner, date, recovery plan) or was escalated.' },
+  esc_reason: { label: 'Sent up for a reason', desc: 'Every escalation was a skip-the-log item or a day 3 miss, not just a hard problem.' },
+  esc_format: { label: 'Three-line format', desc: 'Each escalation stated What, Why, and Need.' }
+};
 
+const DIMENSIONS = [
+  { id: 'start', title: 'Start', question: 'Did it start on time, without waiting for anyone?' },
+  { id: 'prep', title: 'Preparation', question: 'Were the board and the people ready before it began?', checks: ['prep_board', 'prep_numbers', 'prep_preread'] },
+  { id: 'focus', title: 'Focus', question: 'Did the board and the data drive the conversation?', checks: ['focus_order', 'focus_data', 'focus_hijack', 'focus_board'] },
+  { id: 'energy', title: 'Energy', question: 'Did it stay inside the time box, at the board, without problem-solving in the room?' },
+  { id: 'actions', title: 'Actions', question: 'Was every action owned, accepted, recorded, and the log read?' },
+  { id: 'escalation', title: 'Escalation', question: 'Did the right items go up, on time and in format?' },
+  { id: 'attendance', title: 'Attendance', question: 'Were the right people in the room?' }
+];
+
+const TITLES = { start: 'Start', prep: 'Preparation', focus: 'Focus', energy: 'Energy', actions: 'Actions', escalation: 'Escalation', attendance: 'Attendance', tone: 'Tone' };
+
+let state;
+function resetState() {
+  state = { minutesLate: '', held: 'no', runTime: '', newActions: null, escSent: null, checks: {}, roles: {}, notes: {}, editingRoles: false };
+}
+resetState();
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
 function todayISO() {
   const d = new Date();
-  return d.toISOString().split('T')[0];
+  const p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+function currentTier() { return document.getElementById('tier-select').value; }
+function currentSite() { return document.getElementById('site-name').value.trim(); }
+function ratingFromMisses(n) { return n === 0 ? 'good' : n === 1 ? 'drift' : 'fail'; }
+
+function getRoleStore() {
+  try { return JSON.parse(localStorage.getItem('signalWalkRoles') || '{}'); } catch (e) { return {}; }
+}
+function rolesFor(site, tier) {
+  const store = getRoleStore();
+  const key = (site || '').toLowerCase();
+  if (key && store[key] && store[key][tier] && store[key][tier].length) return store[key][tier];
+  return DEFAULT_ROLES[tier];
+}
+function saveRoles(site, tier, list) {
+  const store = getRoleStore();
+  const key = (site || '').toLowerCase();
+  if (!key) return false;
+  store[key] = store[key] || {};
+  store[key][tier] = list;
+  try { localStorage.setItem('signalWalkRoles', JSON.stringify(store)); } catch (e) { return false; }
+  return true;
 }
 
+function visibleChecks(ids, tier) {
+  return ids.filter(id => !CHECKS[id].tiers || CHECKS[id].tiers.includes(tier));
+}
+function evalChecks(ids) {
+  const misses = [];
+  for (const id of ids) {
+    const v = state.checks[id];
+    if (!v) return { rating: null, misses: [] };
+    if (v === 'no') misses.push(CHECKS[id].label);
+  }
+  return { rating: ratingFromMisses(misses.length), misses };
+}
+
+function actionChecks() {
+  if (state.newActions === 'no') return ['act_log'];
+  return ['act_owner', 'act_accepted', 'act_live', 'act_log'];
+}
+function escChecks() {
+  if (state.escSent === 'yes') return ['esc_skip', 'esc_day3', 'esc_reason', 'esc_format'];
+  return ['esc_skip', 'esc_day3'];
+}
+
+function evaluate(dimId, tier) {
+  if (dimId === 'start') {
+    if (state.minutesLate === '') return { rating: null, misses: [] };
+    const m = parseFloat(state.minutesLate);
+    if (isNaN(m) || m < 0) return { rating: null, misses: [] };
+    const misses = [];
+    let rating = 'good';
+    if (m > 1) { rating = m > 3 ? 'fail' : 'drift'; misses.push('Started ' + m + ' min late'); }
+    if (state.held === 'yes') { rating = 'fail'; misses.push('Held for someone'); }
+    return { rating, misses };
+  }
+  if (dimId === 'prep' || dimId === 'focus') {
+    const dim = DIMENSIONS.find(d => d.id === dimId);
+    return evalChecks(visibleChecks(dim.checks, tier));
+  }
+  if (dimId === 'energy') {
+    if (state.runTime === '') return { rating: null, misses: [] };
+    const t = parseFloat(state.runTime);
+    if (isNaN(t) || t < 0) return { rating: null, misses: [] };
+    const base = evalChecks(['energy_board', 'energy_parked']);
+    if (!base.rating) return base;
+    const misses = base.misses.slice();
+    const limit = TIME_LIMITS[tier];
+    if (t > limit + 1) misses.unshift('Ran ' + t + ' min, limit ' + limit);
+    return { rating: ratingFromMisses(misses.length), misses };
+  }
+  if (dimId === 'actions') {
+    if (!state.newActions) return { rating: null, misses: [] };
+    return evalChecks(actionChecks());
+  }
+  if (dimId === 'escalation') {
+    if (!state.escSent) return { rating: null, misses: [] };
+    return evalChecks(escChecks());
+  }
+  if (dimId === 'attendance') {
+    const roles = rolesFor(currentSite(), tier);
+    const absent = [];
+    let chairAbsent = false;
+    for (let i = 0; i < roles.length; i++) {
+      const v = state.roles[roles[i]];
+      if (!v) return { rating: null, misses: [] };
+      if (v === 'absent') { absent.push(roles[i]); if (i === 0) chairAbsent = true; }
+    }
+    const misses = absent.map(r => r + ' absent' + (r === roles[0] ? ' (chair, no stand-in)' : ''));
+    const rating = chairAbsent ? 'fail' : ratingFromMisses(absent.length);
+    return { rating, misses, absent, roles };
+  }
+  return { rating: null, misses: [] };
+}
+
+function ynRow(key, val, yesLabel, noLabel, neutral, inverted) {
+  const y = yesLabel || 'Yes', n = noLabel || 'No';
+  const yesCls = val === 'yes' ? (neutral ? 'sel-neutral' : inverted ? 'sel-no' : 'sel-yes') : '';
+  const noCls = val === 'no' ? (neutral ? 'sel-neutral' : inverted ? 'sel-yes' : 'sel-no') : '';
+  return '<div class="yn-row">' +
+    '<button class="yn-btn ' + yesCls + '" data-key="' + key + '" data-val="yes">' + y + '</button>' +
+    '<button class="yn-btn ' + noCls + '" data-key="' + key + '" data-val="no">' + n + '</button>' +
+    '</div>';
+}
+function checkBlock(id) {
+  const c = CHECKS[id];
+  return '<div class="check"><p class="check-label">' + esc(c.label) + '</p><p class="check-desc">' + esc(c.desc) + '</p>' + ynRow('check:' + id, state.checks[id]) + '</div>';
+}
+
+function cardBody(dim, tier) {
+  let h = '';
+  if (dim.id === 'start') {
+    h += '<div class="check"><p class="check-label">Minutes late</p><p class="check-desc">Up to 1 is Good. Over 1 up to 3 is Drifting. Over 3 is Failure mode. Enter 0 if on time.</p>' +
+      '<div class="num-row"><input class="num-input" type="number" inputmode="decimal" min="0" step="0.5" data-num="minutesLate" value="' + esc(state.minutesLate) + '"><span class="num-hint">minutes</span></div></div>';
+    h += '<div class="check"><p class="check-label">Held for someone?</p><p class="check-desc">The chair waited for a specific person before starting. Yes is Failure mode.</p>' + ynRow('held', state.held, 'Yes, held', 'No', false, true) + '</div>';
+  } else if (dim.id === 'prep' || dim.id === 'focus') {
+    visibleChecks(dim.checks, tier).forEach(id => { h += checkBlock(id); });
+  } else if (dim.id === 'energy') {
+    const limit = TIME_LIMITS[tier];
+    h += '<div class="check"><p class="check-label">Within the time box</p><p class="check-desc">Total run time. ' + tier + ' limit is ' + limit + ' minutes. Over ' + (limit + 1) + ' is a miss.</p>' +
+      '<div class="num-row"><input class="num-input" type="number" inputmode="decimal" min="0" step="1" data-num="runTime" value="' + esc(state.runTime) + '"><span class="num-hint">minutes</span></div></div>';
+    h += checkBlock('energy_board') + checkBlock('energy_parked');
+  } else if (dim.id === 'actions') {
+    h += '<div class="check"><p class="check-label">New actions raised in this meeting?</p><p class="check-desc">If none, Actions is rated on the log read alone.</p>' + ynRow('newActions', state.newActions, 'Yes', 'None', true) + '</div>';
+    if (state.newActions) actionChecks().forEach(id => { h += checkBlock(id); });
+  } else if (dim.id === 'escalation') {
+    h += '<div class="ref-box"><b>Skips the log, goes up now:</b> safety repeats, customer escapes, ship date risk, anything needing authority or money this room doesn\'t have. <b>Day 1</b> is the day logged. Count meeting days.</div>';
+    h += '<div class="check"><p class="check-label">Anything escalated in this meeting?</p><p class="check-desc">If nothing went up, the reason and format checks are skipped.</p>' + ynRow('escSent', state.escSent, 'Yes', 'Nothing', true) + '</div>';
+    if (state.escSent) escChecks().forEach(id => { h += checkBlock(id); });
+  } else if (dim.id === 'attendance') {
+    const site = currentSite();
+    const roles = rolesFor(site, tier);
+    if (state.editingRoles) {
+      h += '<p class="check-desc">One role per line. The first line is the chair.' + (site ? ' Saved for ' + esc(site) + ', ' + tier + '.' : ' Enter a site name above to save a custom list.') + '</p>' +
+        '<textarea class="role-edit" id="role-edit">' + esc(roles.join('\n')) + '</textarea>' +
+        '<div class="yn-row" style="margin-top:8px;"><button class="yn-btn" data-roleedit="save">Save roles</button><button class="yn-btn" data-roleedit="reset">Use defaults</button><button class="yn-btn" data-roleedit="cancel">Cancel</button></div>';
+    } else {
+      h += '<p class="check-desc">A delegate counts only if they can decide. If they defer anything, mark them Absent.</p>';
+      roles.forEach((r, i) => {
+        const v = state.roles[r];
+        const isChair = i === 0;
+        h += '<div class="role-row"><div class="role-name">' + esc(r) + (isChair ? ' <small>chair</small>' : '') + '</div><div class="role-btns">' +
+          '<button class="role-btn ' + (v === 'present' ? 'sel-present' : '') + '" data-role="' + esc(r) + '" data-val="present">Present</button>' +
+          '<button class="role-btn ' + (v === 'delegate' ? 'sel-delegate' : '') + '" data-role="' + esc(r) + '" data-val="delegate">' + (isChair ? 'Stand-in' : 'Delegate') + '</button>' +
+          '<button class="role-btn ' + (v === 'absent' ? 'sel-absent' : '') + '" data-role="' + esc(r) + '" data-val="absent">Absent</button>' +
+          '</div></div>';
+      });
+      h += '<button class="link-btn" data-roleedit="open">Edit roles for this site</button>';
+    }
+  }
+  h += '<textarea class="evidence" data-note="' + dim.id + '" placeholder="Evidence note (optional)">' + esc(state.notes[dim.id] || '') + '</textarea>';
+  return h;
+}
+
+function badgeHTML(dimId, tier) {
+  const r = evaluate(dimId, tier).rating;
+  return r ? '<span class="badge ' + r + '">' + RATE_LABELS[r] + '</span>' : '<span class="badge">Not done</span>';
+}
+
+function renderCard(dim) {
+  const tier = currentTier();
+  const card = document.getElementById('card-' + dim.id);
+  card.innerHTML = '<div class="dim-head"><p class="dim-title">' + dim.title + '</p><span id="badge-' + dim.id + '">' + badgeHTML(dim.id, tier) + '</span></div>' +
+    '<p class="dim-question">' + esc(dim.question) + '</p>' + cardBody(dim, tier);
+}
+function updateBadge(dimId) {
+  document.getElementById('badge-' + dimId).innerHTML = badgeHTML(dimId, currentTier());
+}
 function buildDimCards() {
   const wrap = document.getElementById('dim-cards');
-  wrap.innerHTML = '';
-  DIMENSIONS.forEach(dim => {
-    const card = document.createElement('div');
-    card.className = 'dim-card';
-    card.innerHTML = `
-      <p class="dim-title">${dim.title}</p>
-      <p class="dim-question">${dim.question}</p>
-      <div class="rate-row" data-dim="${dim.id}">
-        <button class="rate-btn" data-r="good">Good</button>
-        <button class="rate-btn" data-r="drift">Drifting</button>
-        <button class="rate-btn" data-r="fail">Failure mode</button>
-      </div>
-      <textarea class="evidence" data-dim="${dim.id}" placeholder="Evidence note (optional)"></textarea>
-    `;
-    wrap.appendChild(card);
-  });
-
-  wrap.querySelectorAll('.rate-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const row = btn.closest('.rate-row');
-      const dimId = row.dataset.dim;
-      row.querySelectorAll('.rate-btn').forEach(b => b.classList.remove('sel'));
-      btn.classList.add('sel');
-      currentRatings[dimId] = btn.dataset.r;
-    });
-  });
-
-  wrap.querySelectorAll('.evidence').forEach(ta => {
-    ta.addEventListener('input', () => {
-      currentNotes[ta.dataset.dim] = ta.value;
-    });
-  });
+  wrap.innerHTML = DIMENSIONS.map(d => '<div class="dim-card" id="card-' + d.id + '"></div>').join('');
+  DIMENSIONS.forEach(renderCard);
 }
+function dimOf(el) { return el.closest('.dim-card').id.replace('card-', ''); }
+
+document.getElementById('dim-cards').addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  const dimId = dimOf(btn);
+  const dim = DIMENSIONS.find(d => d.id === dimId);
+  if (btn.dataset.key) {
+    const key = btn.dataset.key, val = btn.dataset.val;
+    if (key.startsWith('check:')) {
+      const id = key.slice(6);
+      state.checks[id] = state.checks[id] === val ? undefined : val;
+    } else if (key === 'held') {
+      state.held = val;
+    } else {
+      state[key] = val;
+    }
+  } else if (btn.dataset.role) {
+    const r = btn.dataset.role;
+    state.roles[r] = state.roles[r] === btn.dataset.val ? undefined : btn.dataset.val;
+  } else if (btn.dataset.roleedit) {
+    const act = btn.dataset.roleedit;
+    if (act === 'open') state.editingRoles = true;
+    else if (act === 'cancel') state.editingRoles = false;
+    else if (act === 'save' || act === 'reset') {
+      const list = act === 'reset' ? DEFAULT_ROLES[currentTier()].slice()
+        : document.getElementById('role-edit').value.split('\n').map(s => s.trim()).filter(Boolean);
+      if (!list.length) { alert('Add at least one role.'); return; }
+      if (!currentSite()) { alert('Enter a site name first so the role list can be saved for that site.'); return; }
+      saveRoles(currentSite(), currentTier(), list);
+      state.editingRoles = false;
+    }
+  } else {
+    return;
+  }
+  renderCard(dim);
+});
+
+document.getElementById('dim-cards').addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset.num) {
+    state[el.dataset.num] = el.value;
+    updateBadge(dimOf(el));
+  } else if (el.dataset.note) {
+    state.notes[el.dataset.note] = el.value;
+  }
+});
+
+document.getElementById('tier-select').addEventListener('change', buildDimCards);
+document.getElementById('site-name').addEventListener('change', () => {
+  renderCard(DIMENSIONS.find(d => d.id === 'attendance'));
+});
 
 function getHistory() {
-  try {
-    return JSON.parse(localStorage.getItem('signalWalkHistory') || '[]');
-  } catch (e) {
-    return [];
-  }
+  try { return JSON.parse(localStorage.getItem('signalWalkHistory') || '[]'); } catch (e) { return []; }
 }
-
 function saveHistory(entries) {
   localStorage.setItem('signalWalkHistory', JSON.stringify(entries));
 }
-
+function entryPct(e) {
+  const vals = Object.values(e.ratings || {});
+  if (!vals.length) return 0;
+  const total = vals.reduce((s, r) => s + (RATE_VALUES[r] ?? 0), 0);
+  return Math.round((total / vals.length) * 100);
+}
 function bandForScore(pct) {
   const idx = Math.min(IMI_BANDS.length - 1, Math.floor(pct / (100 / IMI_BANDS.length)));
   return IMI_BANDS[idx];
 }
+function entryDims(e) {
+  return Object.keys(e.ratings || {});
+}
 
 function renderResult(entry) {
   const content = document.getElementById('result-content');
-  const total = DIMENSIONS.reduce((sum, d) => sum + (RATE_VALUES[entry.ratings[d.id]] ?? 0), 0);
-  const pct = Math.round((total / DIMENSIONS.length) * 100);
+  const pct = entryPct(entry);
   const band = bandForScore(pct);
   const bandIdx = IMI_BANDS.indexOf(band);
+  const dims = entryDims(entry);
 
   let gaugeSegs = '';
-  for (let i = 0; i < IMI_BANDS.length; i++) {
-    gaugeSegs += `<div class="gauge-seg ${i <= bandIdx ? 'on' : ''}"></div>`;
-  }
+  for (let i = 0; i < IMI_BANDS.length; i++) gaugeSegs += '<div class="gauge-seg ' + (i <= bandIdx ? 'on' : '') + '"></div>';
 
   let bars = '';
-  DIMENSIONS.forEach(d => {
-    const r = entry.ratings[d.id] || 'fail';
+  dims.forEach(id => {
+    const r = entry.ratings[id] || 'fail';
     const fillPct = r === 'good' ? 100 : r === 'drift' ? 55 : 15;
-    bars += `
-      <div class="bar-row">
-        <div class="bar-label">${d.title}</div>
-        <div class="bar-track"><div class="bar-fill ${r}" style="width:${fillPct}%"></div></div>
-      </div>
-    `;
+    bars += '<div class="bar-row"><div class="bar-label">' + (TITLES[id] || id) + '</div><div class="bar-track"><div class="bar-fill ' + r + '" style="width:' + fillPct + '%"></div></div></div>';
   });
 
-  let evidence = '';
-  DIMENSIONS.forEach(d => {
-    const note = entry.notes[d.id];
-    if (note && note.trim()) {
-      const r = entry.ratings[d.id] || 'fail';
-      evidence += `
-        <div class="ev-item">
-          <div class="ev-dim ${r}">${d.title}, ${RATE_LABELS[r]}</div>
-          <div class="ev-text">${note}</div>
-        </div>
-      `;
+  let missed = '';
+  dims.forEach(id => {
+    const list = (entry.misses && entry.misses[id]) || [];
+    if (list.length) {
+      const r = entry.ratings[id];
+      missed += '<div class="ev-item"><div class="ev-dim ' + r + '">' + (TITLES[id] || id) + ', ' + RATE_LABELS[r] + '</div><div class="ev-text"><ul>' + list.map(m => '<li>' + esc(m) + '</li>').join('') + '</ul></div></div>';
     }
   });
 
-  content.innerHTML = `
-    <div class="result-card">
-      <div class="band-sub">${entry.site || 'Unnamed site'}, ${entry.tier}, ${entry.date}</div>
-      <div class="band-name">${band}</div>
-      <div class="gauge">${gaugeSegs}</div>
-      <div class="gauge-labels">${IMI_BANDS.map(b => `<span>${b[0]}</span>`).join('')}</div>
-      <div class="band-sub">${pct}% across the six dimensions</div>
-    </div>
-    ${bars}
-    ${evidence ? `<div class="evidence-list">${evidence}</div>` : ''}
-    <button class="btn-secondary" id="btn-new-walk">Score another walk</button>
-  `;
-
-  document.getElementById('btn-new-walk').addEventListener('click', () => {
-    switchView('score');
+  let evidence = '';
+  dims.forEach(id => {
+    const note = entry.notes && entry.notes[id];
+    if (note && note.trim()) {
+      const r = entry.ratings[id] || 'fail';
+      evidence += '<div class="ev-item"><div class="ev-dim ' + r + '">' + (TITLES[id] || id) + '</div><div class="ev-text">' + esc(note) + '</div></div>';
+    }
   });
+
+  content.innerHTML =
+    '<div class="result-card">' +
+      '<div class="band-sub">' + esc(entry.site || 'Unnamed site') + ', ' + esc(entry.tier) + ', ' + esc(entry.date) + '</div>' +
+      '<div class="band-name">' + band + '</div>' +
+      '<div class="gauge">' + gaugeSegs + '</div>' +
+      '<div class="gauge-labels">' + IMI_BANDS.map(b => '<span>' + b[0] + '</span>').join('') + '</div>' +
+      '<div class="band-sub">' + pct + '% across the ' + dims.length + ' dimensions</div>' +
+    '</div>' + bars +
+    (missed ? '<div class="list-head">What missed</div>' + missed : '') +
+    (evidence ? '<div class="list-head">Evidence notes</div>' + evidence : '') +
+    '<button class="btn-secondary" id="btn-new-walk">Score another walk</button>';
+
+  document.getElementById('btn-new-walk').addEventListener('click', () => switchView('score'));
 }
 
 function sparklinePath(scores, w, h) {
   if (scores.length < 2) return '';
-  const max = 100, min = 0;
   const step = w / (scores.length - 1);
-  const points = scores.map((s, i) => {
-    const x = i * step;
-    const y = h - ((s - min) / (max - min)) * h;
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  return scores.map((s, i) => (i * step).toFixed(1) + ',' + (h - (s / 100) * h).toFixed(1)).join(' ');
+}
+function renderSparkline(scores) {
+  const w = 200, h = 30;
+  return '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '"><polyline points="' + sparklinePath(scores, w, h) + '" fill="none" stroke="#E8A33D" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+}
+
+function attendancePattern(entries) {
+  const byTier = {};
+  entries.forEach(e => {
+    if (!e.attendance) return;
+    const t = byTier[e.tier] = byTier[e.tier] || { walks: 0, absent: {} };
+    t.walks += 1;
+    Object.keys(e.attendance).forEach(r => {
+      if (e.attendance[r] === 'absent') t.absent[r] = (t.absent[r] || 0) + 1;
+    });
   });
-  return points.join(' ');
+  const lines = [];
+  Object.keys(byTier).sort().forEach(tier => {
+    const t = byTier[tier];
+    Object.keys(t.absent).sort((a, b) => t.absent[b] - t.absent[a]).forEach(r => {
+      lines.push('<b>' + esc(r) + '</b> absent from ' + esc(tier) + ' in ' + t.absent[r] + ' of ' + t.walks + ' walk' + (t.walks === 1 ? '' : 's'));
+    });
+  });
+  return lines;
 }
 
 function renderHistory() {
   const content = document.getElementById('history-content');
   const history = getHistory();
-
   if (history.length === 0) {
     content.innerHTML = '<div class="empty-state">No scored walks yet. Score one and it will show up here, grouped by site.</div>';
     return;
   }
-
   const bySite = {};
   history.forEach(e => {
     const key = e.site || 'Unnamed site';
-    if (!bySite[key]) bySite[key] = [];
-    bySite[key].push(e);
+    (bySite[key] = bySite[key] || []).push(e);
   });
 
   let html = '';
   Object.keys(bySite).sort().forEach(site => {
     const entries = bySite[site].sort((a, b) => a.date.localeCompare(b.date));
-    const scores = entries.map(e => {
-      const total = DIMENSIONS.reduce((sum, d) => sum + (RATE_VALUES[e.ratings[d.id]] ?? 0), 0);
-      return Math.round((total / DIMENSIONS.length) * 100);
-    });
+    const scores = entries.map(entryPct);
+    const pattern = attendancePattern(entries);
+    if (pattern.length) html += '<div class="pattern-box"><b>' + esc(site) + ': who keeps missing</b><br>' + pattern.join('<br>') + '</div>';
 
     entries.slice().reverse().forEach((e, i) => {
-      const total = DIMENSIONS.reduce((sum, d) => sum + (RATE_VALUES[e.ratings[d.id]] ?? 0), 0);
-      const pct = Math.round((total / DIMENSIONS.length) * 100);
-      const band = bandForScore(pct);
-      const isLatest = i === 0;
-      html += `
-        <div class="history-item" data-id="${e.id}">
-          <div class="history-top">
-            <span class="history-site">${site}</span>
-            <span class="history-date">${e.date}</span>
-          </div>
-          <div class="history-tier">${e.tier}</div>
-          <div class="history-band">${band}, ${pct}%</div>
-          ${isLatest && scores.length > 1 ? `<div class="sparkline">${renderSparkline(scores)}</div>` : ''}
-          <button class="delete-link" data-del="${e.id}">Delete this entry</button>
-        </div>
-      `;
+      const pct = entryPct(e);
+      const missCount = e.misses ? Object.values(e.misses).reduce((s, l) => s + l.length, 0) : 0;
+      html += '<div class="history-item">' +
+        '<div class="history-top"><span class="history-site">' + esc(site) + '</span><span class="history-date">' + esc(e.date) + '</span></div>' +
+        '<div class="history-tier">' + esc(e.tier) + '</div>' +
+        '<div class="history-band">' + bandForScore(pct) + ', ' + pct + '%</div>' +
+        (e.v === 2 ? (missCount ? '<div class="history-miss">' + missCount + ' check' + (missCount === 1 ? '' : 's') + ' missed</div>' : '') : '<div class="history-tag">Earlier six-dimension format</div>') +
+        (i === 0 && scores.length > 1 ? '<div class="sparkline">' + renderSparkline(scores) + '</div>' : '') +
+        (e.v === 2 ? '<button class="delete-link" data-view-entry="' + esc(e.id) + '">View result</button>' : '') +
+        '<button class="delete-link" data-del="' + esc(e.id) + '">Delete this entry</button>' +
+        '</div>';
     });
   });
-
   content.innerHTML = html;
 
   content.querySelectorAll('[data-del]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const id = btn.dataset.del;
-      const updated = getHistory().filter(e => e.id !== id);
-      saveHistory(updated);
+      if (!confirm('Delete this entry?')) return;
+      saveHistory(getHistory().filter(e => e.id !== btn.dataset.del));
       renderHistory();
     });
   });
-}
-
-function renderSparkline(scores) {
-  const w = 200, h = 30;
-  const points = sparklinePath(scores, w, h);
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
-    <polyline points="${points}" fill="none" stroke="#E8A33D" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-  </svg>`;
+  content.querySelectorAll('[data-view-entry]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const entry = getHistory().find(e => e.id === btn.dataset.viewEntry);
+      if (entry) { renderResult(entry); switchView('result'); }
+    });
+  });
 }
 
 function switchView(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('view-' + view).classList.add('active');
-  document.querySelector(`.tab-btn[data-view="${view}"]`).classList.add('active');
+  document.querySelector('.tab-btn[data-view="' + view + '"]').classList.add('active');
   if (view === 'history') {
     renderHistory();
     document.getElementById('export-output').style.display = 'none';
@@ -490,26 +791,50 @@ function switchView(view) {
     document.getElementById('btn-export').textContent = 'Show export data';
     document.getElementById('copy-toast').style.display = 'none';
   }
+  window.scrollTo(0, 0);
 }
-
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => switchView(btn.dataset.view));
-});
+document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchView(btn.dataset.view)));
 
 document.getElementById('btn-score').addEventListener('click', () => {
-  const missing = DIMENSIONS.filter(d => !currentRatings[d.id]);
-  if (missing.length > 0) {
-    alert('Rate all six dimensions before scoring: ' + missing.map(d => d.title).join(', '));
+  const tier = currentTier();
+  const results = {};
+  const missing = [];
+  DIMENSIONS.forEach(d => {
+    results[d.id] = evaluate(d.id, tier);
+    if (!results[d.id].rating) missing.push(d.title);
+  });
+  if (missing.length) {
+    alert('Finish these before scoring: ' + missing.join(', '));
     return;
   }
 
+  const ratings = {}, misses = {}, notes = {}, checks = {};
+  DIMENSIONS.forEach(d => {
+    ratings[d.id] = results[d.id].rating;
+    misses[d.id] = results[d.id].misses;
+    if (state.notes[d.id] && state.notes[d.id].trim()) notes[d.id] = state.notes[d.id];
+  });
+  const used = [].concat(
+    visibleChecks(DIMENSIONS[1].checks, tier), visibleChecks(DIMENSIONS[2].checks, tier),
+    ['energy_board', 'energy_parked'], actionChecks(), escChecks()
+  );
+  used.forEach(id => { checks[id] = state.checks[id]; });
+  const roles = results.attendance.roles;
+  const attendance = {};
+  roles.forEach(r => { attendance[r] = state.roles[r]; });
+
   const entry = {
+    v: 2,
     id: Date.now().toString(),
-    site: document.getElementById('site-name').value.trim(),
+    site: currentSite(),
     date: document.getElementById('obs-date').value || todayISO(),
-    tier: document.getElementById('tier-select').value,
-    ratings: { ...currentRatings },
-    notes: { ...currentNotes }
+    tier,
+    minutesLate: parseFloat(state.minutesLate),
+    heldForSomeone: state.held === 'yes',
+    runTime: parseFloat(state.runTime),
+    newActions: state.newActions === 'yes',
+    escalated: state.escSent === 'yes',
+    checks, attendance, ratings, misses, notes
   };
 
   const history = getHistory();
@@ -519,18 +844,15 @@ document.getElementById('btn-score').addEventListener('click', () => {
   renderResult(entry);
   switchView('result');
 
-  currentRatings = {};
-  currentNotes = {};
+  resetState();
   buildDimCards();
-  document.getElementById('site-name').value = '';
 });
 
 document.getElementById('btn-export').addEventListener('click', () => {
   const output = document.getElementById('export-output');
   const isHidden = output.style.display === 'none' || !output.style.display;
   if (isHidden) {
-    const history = getHistory();
-    output.value = JSON.stringify(history, null, 2);
+    output.value = JSON.stringify(getHistory(), null, 2);
     output.style.display = 'block';
     document.getElementById('btn-copy').style.display = 'block';
     document.getElementById('btn-export').textContent = 'Hide export data';
@@ -545,12 +867,8 @@ document.getElementById('btn-export').addEventListener('click', () => {
 document.getElementById('btn-copy').addEventListener('click', async () => {
   const output = document.getElementById('export-output');
   const toast = document.getElementById('copy-toast');
-  try {
-    await navigator.clipboard.writeText(output.value);
-  } catch (e) {
-    output.select();
-    document.execCommand('copy');
-  }
+  try { await navigator.clipboard.writeText(output.value); }
+  catch (e) { output.select(); document.execCommand('copy'); }
   toast.style.display = 'block';
   setTimeout(() => { toast.style.display = 'none'; }, 1800);
 });
