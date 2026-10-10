@@ -362,6 +362,7 @@
         <li>Output: today's output met or exceeded the target.</li>
       </ol>
       <p>Read each one off the board. No if the target was missed or no target was posted.</p>
+      <p>Any No opens one follow-up: the root cause for the miss is clear and understood. Yes means it was named in the meeting and backed by evidence. No means the room is still asking why. A miss with a known cause is a problem being worked. A miss with no cause is a problem being absorbed.</p>
       <p>Results are recorded beside the score, not inside it. The score measures how well the meeting ran. Results measure what the operation delivered. Keeping them apart lets History show whether better meetings bring better results, instead of a bad day on the line pulling down a well-run meeting.</p>
     </div>
     <div class="readme-section">
@@ -447,7 +448,7 @@ const TITLES = { start: 'Start', prep: 'Preparation', focus: 'Focus', energy: 'E
 
 let state;
 function resetState() {
-  state = { minutesLate: '', noWait: null, runTime: '', newActions: null, escSent: null, t2EscOn: null, a3On: null, results: {}, checks: {}, roles: {}, notes: {}, editingRoles: false };
+  state = { minutesLate: '', noWait: null, runTime: '', newActions: null, escSent: null, t2EscOn: null, a3On: null, results: {}, rootCause: {}, checks: {}, roles: {}, notes: {}, editingRoles: false };
 }
 resetState();
 
@@ -656,14 +657,27 @@ function renderResultsCard() {
     '<p class="dim-question">Read off the board. Recorded beside the score, not part of it, so you can see whether better meetings bring better results.</p>';
   RESULT_ITEMS.forEach(r => {
     h += '<div class="check"><p class="check-label">' + esc(r.label) + '</p><p class="check-desc">' + esc(r.desc) + '</p>' + ynRow('result:' + r.id, state.results[r.id]) + '</div>';
+    if (state.results[r.id] === 'no') {
+      h += '<div class="check" style="margin-left:14px;border-left:2px solid var(--line);padding-left:12px;">' +
+        '<p class="check-label">The root cause for the ' + (r.id === 'safety' ? 'incident' : 'miss') + ' is clear and understood.</p>' +
+        '<p class="check-desc">Named in the meeting and backed by evidence, not guessed at. No if the room is still asking why.</p>' +
+        ynRow('rc:' + r.id, state.rootCause[r.id]) + '</div>';
+    }
   });
   document.getElementById('results-card').innerHTML = h + '</div>';
 }
 document.getElementById('results-card').addEventListener('click', e => {
-  const btn = e.target.closest('button[data-key^="result:"]');
+  const btn = e.target.closest('button[data-key^="result:"], button[data-key^="rc:"]');
   if (!btn) return;
-  const id = btn.dataset.key.slice(7);
-  state.results[id] = state.results[id] === btn.dataset.val ? undefined : btn.dataset.val;
+  const key = btn.dataset.key;
+  if (key.indexOf('result:') === 0) {
+    const id = key.slice(7);
+    state.results[id] = state.results[id] === btn.dataset.val ? undefined : btn.dataset.val;
+    if (state.results[id] !== 'no') delete state.rootCause[id];
+  } else {
+    const id = key.slice(3);
+    state.rootCause[id] = state.rootCause[id] === btn.dataset.val ? undefined : btn.dataset.val;
+  }
   renderResultsCard();
 });
 
@@ -780,7 +794,7 @@ function renderResult(entry) {
       '<div class="gauge">' + gaugeSegs + '</div>' +
       '<div class="gauge-labels">' + IMI_BANDS.map(b => '<span>' + b[0] + '</span>').join('') + '</div>' +
       '<div class="band-sub">' + pct + '% across the ' + dims.length + ' dimensions</div>' +
-      resultsLine(entryResults(entry), 'band-sub', 'margin-top:8px;font-weight:600;') +
+      resultsLine(entryResults(entry), 'band-sub', 'margin-top:8px;font-weight:600;', entry.rootCause) +
     '</div>' + bars +
     (missed ? '<div class="list-head">What missed</div>' + missed : '') +
     (evidence ? '<div class="list-head">Evidence notes</div>' + evidence : '') +
@@ -789,10 +803,13 @@ function renderResult(entry) {
   document.getElementById('btn-new-walk').addEventListener('click', () => switchView('score'));
 }
 
-function resultsLine(res, cls, style) {
+function resultsLine(res, cls, style, rc) {
   if (!res) return '';
-  const parts = RESULT_ITEMS.filter(r => typeof res[r.id] === 'boolean').map(r =>
-    '<span style="color:' + (res[r.id] ? 'var(--good)' : 'var(--fail)') + ';">' + r.short + ' ' + (res[r.id] ? 'hit' : 'missed') + '</span>');
+  const parts = RESULT_ITEMS.filter(r => typeof res[r.id] === 'boolean').map(r => {
+    let t = r.short + ' ' + (res[r.id] ? 'hit' : 'missed');
+    if (!res[r.id] && rc && typeof rc[r.id] === 'boolean') t += rc[r.id] ? ', cause understood' : ', cause unclear';
+    return '<span style="color:' + (res[r.id] ? 'var(--good)' : 'var(--fail)') + ';">' + t + '</span>';
+  });
   return parts.length ? '<div class="' + cls + '" style="' + style + '">' + parts.join(' &middot; ') + '</div>' : '';
 }
 
@@ -852,6 +869,12 @@ function renderHistory() {
         const w = resWalks.filter(e => typeof entryResults(e)[r.id] === 'boolean');
         if (w.length) lines.push(r.short + ' hit in ' + w.filter(e => entryResults(e)[r.id]).length + ' of ' + w.length);
       });
+      let rcMiss = 0, rcKnown = 0;
+      resWalks.forEach(e => {
+        if (!e.rootCause) return;
+        Object.keys(e.rootCause).forEach(k => { rcMiss += 1; if (e.rootCause[k]) rcKnown += 1; });
+      });
+      if (rcMiss) lines.push('Root cause understood in ' + rcKnown + ' of ' + rcMiss + ' miss' + (rcMiss === 1 ? '' : 'es'));
       const full = resWalks.filter(e => RESULT_ITEMS.every(r => typeof entryResults(e)[r.id] === 'boolean'));
       if (full.length) {
         const allHit = full.filter(e => RESULT_ITEMS.every(r => entryResults(e)[r.id]));
@@ -870,7 +893,7 @@ function renderHistory() {
         '<div class="history-top"><span class="history-site">' + esc(site) + '</span><span class="history-date">' + esc(e.date) + '</span></div>' +
         '<div class="history-tier">' + esc(e.tier) + '</div>' +
         '<div class="history-band">' + bandForScore(pct) + ', ' + pct + '%</div>' +
-        resultsLine(entryResults(e), 'history-tier', '') +
+        resultsLine(entryResults(e), 'history-tier', '', e.rootCause) +
         (e.v >= 2 ? (missCount ? '<div class="history-miss">' + missCount + ' check' + (missCount === 1 ? '' : 's') + ' missed</div>' : '') : '<div class="history-tag">Earlier six-dimension format</div>') +
         (i === 0 && scores.length > 1 ? '<div class="sparkline">' + renderSparkline(scores) + '</div>' : '') +
         (e.v >= 2 ? '<button class="delete-link" data-view-entry="' + esc(e.id) + '">View result</button>' : '') +
@@ -920,7 +943,7 @@ document.getElementById('btn-score').addEventListener('click', () => {
     results[d.id] = evaluate(d.id, tier);
     if (!results[d.id].rating) missing.push(d.title);
   });
-  if (RESULT_ITEMS.some(r => !state.results[r.id])) missing.push('Results');
+  if (RESULT_ITEMS.some(r => !state.results[r.id] || (state.results[r.id] === 'no' && !state.rootCause[r.id]))) missing.push('Results');
   if (missing.length) {
     alert('Finish these before scoring: ' + missing.join(', '));
     return;
@@ -962,6 +985,7 @@ document.getElementById('btn-score').addEventListener('click', () => {
     escalated: tier === 'Tier 2' ? state.t2EscOn === 'yes' : state.escSent === 'yes',
     a3Presented: tier === 'Tier 2' ? state.a3On === 'yes' : null,
     results: RESULT_ITEMS.reduce((o, r) => { o[r.id] = state.results[r.id] === 'yes'; return o; }, {}),
+    rootCause: RESULT_ITEMS.reduce((o, r) => { if (state.results[r.id] === 'no') o[r.id] = state.rootCause[r.id] === 'yes'; return o; }, {}),
     notApplicable,
     checks, attendance, ratings, misses, notes
   };
