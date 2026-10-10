@@ -200,6 +200,7 @@
     </div>
 
     <div id="dim-cards"></div>
+    <div id="results-card"></div>
 
     <button class="btn-primary" id="btn-score">Score this walk</button>
   </div>
@@ -353,6 +354,11 @@
     </div>
 
     <div class="readme-section">
+      <h3>Results (not scored)</h3>
+      <p>Today's output met or exceeded the target. Read it off the board. No if output was below target or no target was posted.</p>
+      <p>This is recorded beside the score, not inside it. The score measures how well the meeting ran. Output measures what the operation delivered. Keeping them apart lets History show whether better meetings bring better output, instead of a bad day on the line pulling down a well-run meeting.</p>
+    </div>
+    <div class="readme-section">
       <h3>Action Log rules</h3>
       <p>Not every problem goes on the log. Only a repeat within 30 days, or a miss too big to wait, that this room can fix. The day it is logged is day 1, counting meeting days, not calendar days. An item with a countermeasure confirmed by day 3 (owner, date, recovery plan) is held to its due date and does not escalate.</p>
     </div>
@@ -423,7 +429,7 @@ const TITLES = { start: 'Start', prep: 'Preparation', focus: 'Focus', energy: 'E
 
 let state;
 function resetState() {
-  state = { minutesLate: '', noWait: null, runTime: '', newActions: null, escSent: null, t2EscOn: null, a3On: null, checks: {}, roles: {}, notes: {}, editingRoles: false };
+  state = { minutesLate: '', noWait: null, runTime: '', newActions: null, escSent: null, t2EscOn: null, a3On: null, outputMet: null, checks: {}, roles: {}, notes: {}, editingRoles: false };
 }
 resetState();
 
@@ -625,7 +631,23 @@ function buildDimCards() {
   wrap.innerHTML = '<p class="dim-question" style="margin:4px 0 14px;">Read each statement. Yes means you agree with it. No means you don\'t.</p>' +
     dims.map(d => '<div class="dim-card" id="card-' + d.id + '"></div>').join('');
   dims.forEach(renderCard);
+  renderResultsCard();
 }
+function renderResultsCard() {
+  const v = state.outputMet;
+  document.getElementById('results-card').innerHTML =
+    '<div class="dim-card"><div class="dim-head"><p class="dim-title">Results</p><span class="badge">Not scored</span></div>' +
+    '<p class="dim-question">Recorded beside the score, not part of it, so you can see whether better meetings bring better output.</p>' +
+    '<div class="check"><p class="check-label">Today\'s output met or exceeded the target.</p><p class="check-desc">Read it off the board. No if output was below target or no target was posted.</p>' +
+    ynRow('outputMet', v) + '</div></div>';
+}
+document.getElementById('results-card').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-key="outputMet"]');
+  if (!btn) return;
+  state.outputMet = btn.dataset.val;
+  renderResultsCard();
+});
+
 function dimOf(el) { return el.closest('.dim-card').id.replace('card-', ''); }
 
 document.getElementById('dim-cards').addEventListener('click', e => {
@@ -739,6 +761,7 @@ function renderResult(entry) {
       '<div class="gauge">' + gaugeSegs + '</div>' +
       '<div class="gauge-labels">' + IMI_BANDS.map(b => '<span>' + b[0] + '</span>').join('') + '</div>' +
       '<div class="band-sub">' + pct + '% across the ' + dims.length + ' dimensions</div>' +
+      (typeof entry.outputMet === 'boolean' ? '<div class="band-sub" style="margin-top:8px;color:' + (entry.outputMet ? 'var(--good)' : 'var(--fail)') + ';font-weight:600;">Output ' + (entry.outputMet ? 'met or exceeded target' : 'below target') + '</div>' : '') +
     '</div>' + bars +
     (missed ? '<div class="list-head">What missed</div>' + missed : '') +
     (evidence ? '<div class="list-head">Evidence notes</div>' + evidence : '') +
@@ -795,6 +818,14 @@ function renderHistory() {
     const entries = bySite[site].sort((a, b) => a.date.localeCompare(b.date));
     const scores = entries.map(entryPct);
     const pattern = attendancePattern(entries);
+    const outWalks = entries.filter(e => typeof e.outputMet === 'boolean');
+    if (outWalks.length) {
+      const hit = outWalks.filter(e => e.outputMet);
+      const avg = list => list.length ? Math.round(list.reduce((s, e) => s + entryPct(e), 0) / list.length) + '%' : 'none yet';
+      const miss = outWalks.filter(e => !e.outputMet);
+      html += '<div class="pattern-box"><b>' + esc(site) + ': output against meeting score</b><br>Output met target in ' + hit.length + ' of ' + outWalks.length + ' walk' + (outWalks.length === 1 ? '' : 's') +
+        '<br>Average meeting score on days output hit: ' + avg(hit) + '<br>Average meeting score on days output missed: ' + avg(miss) + '</div>';
+    }
     if (pattern.length) html += '<div class="pattern-box"><b>' + esc(site) + ': who keeps missing</b><br>' + pattern.join('<br>') + '</div>';
 
     entries.slice().reverse().forEach((e, i) => {
@@ -804,6 +835,7 @@ function renderHistory() {
         '<div class="history-top"><span class="history-site">' + esc(site) + '</span><span class="history-date">' + esc(e.date) + '</span></div>' +
         '<div class="history-tier">' + esc(e.tier) + '</div>' +
         '<div class="history-band">' + bandForScore(pct) + ', ' + pct + '%</div>' +
+        (typeof e.outputMet === 'boolean' ? '<div class="history-tier" style="color:' + (e.outputMet ? 'var(--good)' : 'var(--fail)') + ';">Output ' + (e.outputMet ? 'met target' : 'below target') + '</div>' : '') +
         (e.v >= 2 ? (missCount ? '<div class="history-miss">' + missCount + ' check' + (missCount === 1 ? '' : 's') + ' missed</div>' : '') : '<div class="history-tag">Earlier six-dimension format</div>') +
         (i === 0 && scores.length > 1 ? '<div class="sparkline">' + renderSparkline(scores) + '</div>' : '') +
         (e.v >= 2 ? '<button class="delete-link" data-view-entry="' + esc(e.id) + '">View result</button>' : '') +
@@ -853,6 +885,7 @@ document.getElementById('btn-score').addEventListener('click', () => {
     results[d.id] = evaluate(d.id, tier);
     if (!results[d.id].rating) missing.push(d.title);
   });
+  if (!state.outputMet) missing.push('Results');
   if (missing.length) {
     alert('Finish these before scoring: ' + missing.join(', '));
     return;
@@ -893,6 +926,7 @@ document.getElementById('btn-score').addEventListener('click', () => {
     newActions: tier === 'Tier 2' ? null : state.newActions === 'yes',
     escalated: tier === 'Tier 2' ? state.t2EscOn === 'yes' : state.escSent === 'yes',
     a3Presented: tier === 'Tier 2' ? state.a3On === 'yes' : null,
+    outputMet: state.outputMet === 'yes',
     notApplicable,
     checks, attendance, ratings, misses, notes
   };
