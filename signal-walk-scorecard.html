@@ -290,17 +290,8 @@
       </ol>
       <p class="readme-wrong">What can go wrong: the loudest voice sets the agenda regardless of what the board shows.</p>
     </div>
-    <div class="readme-section">
-      <h3>4. Energy</h3>
-      <ol>
-        <li>Run time, measured. Limit is 15 minutes for Tier 1 and Tier 2, 30 minutes for Tier 3. A miss if more than 1 minute over.</li>
-        <li>The meeting was held at the board.</li>
-        <li>Problem-solving was parked with an owner within 1 minute.</li>
-      </ol>
-      <p class="readme-wrong">What can go wrong: the meeting slides into problem-solving in the room, runs long, and the team learns the meeting is where work goes to wait.</p>
-    </div>
-    <div class="readme-section">
-      <h3>5. Actions (Tier 1 and Tier 3)</h3>
+<div class="readme-section">
+      <h3>4. Actions (Tier 1 and Tier 3)</h3>
       <ol>
         <li>Every new action got a named owner and a due date.</li>
         <li>Each action owner was present and agreed out loud.</li>
@@ -311,7 +302,7 @@
       <p class="readme-wrong">What can go wrong: "we should look into that" gets said and the meeting moves on. No owner, no date, and it quietly disappears.</p>
     </div>
     <div class="readme-section">
-      <h3>6. Escalation (Tier 1 and Tier 3)</h3>
+      <h3>5. Escalation (Tier 1 and Tier 3)</h3>
       <ol>
         <li>Every skip-the-log item was escalated, not logged. Safety repeats, customer escapes, ship date risk, and anything needing authority or money this room doesn't have.</li>
         <li>Every log item on day 3 or later has a confirmed countermeasure (owner, date, recovery plan) or was escalated.</li>
@@ -342,7 +333,7 @@
       <p class="readme-wrong">What can go wrong: the logs go stale while the meeting looks busy, material and drawing requests get an owner and are never asked about again, and A3s become status reports with the fix chosen before the cause is shown.</p>
     </div>
     <div class="readme-section">
-      <h3>7. Attendance</h3>
+      <h3>6. Attendance</h3>
       <p>Mark each required role Present, Delegate, or Absent. A delegate counts only if they can decide: if they defer anything in the meeting ("I'll have to check"), mark them Absent. All roles covered is Good. One role missing is Drifting. Two or more missing, or the chair absent with no stand-in, is Failure mode.</p>
       <ul>
         <li>Tier 1: Team Lead (chair), Crew.</li>
@@ -354,6 +345,15 @@
     </div>
 
     <div class="readme-section">
+      <h3>7. Energy (last, scored at the close)</h3>
+      <ol>
+        <li>Run time, measured. Limit is 15 minutes for Tier 1 and Tier 2, 30 minutes for Tier 3. A miss if more than 1 minute over.</li>
+        <li>The meeting was held at the board.</li>
+        <li>Problem-solving was parked with an owner within 1 minute.</li>
+      </ol>
+      <p class="readme-wrong">What can go wrong: the meeting slides into problem-solving in the room, runs long, and the team learns the meeting is where work goes to wait.</p>
+    </div>
+        <div class="readme-section">
       <h3>Results (not scored)</h3>
       <ol>
         <li>Safety: there was no safety incident since the last meeting.</li>
@@ -433,13 +433,13 @@ const DIMENSIONS_ALL = [
   { id: 'start', title: 'Start', question: 'The meeting started on time, without waiting for anyone.' },
   { id: 'prep', title: 'Preparation', question: 'The board and the people were ready before it began.', checks: ['prep_board', 'prep_numbers', 'prep_preread'] },
   { id: 'focus', title: 'Focus', question: 'The board and the data drove the conversation.', checks: ['focus_order', 'focus_data', 'focus_hijack', 'focus_board'] },
-  { id: 'energy', title: 'Energy', question: 'It stayed inside the time box, at the board, without problem-solving in the room.' },
   { id: 'actions', title: 'Actions', question: 'Every action was owned, accepted, recorded, and the log was read.', tiers: ['Tier 1', 'Tier 3'] },
   { id: 'escalation', title: 'Escalation', question: 'The right items went up, on time and in format.', tiers: ['Tier 1', 'Tier 3'] },
   { id: 'actionlog', title: 'Action Log', question: 'The SQDPP action logs were reviewed and kept current.', tiers: ['Tier 2'], checks: ['t2_log_reviewed', 't2_log_dated'] },
   { id: 't2esc', title: 'Escalations', question: 'Every escalation was owned and followed through.', tiers: ['Tier 2'], checks: ['t2_esc_owned', 't2_esc_closed'] },
   { id: 'a3', title: 'A3 Status', question: 'A3s came for a decision, backed by evidence.', tiers: ['Tier 2'], checks: ['a3_ask', 'a3_evidence'] },
-  { id: 'attendance', title: 'Attendance', question: 'The right people were in the room.' }
+  { id: 'attendance', title: 'Attendance', question: 'The right people were in the room.' },
+  { id: 'energy', title: 'Energy', question: 'It stayed inside the time box, at the board, without problem-solving in the room.' }
 ];
 function dimsFor(tier) { return DIMENSIONS_ALL.filter(d => !d.tiers || d.tiers.includes(tier)); }
 function dimById(id) { return DIMENSIONS_ALL.find(d => d.id === id); }
