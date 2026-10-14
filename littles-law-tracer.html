@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little's Law Tracer | MOSei</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --navy-deep:#001543;
+    --navy:#1a2744;
+    --gold:#c9a84c;
+    --gold-light:#e8c97a;
+    --cream:#f8f5ef;
+    --ink:#1a2744;
+    --line:#dcd5c4;
+    --muted:#6b7280;
+    --danger:#8a4a3a;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    padding-bottom:80px;
+  }
+
+  header{
+    background:linear-gradient(135deg, var(--navy-deep), var(--navy));
+    color:var(--cream);
+    padding:36px 24px 28px;
+    text-align:center;
+    border-bottom:3px solid var(--gold);
+  }
+
+  header .eyebrow{
+    font-family:'Inter', sans-serif;
+    font-size:12px;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    margin-bottom:10px;
+  }
+
+  header h1{
+    font-family:'EB Garamond', serif;
+    font-weight:600;
+    font-size:36px;
+    letter-spacing:0.3px;
+  }
+
+  header p.sub{
+    font-family:'EB Garamond', serif;
+    font-style:italic;
+    font-size:17px;
+    color:#cfd6e6;
+    margin-top:8px;
+  }
+
+  nav.tabs{
+    max-width:900px;
+    margin:0 auto;
+    display:flex;
+    border-bottom:1px solid var(--line);
+    background:var(--cream);
+    position:sticky;
+    top:0;
+    z-index:10;
+  }
+
+  nav.tabs button{
+    flex:1;
+    padding:16px 8px;
+    background:none;
+    border:none;
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:0.5px;
+    color:var(--muted);
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    transition:all 0.15s ease;
+  }
+
+  nav.tabs button.active{
+    color:var(--navy);
+    border-bottom-color:var(--gold);
+  }
+
+  nav.tabs button:hover{ color:var(--navy); }
+
+  main{
+    max-width:900px;
+    margin:0 auto;
+    padding:32px 24px;
+  }
+
+  .panel{ display:none; }
+  .panel.active{ display:block; }
+
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:24px;
+    margin-bottom:20px;
+  }
+
+  h2{
+    font-family:'EB Garamond', serif;
+    font-weight:600;
+    font-size:24px;
+    margin-bottom:6px;
+    color:var(--navy);
+  }
+
+  h3{
+    font-family:'EB Garamond', serif;
+    font-weight:600;
+    font-size:19px;
+    margin-bottom:10px;
+    color:var(--navy);
+  }
+
+  p.desc{
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:18px;
+  }
+
+  table{ width:100%; border-collapse:collapse; }
+
+  th{
+    text-align:left;
+    font-size:11px;
+    letter-spacing:0.8px;
+    text-transform:uppercase;
+    color:var(--muted);
+    padding:8px 6px;
+    border-bottom:2px solid var(--line);
+  }
+
+  td{
+    padding:8px 6px;
+    border-bottom:1px solid var(--line);
+    vertical-align:middle;
+  }
+
+  input[type="text"], input[type="number"]{
+    width:100%;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:8px 10px;
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+    background:var(--cream);
+    color:var(--ink);
+  }
+
+  input:focus{ outline:none; border-color:var(--gold); }
+
+  .row-actions{ text-align:center; width:36px; }
+
+  .icon-btn{
+    background:none;
+    border:none;
+    color:var(--danger);
+    cursor:pointer;
+    font-size:16px;
+    padding:4px;
+  }
+
+  .btn{
+    display:inline-block;
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    padding:11px 20px;
+    border-radius:4px;
+    border:1px solid var(--navy);
+    background:var(--navy);
+    color:#fff;
+    cursor:pointer;
+    letter-spacing:0.3px;
+  }
+
+  .btn.secondary{
+    background:none;
+    color:var(--navy);
+    border:1px solid var(--line);
+  }
+
+  .btn.secondary:hover{ border-color:var(--navy); }
+  .btn:hover{ background:var(--navy-deep); }
+
+  .btn-row{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+
+  .formula-box{
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:16px 20px;
+    text-align:center;
+    margin-bottom:18px;
+    font-family:'EB Garamond', serif;
+    font-size:22px;
+    color:var(--navy);
+    letter-spacing:0.4px;
+  }
+
+  .formula-box .sub-formula{
+    font-family:'Inter', sans-serif;
+    font-size:12px;
+    color:var(--muted);
+    letter-spacing:0.2px;
+    margin-top:6px;
+  }
+
+  .days-setting{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+    padding:12px 14px;
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-radius:4px;
+  }
+
+  .days-setting label{
+    font-size:12px;
+    letter-spacing:0.4px;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:600;
+  }
+
+  .days-setting input{ width:80px !important; background:#fff !important; }
+
+  .days-setting .hint{ font-size:12px; color:var(--muted); }
+
+  .metrics-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:14px;
+    margin:20px 0;
+  }
+
+  .metric{
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-left:4px solid var(--gold);
+    border-radius:4px;
+    padding:16px;
+  }
+
+  .metric .val{
+    font-family:'EB Garamond', serif;
+    font-size:32px;
+    font-weight:600;
+    color:var(--navy);
+    line-height:1;
+  }
+
+  .metric .lbl{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:6px;
+    letter-spacing:0.2px;
+  }
+
+  .dual-row{
+    display:grid;
+    grid-template-columns:170px 1fr 1fr 130px;
+    align-items:center;
+    gap:8px;
+    padding:8px 0;
+    font-size:12.5px;
+    border-bottom:1px solid var(--line);
+  }
+
+  .dual-name{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    color:var(--ink);
+    font-weight:500;
+  }
+
+  .dual-math{
+    font-size:11px;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    margin-top:2px;
+  }
+
+  .dual-track{
+    background:var(--line);
+    border-radius:3px;
+    height:16px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .dual-fill{ height:100%; border-radius:3px 0 0 3px; }
+  .dual-fill.predicted{ background:linear-gradient(90deg, var(--gold), var(--gold-light)); }
+  .dual-fill.actual{ background:linear-gradient(90deg, var(--navy), var(--navy-deep)); }
+  .dual-fill.actual.heavy{ background:linear-gradient(90deg, var(--danger), #a85c48); }
+
+  .dual-val{ text-align:right; color:var(--muted); font-size:11px; }
+
+  .col-heads{
+    display:grid;
+    grid-template-columns:170px 1fr 1fr 130px;
+    gap:8px;
+    font-size:11px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+
+  @media(max-width:640px){
+    .metrics-grid{ grid-template-columns:1fr; }
+    .field-grid{ grid-template-columns:1fr !important; }
+    .dual-row, .col-heads{ grid-template-columns:110px 1fr 1fr 84px; }
+  }
+
+  .flag{
+    display:inline-block;
+    font-size:11px;
+    font-weight:600;
+    padding:2px 8px;
+    border-radius:10px;
+    letter-spacing:0.3px;
+  }
+  .flag.clean{ background:#e9e2cf; color:var(--navy); }
+  .flag.some{ background:#f1ecd9; color:#7a6a3a; }
+  .flag.heavy{ background:#f1e2c9; color:#8a6a2f; }
+  .flag.broken{ background:#f1e2dd; color:var(--danger); }
+  .flag.tbd{ background:#eee; color:var(--muted); }
+
+  .field-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+
+  .field{ margin-bottom:14px; }
+
+  .field label{
+    font-size:12px;
+    letter-spacing:0.4px;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:block;
+    margin-bottom:6px;
+  }
+
+  .divider-note{
+    font-size:12px;
+    color:var(--muted);
+    text-align:center;
+    margin:14px 0 6px;
+    letter-spacing:0.3px;
+  }
+
+  .readme-section{ margin-bottom:26px; }
+
+  .readme-section h3{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+
+  .readme-section h3 .num{
+    color:var(--gold);
+    font-family:'Inter', sans-serif;
+    font-size:13px;
+    font-weight:700;
+  }
+
+  .readme-section p{ margin-bottom:10px; font-size:15px; }
+
+  .readme-section ul{ margin:0 0 10px 20px; font-size:15px; }
+  .readme-section li{ margin-bottom:6px; }
+
+  footer{
+    text-align:center;
+    padding:24px;
+    color:var(--muted);
+    font-size:12px;
+  }
+
+  .empty-state{
+    text-align:center;
+    padding:30px 10px;
+    color:var(--muted);
+    font-size:14px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">MOSei &middot; Field Pattern Diagnostics</div>
+  <h1>Little's Law Tracer</h1>
+  <p class="sub">Lead time equals the work in the system divided by the rate work leaves it.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="tool">Tool</button>
+  <button class="tab-btn" data-tab="readme">Read Me</button>
+</nav>
+
+<main>
+
+  <div id="tool" class="panel active">
+
+    <div class="card">
+      <div class="formula-box">
+        Lead Time = WIP &divide; Exit Rate
+        <div class="sub-formula">Example: 45 items in process &divide; 35 finished per week = 1.3 weeks, about 9 days</div>
+        <div class="sub-formula">Little's Law, L = &lambda; &times; W, solved for W</div>
+      </div>
+
+      <h2>Log Your Workstreams</h2>
+      <p class="desc">For each queue, backlog, or pipeline, enter how many items are in process and how many you finish per week. If you have real lead time data, from the day an item entered to the day it left, add it. If not, leave it blank. The tracer still works.</p>
+
+      <div class="days-setting">
+        <label for="days-per-week">Days per week</label>
+        <input type="number" id="days-per-week" min="1" max="7" step="1" value="7">
+        <span class="hint">7 if your lead times count calendar days. 5 if they count working days.</span>
+      </div>
+
+      <table id="flow-table">
+        <thead>
+          <tr>
+            <th style="width:30%">Workstream</th>
+            <th style="width:22%">WIP (items)</th>
+            <th style="width:24%">Exit Rate (finished/week)</th>
+            <th style="width:24%">Actual Lead Time (days, optional)</th>
+            <th class="row-actions"></th>
+          </tr>
+        </thead>
+        <tbody id="flow-body"></tbody>
+      </table>
+
+      <div class="btn-row">
+        <button class="btn secondary" id="add-row">+ Add Workstream</button>
+        <button class="btn" id="calculate">Trace It</button>
+        <button class="btn secondary" id="load-sample">Load Sample</button>
+      </div>
+    </div>
+
+    <div class="card" id="results-card" style="display:none;">
+      <h2>Your Little's Law Trace</h2>
+      <p class="desc" id="results-summary"></p>
+
+      <div class="metrics-grid" id="summary-grid"></div>
+
+      <h3 style="margin-top:8px;">Predicted vs Actual Lead Time</h3>
+      <div class="col-heads">
+        <div></div>
+        <div>Predicted (Little's Law)</div>
+        <div>Actual Measured</div>
+        <div></div>
+      </div>
+      <div id="dual-chart"></div>
+
+      <div class="divider-note" id="cutoff-note"></div>
+    </div>
+
+    <div class="card">
+      <h3>WIP Limit Finder</h3>
+      <p class="desc">The same formula, run the other way. Enter your exit rate and the lead time you want. This tells you how much WIP you can carry and still hit it. Uses the days per week setting above.</p>
+
+      <div class="field-grid">
+        <div class="field">
+          <label>Current Exit Rate (finished/week)</label>
+          <input type="number" id="wl-exit-rate" min="0.1" step="0.1" value="30">
+        </div>
+        <div class="field">
+          <label>Target Lead Time (days)</label>
+          <input type="number" id="wl-target-lead" min="0.1" step="0.5" value="7">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn secondary" id="wl-calc">Find WIP Limit</button>
+      </div>
+
+      <div id="wl-result"></div>
+    </div>
+
+  </div>
+
+  <div id="readme" class="panel">
+    <div class="card">
+
+      <div class="readme-section">
+        <h3><span class="num">01</span>What This Tool Measures</h3>
+        <p>Little's Law says lead time equals the work in the system divided by the rate work leaves it. In a stable system, it always holds. This tool compares the lead time the math predicts with the lead time you actually measure. The gap between the two is hidden delay.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">02</span>Where This Comes From</h3>
+        <p>John Little, an operations researcher at MIT, proved the law in 1961. People had used it informally before that. Little showed it holds for almost any stable system: a coffee line, a hospital ward, a production line, a sales pipeline.</p>
+        <p>Because it is proven, it doesn't fail. It tells the truth about your numbers whether you like it or not. If your measured lead time runs well past the prediction, something the math can't see is adding time. Blocked work, multitasking, and queues nobody counts are the usual causes.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">03</span>Why It Matters</h3>
+        <p>Most teams try to go faster by pushing people harder. Little's Law points at a different lever: how much work is open. Cut WIP, keep the exit rate the same, and lead time drops. The math requires it. This is the logic behind WIP limits.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">04</span>How To Use It</h3>
+        <ul>
+          <li><strong>WIP:</strong> every item started and not finished. Count the ones that are blocked or waiting.</li>
+          <li><strong>Exit Rate:</strong> how many items you actually finish in a typical week. Not the target.</li>
+          <li><strong>Actual Lead Time:</strong> from real dates, the day an item entered to the day it left. Not an estimate.</li>
+          <li><strong>Days per week:</strong> 7 if your lead times count calendar days, 5 if they count working days. Match how your dates are counted.</li>
+        </ul>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">05</span>Reading Your Results</h3>
+        <p><strong>Clean Flow (0 to 15%):</strong> actual lead time is close to the prediction. Work moves as fast as your WIP and exit rate allow.</p>
+        <p><strong>Some Delay (16 to 40%):</strong> a modest gap. Worth watching, not urgent.</p>
+        <p><strong>Heavy Delay (41 to 80%):</strong> work takes much longer than the math says it should. Look for blocked work, task switching, or WIP that isn't being counted.</p>
+        <p><strong>Broken Flow (81% and up):</strong> something structural is wrong. Work is likely sitting idle for most of its time in the system.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">06</span>Reading The Chart</h3>
+        <p>Gold bars show the predicted lead time. Navy bars show what you measured. Under each workstream name is the math behind the prediction. When the navy bar runs past the gold one, the extra length is hidden delay. Go look at it directly.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">07</span>Common Traps</h3>
+        <p><strong>Hidden WIP.</strong> Work sitting in an inbox, an approval queue, or someone's private list still counts. Leave it out and the prediction looks better than reality.</p>
+        <p><strong>Mismatched days.</strong> If your lead times skip weekends but the setting says 7, every workstream looks about 40% better than it is.</p>
+        <p><strong>More coming in than going out.</strong> The law assumes a stable system. If work enters faster than it leaves, WIP keeps growing and today's prediction will be out of date by next week.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">08</span>Connects To</h3>
+        <p>Heavy or Broken Flow is Norman's Gap you can measure: pressure to take on more work outrunning the regulation that controls WIP. If a workstream keeps showing hidden delay, check whether work enters faster than it leaves. Then set a hard WIP limit with the WIP Limit Finder.</p>
+      </div>
+
+      <div class="readme-section">
+        <h3><span class="num">09</span>Field Note</h3>
+        <p>Nobody sets out to bury their team under open work. It happens one reasonable yes at a time, until the math catches up. Little's Law doesn't care how it happened. It tells you exactly where you stand.</p>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>MOSei &middot; Field Pattern Diagnostics &middot; The Norman System</footer>
+
+<script>
+(function(){
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.panel');
+  tabBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      tabBtns.forEach(b=>b.classList.remove('active'));
+      panels.forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  const body = document.getElementById('flow-body');
+
+  function getDaysPerWeek(){
+    const d = parseFloat(document.getElementById('days-per-week').value);
+    return (!isNaN(d) && d > 0 && d <= 7) ? d : 7;
+  }
+
+  function fmt(n){
+    return Number.isInteger(n) ? String(n) : n.toFixed(1);
+  }
+
+  function addRow(name, wip, exitRate, actualLead){
+    const tr = document.createElement('tr');
+    const v = (x)=> x!==undefined ? x : '';
+    tr.innerHTML = `
+      <td><input type="text" class="f-name" placeholder="e.g. Support ticket queue" value="${name||''}"></td>
+      <td><input type="number" class="f-wip" min="0" step="1" value="${v(wip)}"></td>
+      <td><input type="number" class="f-exit-rate" min="0.1" step="0.1" value="${v(exitRate)}"></td>
+      <td><input type="number" class="f-actual-lead" min="0" step="0.5" value="${v(actualLead)}"></td>
+      <td class="row-actions"><button class="icon-btn" title="Remove">&times;</button></td>
+    `;
+    tr.querySelector('.icon-btn').addEventListener('click', ()=> tr.remove());
+    body.appendChild(tr);
+  }
+
+  for(let i=0;i<5;i++) addRow();
+
+  document.getElementById('add-row').addEventListener('click', ()=>addRow());
+
+  document.getElementById('load-sample').addEventListener('click', ()=>{
+    body.innerHTML = '';
+    const sample = [
+      ['Support ticket queue', 45, 35, 10],
+      ['Dev backlog', 120, 40, 35],
+      ['Sales pipeline', 90, 18, 55],
+      ['Hiring pipeline', 25, 5, 60],
+      ['Change requests', 15, 12, 8],
+    ];
+    sample.forEach(s=> addRow(s[0], s[1], s[2], s[3]));
+  });
+
+  document.getElementById('calculate').addEventListener('click', ()=>{
+    const daysPerWeek = getDaysPerWeek();
+    const rows = Array.from(body.querySelectorAll('tr'));
+    const streams = [];
+
+    rows.forEach(tr=>{
+      const name = tr.querySelector('.f-name').value.trim();
+      const wip = parseFloat(tr.querySelector('.f-wip').value);
+      const exitRate = parseFloat(tr.querySelector('.f-exit-rate').value);
+      const actualRaw = tr.querySelector('.f-actual-lead').value;
+      const actualLead = actualRaw === '' ? null : parseFloat(actualRaw);
+
+      if(name && !isNaN(wip) && !isNaN(exitRate) && exitRate > 0){
+        const predictedWeeks = wip / exitRate;
+        const predictedLead = predictedWeeks * daysPerWeek;
+        const hasActual = actualLead !== null && !isNaN(actualLead);
+        const delay = hasActual ? actualLead - predictedLead : null;
+        const delayPct = hasActual && predictedLead > 0 ? (delay / predictedLead) * 100 : null;
+        streams.push({name, wip, exitRate, predictedWeeks, predictedLead, actualLead, hasActual, delay, delayPct});
+      }
+    });
+
+    const resultsCard = document.getElementById('results-card');
+    const summaryGrid = document.getElementById('summary-grid');
+    const dualChart = document.getElementById('dual-chart');
+    const summary = document.getElementById('results-summary');
+    const cutoffNote = document.getElementById('cutoff-note');
+
+    if(streams.length < 2){
+      resultsCard.style.display = 'block';
+      summaryGrid.innerHTML = '';
+      dualChart.innerHTML = '<div class="empty-state">Enter at least two workstreams with WIP and exit rate to generate a trace.</div>';
+      summary.textContent = '';
+      cutoffNote.textContent = '';
+      resultsCard.scrollIntoView({behavior:'smooth', block:'start'});
+      return;
+    }
+
+    function band(pct){
+      if(pct === null) return 'tbd';
+      if(pct >= 81) return 'broken';
+      if(pct >= 41) return 'heavy';
+      if(pct >= 16) return 'some';
+      return 'clean';
+    }
+    function bandLabel(b){
+      return {clean:'Clean Flow', some:'Some Delay', heavy:'Heavy Delay', broken:'Broken Flow', tbd:'Not Measured'}[b];
+    }
+
+    streams.forEach(s=> s.band = band(s.delayPct));
+    streams.sort((a,b)=>{
+      const av = a.delayPct === null ? -Infinity : a.delayPct;
+      const bv = b.delayPct === null ? -Infinity : b.delayPct;
+      return bv - av;
+    });
+
+    const withActual = streams.filter(s=> s.hasActual);
+    const avgDelayPct = withActual.length > 0
+      ? withActual.reduce((s,x)=>s + Math.max(x.delayPct,0), 0) / withActual.length
+      : null;
+    const heavyOrWorse = withActual.filter(s=> s.delayPct !== null && s.delayPct >= 41).length;
+
+    resultsCard.style.display = 'block';
+    summary.textContent = withActual.length > 0
+      ? `${heavyOrWorse} of ${withActual.length} measured workstreams show Heavy Delay or worse. Their actual lead time runs well past what WIP and exit rate predict.`
+      : `No actual lead times entered yet. Predicted lead times are shown below. Add actual measurements to see hidden delay.`;
+
+    summaryGrid.innerHTML = `
+      <div class="metric">
+        <div class="val">${avgDelayPct !== null ? avgDelayPct.toFixed(0) + '%' : 'TBD'}</div>
+        <div class="lbl">Average hidden delay, measured workstreams only</div>
+      </div>
+      <div class="metric" style="border-left-color:${heavyOrWorse > 0 ? 'var(--danger)' : 'var(--gold)'};">
+        <div class="val">${heavyOrWorse} of ${withActual.length}</div>
+        <div class="lbl">Workstreams with Heavy Delay or worse</div>
+      </div>
+      <div class="metric">
+        <div class="val">${streams.length - withActual.length}</div>
+        <div class="lbl">Workstreams still missing actual lead time</div>
+      </div>
+    `;
+
+    const maxVal = Math.max(...streams.map(s=> Math.max(s.predictedLead, s.actualLead || 0)), 1);
+
+    dualChart.innerHTML = '';
+    streams.forEach(s=>{
+      const predW = (s.predictedLead/maxVal*100);
+      const actTrack = s.hasActual
+        ? `<div class="dual-track"><div class="dual-fill actual ${s.delayPct >= 41 ? 'heavy' : ''}" style="width:${(s.actualLead/maxVal*100)}%"></div></div>`
+        : `<div class="dual-track" style="background-image:repeating-linear-gradient(45deg, var(--line) 0, var(--line) 4px, transparent 4px, transparent 8px); display:flex; align-items:center; justify-content:center;"><span style="font-size:10px; color:var(--muted);">TBD</span></div>`;
+      const actValText = s.hasActual ? s.actualLead.toFixed(1) + 'd' : 'TBD';
+      const mathText = `${fmt(s.wip)} &divide; ${fmt(s.exitRate)}/wk = ${s.predictedWeeks.toFixed(1)} wk = ${s.predictedLead.toFixed(1)}d`;
+
+      const row = document.createElement('div');
+      row.className = 'dual-row';
+      row.innerHTML = `
+        <div>
+          <div class="dual-name" title="${s.name}">${s.name}</div>
+          <div class="dual-math">${mathText}</div>
+        </div>
+        <div class="dual-track"><div class="dual-fill predicted" style="width:${predW}%"></div></div>
+        ${actTrack}
+        <div class="dual-val">${s.predictedLead.toFixed(1)}d / ${actValText}<span class="flag ${s.band}" style="margin-left:4px;">${bandLabel(s.band)}</span></div>
+      `;
+      dualChart.appendChild(row);
+    });
+
+    cutoffNote.textContent = `Predicted Lead Time (days) = WIP / Exit Rate per week x ${fmt(daysPerWeek)} days per week. Hidden Delay % = (Actual minus Predicted) / Predicted. 0-15% Clean Flow, 16-40% Some Delay, 41-80% Heavy Delay, 81%+ Broken Flow.`;
+
+    resultsCard.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  document.getElementById('wl-calc').addEventListener('click', ()=>{
+    const daysPerWeek = getDaysPerWeek();
+    const exitRate = parseFloat(document.getElementById('wl-exit-rate').value);
+    const targetLead = parseFloat(document.getElementById('wl-target-lead').value);
+    const resultBox = document.getElementById('wl-result');
+
+    if(isNaN(exitRate) || isNaN(targetLead) || exitRate <= 0 || targetLead <= 0){
+      resultBox.innerHTML = `<div class="empty-state">Enter a valid exit rate and target lead time.</div>`;
+      return;
+    }
+
+    const wipLimit = (exitRate / daysPerWeek) * targetLead;
+
+    resultBox.innerHTML = `
+      <div class="metric" style="margin-top:10px;">
+        <div class="val">${wipLimit.toFixed(1)} items</div>
+        <div class="lbl">Maximum WIP to hit a ${targetLead}-day lead time at ${exitRate} finished per week (${fmt(daysPerWeek)}-day week)</div>
+      </div>
+    `;
+  });
+})();
+</script>
+
+</body>
+</html>
