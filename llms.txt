@@ -35,6 +35,7 @@ MOSei helps operations and plant leaders name, measure, and close the gaps that 
 
 - [14 Tools Every Manager Must Have](https://mosei.org/14-tools.html)
 - [Takt-Cycle Tracer](https://mosei.org/takt-cycle-tracer.html)
+- [Little's Law Tracer](https://mosei.org/littles-law-tracer.html): compares the lead time WIP and exit rate predict with measured lead time, and finds the WIP limit for a target lead time.
 - [KPI Cascade Workshop Template](https://mosei.org/kpi-cascade-workshop.html)
 - [Full Tools Directory](https://mosei.org/tools.html)
 
