@@ -360,7 +360,6 @@
       <ol>
         <li>The board was updated before the meeting started.</li>
         <li>Attendees had their own numbers ready.</li>
-        <li>Attendees had read the pre-read before the meeting. Tier 3 only.</li>
       </ol>
       <p class="readme-wrong">What can go wrong: the first several minutes are spent catching people up instead of deciding anything.</p>
     </div>
@@ -432,7 +431,6 @@
       <h3>7. Energy (last, scored at the close)</h3>
       <ol>
         <li>Run time, measured. Limit is 15 minutes for Tier 1 and Tier 2, 30 minutes for Tier 3. A miss if more than 1 minute over.</li>
-        <li>The meeting was held at the board.</li>
         <li>Problem-solving was parked with an owner within 1 minute.</li>
       </ol>
       <p class="readme-wrong">What can go wrong: the meeting slides into problem-solving in the room, runs long, and the team learns the meeting is where work goes to wait.</p>
@@ -493,7 +491,7 @@
     </div>
     <div class="readme-section">
       <h3>Earlier entries</h3>
-      <p>Walks scored before October 2026 used six dimensions rated by hand, including Tone. They stay in History, marked as the earlier format, and their percentages still feed the site trend. Tier 2 walks scored before the Action Log, Escalations, and A3 Status change keep their original Actions and Escalation ratings. Walks scored before the Analysis tab have no meeting, chair, shift, observer, hesitation, or result numbers. They still count in the sigma level, control chart, and Pareto, and show as (no meeting name) in the Meeting filter.</p>
+      <p>Walks scored before October 2026 used six dimensions rated by hand, including Tone. They stay in History, marked as the earlier format, and their percentages still feed the site trend. Tier 2 walks scored before the Action Log, Escalations, and A3 Status change keep their original Actions and Escalation ratings. Walks scored before the Analysis tab have no meeting, chair, shift, observer, hesitation, or result numbers. They still count in the sigma level, control chart, and Pareto, and show as (no meeting name) in the Meeting filter. Two statements were retired in October 2026: the Tier 3 pre-read check, and "The meeting was held at the board," which duplicated "The meeting ran from the board." Earlier walks keep their answers to both.</p>
     </div>
   </div>
 </div>
@@ -539,12 +537,12 @@ function entryResults(e) {
 const CHECKS = {
   prep_board: { label: 'The board was updated before the meeting started.', desc: 'All numbers on the board were current when the meeting began.' },
   prep_numbers: { label: 'Attendees had their own numbers ready.', desc: 'Nobody looked numbers up in the room.' },
-  prep_preread: { label: 'Attendees had read the pre-read before the meeting.', desc: 'The weekly pack was read ahead of time.', tiers: ['Tier 3'] },
+  prep_preread: { label: 'Attendees had read the pre-read before the meeting.', desc: 'Retired October 2026. Kept so earlier walks still read correctly.', retired: true },
   focus_order: { label: 'The board was walked in order, Safety first.', desc: 'Each element in sequence, not whatever someone raised.' },
   focus_data: { label: 'Every issue was tied to a number, trend, or red item.', desc: 'No issue ran over 1 minute on story or opinion alone.' },
   focus_hijack: { label: 'Every off-board topic was parked with an owner within 1 minute.', desc: 'Yes if no off-board topic came up.' },
   focus_board: { label: 'The meeting ran from the board.', desc: 'Not slides, email, laptops, or phones. Tier 3: the dashboard or weekly pack counts.' },
-  energy_board: { label: 'The meeting was held at the board.', desc: 'In front of the board, not in a room away from it.' },
+  energy_board: { label: 'The meeting was held at the board.', desc: 'Retired October 2026, duplicate of The meeting ran from the board. Kept so earlier walks still read correctly.', retired: true },
   energy_parked: { label: 'Problem-solving was parked with an owner within 1 minute.', desc: 'When talk turned to causes or fixes, the chair parked it. Yes if it never came up.' },
   act_owner: { label: 'Every new action got a named owner and a due date.', desc: 'A person, not a department, and a date.' },
   act_accepted: { label: 'Each action owner was present and agreed out loud.', desc: 'Nobody was assigned an action in their absence.' },
@@ -564,7 +562,7 @@ const CHECKS = {
 
 const DIMENSIONS_ALL = [
   { id: 'start', title: 'Start', question: 'The meeting started on time, without waiting for anyone.' },
-  { id: 'prep', title: 'Preparation', question: 'The board and the people were ready before it began.', checks: ['prep_board', 'prep_numbers', 'prep_preread'] },
+  { id: 'prep', title: 'Preparation', question: 'The board and the people were ready before it began.', checks: ['prep_board', 'prep_numbers'] },
   { id: 'focus', title: 'Focus', question: 'The board and the data drove the conversation.', checks: ['focus_order', 'focus_data', 'focus_hijack', 'focus_board'] },
   { id: 'actions', title: 'Actions', question: 'Every action was owned, accepted, recorded, and the log was read.', tiers: ['Tier 1', 'Tier 3'] },
   { id: 'escalation', title: 'Escalation', question: 'The right items went up, on time and in format.', tiers: ['Tier 1', 'Tier 3'] },
@@ -572,7 +570,7 @@ const DIMENSIONS_ALL = [
   { id: 't2esc', title: 'Escalations', question: 'Every escalation was owned and followed through.', tiers: ['Tier 2'], checks: ['t2_esc_owned', 't2_esc_closed'] },
   { id: 'a3', title: 'A3 Status', question: 'A3s came for a decision, backed by evidence.', tiers: ['Tier 2'], checks: ['a3_ask', 'a3_evidence'] },
   { id: 'attendance', title: 'Attendance', question: 'The right people were in the room.' },
-  { id: 'energy', title: 'Energy', question: 'It stayed inside the time box, at the board, without problem-solving in the room.' }
+  { id: 'energy', title: 'Energy', question: 'It stayed inside the time box without problem-solving in the room.' }
 ];
 function dimsFor(tier) { return DIMENSIONS_ALL.filter(d => !d.tiers || d.tiers.includes(tier)); }
 function dimById(id) { return DIMENSIONS_ALL.find(d => d.id === id); }
@@ -668,7 +666,7 @@ function evaluate(dimId, tier) {
     if (state.runTime === '') return { rating: null, misses: [] };
     const t = parseFloat(state.runTime);
     if (isNaN(t) || t < 0) return { rating: null, misses: [] };
-    const base = evalChecks(['energy_board', 'energy_parked']);
+    const base = evalChecks(['energy_parked']);
     if (!base.rating) return base;
     const misses = base.misses.slice();
     const limit = TIME_LIMITS[tier];
@@ -725,7 +723,7 @@ function cardBody(dim, tier) {
     const limit = TIME_LIMITS[tier];
     h += '<div class="check"><p class="check-label">Run time (measured)</p><p class="check-desc">Total run time. ' + tier + ' limit is ' + limit + ' minutes. Over ' + (limit + 1) + ' is a miss.</p>' +
       '<div class="num-row"><input class="num-input" type="number" inputmode="decimal" min="0" step="1" data-num="runTime" value="' + esc(state.runTime) + '"><span class="num-hint">minutes</span></div></div>';
-    h += checkBlock('energy_board') + checkBlock('energy_parked');
+    h += checkBlock('energy_parked');
   } else if (dim.id === 'actions') {
     h += '<div class="check"><p class="check-label">New actions were raised in this meeting.</p><p class="check-desc">Not scored. If No, Actions is rated on the log read alone.</p>' + ynRow('newActions', state.newActions, 'Yes', 'No', true) + '</div>';
     if (state.newActions) actionChecks().forEach(id => { h += checkBlock(id); });
@@ -1745,7 +1743,7 @@ document.getElementById('btn-score').addEventListener('click', () => {
   });
   let used = [].concat(
     visibleChecks(dimById('prep').checks, tier), visibleChecks(dimById('focus').checks, tier),
-    ['energy_board', 'energy_parked']
+    ['energy_parked']
   );
   if (tier === 'Tier 2') {
     used = used.concat(dimById('actionlog').checks);
