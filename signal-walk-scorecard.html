@@ -156,6 +156,40 @@
   .export-hint { font-size: 11.5px; color: var(--text-faint); margin: 8px 0 10px; }
   .copy-toast { text-align: center; font-size: 12px; color: var(--good); margin-top: 6px; display: none; }
 
+  .num-pair { display: flex; gap: 8px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+  .num-pair label { font-size: 11.5px; color: var(--text-dim); }
+  .num-pair .num-input { width: 76px; padding: 8px; }
+  .dir-btn { padding: 7px 8px; border-radius: 7px; border: 1px solid var(--line); background: var(--bg); color: var(--text-dim); font-size: 11px; font-weight: 600; font-family: var(--sans); cursor: pointer; }
+  .esc-sort { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .esc-sort label { display: block; font-size: 11px; color: var(--text-dim); margin-bottom: 4px; }
+  .esc-sort .num-input { width: 100%; }
+
+  .an-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+  .an-title { font-size: 14px; font-weight: 650; margin: 0 0 2px; }
+  .an-sub { font-size: 12px; color: var(--text-dim); margin: 0 0 10px; line-height: 1.45; }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--amber); font-variant-numeric: tabular-nums; }
+  .stat-lbl { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .an-line { font-size: 12.5px; color: var(--text-dim); line-height: 1.5; margin: 4px 0; }
+  .an-line b { color: var(--text); }
+  .verdict { font-size: 13px; font-weight: 600; margin: 8px 0 2px; }
+  .verdict.good { color: var(--good); }
+  .verdict.drift { color: var(--drift); }
+  .verdict.fail { color: var(--fail); }
+  .an-note { font-size: 11.5px; color: var(--text-faint); margin: 6px 0 0; line-height: 1.4; }
+  .chart-wrap svg { width: 100%; height: auto; display: block; }
+  .pareto-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .pareto-lbl { flex: 0 0 48%; font-size: 11.5px; color: var(--text-dim); line-height: 1.3; }
+  .pareto-track { flex: 1; height: 12px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+  .pareto-fill { height: 100%; background: var(--fail); border-radius: 4px; }
+  .pareto-val { width: 40px; text-align: right; font-size: 11.5px; color: var(--text); font-variant-numeric: tabular-nums; }
+  .an-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .an-table th { text-align: left; color: var(--text-faint); font-weight: 600; padding: 4px 4px 6px; border-bottom: 1px solid var(--line); }
+  .an-table td { padding: 6px 4px; border-bottom: 1px solid var(--line); color: var(--text-dim); vertical-align: top; }
+  .an-table td b { color: var(--text); }
+  .cal-input { width: 100%; min-height: 90px; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 8px 10px; font-family: var(--mono); font-size: 11.5px; }
+
   @media print {
     nav.tabs, .btn-primary, .btn-secondary, .delete-link, .export-box { display: none !important; }
     body { background: white; color: black; }
@@ -174,6 +208,7 @@
     <button class="tab-btn active" data-view="score">Score</button>
     <button class="tab-btn" data-view="result">Result</button>
     <button class="tab-btn" data-view="history">History</button>
+    <button class="tab-btn" data-view="analysis">Analysis</button>
     <button class="tab-btn" data-view="readme">Read Me</button>
   </nav>
 
@@ -197,9 +232,32 @@
           <option>Tier 3</option>
         </select>
       </div>
+      <div class="field">
+        <label for="meeting-name">Meeting</label>
+        <input type="text" id="meeting-name" list="dl-meeting" placeholder="e.g. Assembly Tier 2">
+      </div>
     </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="chair-name">Chair</label>
+        <input type="text" id="chair-name" list="dl-chair" placeholder="Name">
+      </div>
+      <div class="field">
+        <label for="shift-name">Shift</label>
+        <input type="text" id="shift-name" list="dl-shift" placeholder="e.g. 1st">
+      </div>
+      <div class="field">
+        <label for="observer-name">Observer</label>
+        <input type="text" id="observer-name" list="dl-observer" placeholder="You">
+      </div>
+    </div>
+    <datalist id="dl-meeting"></datalist>
+    <datalist id="dl-chair"></datalist>
+    <datalist id="dl-shift"><option value="1st"><option value="2nd"><option value="3rd"><option value="Days"><option value="Nights"></datalist>
+    <datalist id="dl-observer"></datalist>
 
     <div id="dim-cards"></div>
+    <div id="boundary-card"></div>
     <div id="results-card"></div>
 
     <button class="btn-primary" id="btn-score">Score this walk</button>
@@ -214,14 +272,40 @@
   <div class="view" id="view-history">
     <div id="history-content"></div>
     <div class="export-box">
-      <div class="export-hint">Export the raw history data below, then copy it and paste it wherever you need it.</div>
+      <div class="export-hint">Download a CSV for Excel (one row per walk, one column per check), or show the raw history data to back it up or move it to another device.</div>
       <div class="export-actions">
+        <button class="btn-secondary" id="btn-csv">Download CSV</button>
         <button class="btn-secondary" id="btn-export">Show export data</button>
-        <button class="btn-secondary" id="btn-copy" style="display:none;">Copy to clipboard</button>
       </div>
+      <button class="btn-secondary" id="btn-copy" style="display:none;">Copy to clipboard</button>
       <textarea class="export-output" id="export-output" readonly></textarea>
       <div class="copy-toast" id="copy-toast">Copied.</div>
     </div>
+  </div>
+
+  <div class="view" id="view-analysis">
+    <div class="field-row">
+      <div class="field">
+        <label for="an-site">Site</label>
+        <select id="an-site"></select>
+      </div>
+      <div class="field">
+        <label for="an-tier">Tier</label>
+        <select id="an-tier"><option value="">All tiers</option><option>Tier 1</option><option>Tier 2</option><option>Tier 3</option></select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="an-meeting">Meeting</label>
+        <select id="an-meeting"></select>
+      </div>
+      <div class="field">
+        <label for="an-split">Before / after date</label>
+        <input type="date" id="an-split">
+      </div>
+    </div>
+    <div id="analysis-content"></div>
+    <div id="calibration-content"></div>
   </div>
 
   <div class="view" id="view-readme">
@@ -235,11 +319,11 @@
     </div>
     <div class="readme-section">
       <h3>Inputs</h3>
-      <p>Site name, date, tier observed, minutes late, total run time, a Yes (agree) or No (disagree) on each statement, and Present, Delegate, or Absent for each required role. The evidence note under each dimension is optional, but it is what turns the score into client-ready language.</p>
+      <p>Site name, date, tier observed, meeting, chair, shift, observer, minutes late, total run time, a Yes (agree) or No (disagree) on each statement, Present, Delegate, or Absent for each required role, a hesitation count, and the escalation sort when anything was escalated. The evidence note under each dimension is optional, but it is what turns the score into client-ready language. Actual and target numbers on the results are optional, but they strengthen the analysis.</p>
     </div>
     <div class="readme-section">
       <h3>Outputs</h3>
-      <p>A rating for each dimension that the tool works out from your answers, a profile bar chart, an overall IMI maturity band, the list of checks that missed, and a saved history entry. Repeat visits to the same site show the trend and which roles keep missing the meeting.</p>
+      <p>A rating for each dimension that the tool works out from your answers, a profile bar chart, an overall IMI maturity band, the list of checks that missed, and a saved history entry. Repeat visits to the same site show the trend and which roles keep missing the meeting. The Analysis tab turns the history into a sigma level, a control chart, a sustainment read, a Pareto of misses, a before and after test, a regression of results on meeting score, and an observer calibration check. History downloads as a CSV for Excel.</p>
     </div>
     <div class="readme-section">
       <h3>Cadence</h3>
@@ -366,6 +450,40 @@
       <p>Results are recorded beside the score, not inside it. The score measures how well the meeting ran. Results measure what the operation delivered. Keeping them apart lets History show whether better meetings bring better results, instead of a bad day on the line pulling down a well-run meeting.</p>
     </div>
     <div class="readme-section">
+      <h3>Result numbers (optional)</h3>
+      <p>Under each result, enter the actual and the target read off the board. Safety takes a count of incidents. Set Higher is better or Lower is better once per meeting, for example scrap is lower is better. The tool remembers it. The Yes or No stays the official result. The numbers feed the actual vs target regression and the CSV.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Decision Boundary (not scored)</h3>
+      <ol>
+        <li>Hesitations: count every time someone deferred because they were unsure the decision was theirs. Enter 0 if none. Each one is visible Unclaimed Authority.</li>
+        <li>Escalation sort, when anything was escalated: how many crossed a boundary (needed a decision above this tier's limits), how many ran out of clock (the window would close before this tier could resolve it), and how many were just hard.</li>
+      </ol>
+      <p>Both are counts, not ratings. They sit beside the score so Analysis can show whether authority is being claimed at this tier over time.</p>
+    </div>
+    <div class="readme-section">
+      <h3>How opportunities and defects are counted</h3>
+      <p>Every scored statement that applied is one opportunity. So are the start time, holding the start, the run time, and each required role. A No, a start more than 1 minute late, a run more than 1 minute over, or an absent role is one defect. Results and Decision Boundary counts are not opportunities. Defects divided by opportunities is the miss rate. Per million, it is DPMO. DPMO converts to a sigma level with the usual 1.5 shift.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Analysis tab</h3>
+      <ol>
+        <li>Sigma level: DPMO and sigma level for the walks in view. With no misses yet it shows a floor, not a value.</li>
+        <li>Control chart: a p-chart of the miss rate per walk with 3-sigma limits. Signals are a walk outside the limits, 8 walks in a row on one side of the center line, or 6 walks in a row moving the same way. Limits are provisional until about 20 walks. Pick one meeting so the chart tracks one process.</li>
+        <li>Sustainment: the chance the next walk is at standard (Regulating or better), the current run at standard, and whether the miss rate is trending.</li>
+        <li>Pareto: which checks miss most, and how much of the total the top 3 carry.</li>
+        <li>Before and after: pick a date, such as when a coaching module was delivered. A 2-proportion test on checks and a Mann-Whitney test on walks. Trust a change when both agree.</li>
+        <li>Results: logistic regression of each result on the walk score, for the same walk and for the next walk of the same meeting. Needs 10 walks. With numbers entered, a linear regression of attainment against score.</li>
+        <li>Decision Boundary: hesitation totals and trend, and the share of escalations that were just hard.</li>
+      </ol>
+      <p>Read the p-value as the chance of seeing a difference this large if nothing had really changed. Below 0.05 is the usual line. One observer and one walk a day gives direction within a month, not proof.</p>
+      <p class="readme-wrong">What can go wrong: mixing meetings in one chart, calling a change after three walks, and treating a correlation between meeting score and results as proof of cause.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Observer calibration</h3>
+      <p>Two observers score the same meeting live, separately. The second observer taps Copy for calibration on that walk in History and sends it. Paste it in Analysis, pair it with your walk, and the tool shows Cohen's Kappa and where you disagreed. Pairs build up, so Kappa improves in accuracy with each paired walk. 0.75 or higher means the statements are clear enough that the score does not depend on who is watching. Below that, rewrite the most disputed statements.</p>
+    </div>
+    <div class="readme-section">
       <h3>Action Log rules</h3>
       <p>Not every problem goes on the log. Only a repeat within 30 days, or a miss too big to wait, that this room can fix. The day it is logged is day 1, counting meeting days, not calendar days. An item with a countermeasure confirmed by day 3 (owner, date, recovery plan) is held to its due date and does not escalate.</p>
     </div>
@@ -375,7 +493,7 @@
     </div>
     <div class="readme-section">
       <h3>Earlier entries</h3>
-      <p>Walks scored before October 2026 used six dimensions rated by hand, including Tone. They stay in History, marked as the earlier format, and their percentages still feed the site trend. Tier 2 walks scored before the Action Log, Escalations, and A3 Status change keep their original Actions and Escalation ratings.</p>
+      <p>Walks scored before October 2026 used six dimensions rated by hand, including Tone. They stay in History, marked as the earlier format, and their percentages still feed the site trend. Tier 2 walks scored before the Action Log, Escalations, and A3 Status change keep their original Actions and Escalation ratings. Walks scored before the Analysis tab have no meeting, chair, shift, observer, hesitation, or result numbers. They still count in the sigma level, control chart, and Pareto, and show as (no meeting name) in the Meeting filter.</p>
     </div>
   </div>
 </div>
@@ -392,11 +510,26 @@ const DEFAULT_ROLES = {
 };
 
 const RESULT_ITEMS = [
-  { id: 'safety', short: 'Safety', label: 'There was no safety incident since the last meeting.', desc: 'Recordable, first aid, or near miss, whatever the site counts. No if any occurred.' },
-  { id: 'quality', short: 'Quality', label: 'Quality met or exceeded its target.', desc: 'Scrap, first pass yield, or whatever the board tracks. No if below target or no target was posted.' },
-  { id: 'delivery', short: 'Delivery', label: 'Today\'s delivery target was met.', desc: 'On-time shipments or orders against plan. No if missed or no target was posted.' },
-  { id: 'output', short: 'Output', label: 'Today\'s output met or exceeded the target.', desc: 'Read it off the board. No if output was below target or no target was posted.' }
+  { id: 'safety', short: 'Safety', num: 'count', label: 'There was no safety incident since the last meeting.', desc: 'Recordable, first aid, or near miss, whatever the site counts. No if any occurred.' },
+  { id: 'quality', short: 'Quality', num: 'pair', label: 'Quality met or exceeded its target.', desc: 'Scrap, first pass yield, or whatever the board tracks. No if below target or no target was posted.' },
+  { id: 'delivery', short: 'Delivery', num: 'pair', label: 'Today\'s delivery target was met.', desc: 'On-time shipments or orders against plan. No if missed or no target was posted.' },
+  { id: 'output', short: 'Output', num: 'pair', label: 'Today\'s output met or exceeded the target.', desc: 'Read it off the board. No if output was below target or no target was posted.' }
 ];
+function streamKey(site, meeting, tier) { return [(site || '').toLowerCase(), (meeting || '').toLowerCase(), tier || ''].join('|'); }
+function getDirStore() {
+  try { return JSON.parse(localStorage.getItem('signalWalkResultDir') || '{}'); } catch (e) { return {}; }
+}
+function lowerIsBetter(site, meeting, id) {
+  const s = getDirStore()[streamKey(site, meeting, '')];
+  return !!(s && s[id]);
+}
+function setLowerIsBetter(site, meeting, id, val) {
+  const store = getDirStore();
+  const k = streamKey(site, meeting, '');
+  store[k] = store[k] || {};
+  store[k][id] = val;
+  try { localStorage.setItem('signalWalkResultDir', JSON.stringify(store)); } catch (e) {}
+}
 function entryResults(e) {
   if (e.results) return e.results;
   if (typeof e.outputMet === 'boolean') return { output: e.outputMet };
@@ -448,7 +581,7 @@ const TITLES = { start: 'Start', prep: 'Preparation', focus: 'Focus', energy: 'E
 
 let state;
 function resetState() {
-  state = { minutesLate: '', noWait: null, runTime: '', newActions: null, escSent: null, t2EscOn: null, a3On: null, results: {}, rootCause: {}, checks: {}, roles: {}, notes: {}, editingRoles: false };
+  state = { minutesLate: '', noWait: null, runTime: '', newActions: null, escSent: null, t2EscOn: null, a3On: null, results: {}, rootCause: {}, resultNums: {}, hesitations: '', escBoundary: '', escClock: '', escHard: '', checks: {}, roles: {}, notes: {}, editingRoles: false };
 }
 resetState();
 
@@ -462,6 +595,11 @@ function todayISO() {
 }
 function currentTier() { return document.getElementById('tier-select').value; }
 function currentSite() { return document.getElementById('site-name').value.trim(); }
+function currentMeeting() { return document.getElementById('meeting-name').value.trim(); }
+function fieldVal(id) { return document.getElementById(id).value.trim(); }
+function escalatedToday() {
+  return currentTier() === 'Tier 2' ? state.t2EscOn === 'yes' : state.escSent === 'yes';
+}
 function ratingFromMisses(n) { return n === 0 ? 'good' : n === 1 ? 'drift' : 'fail'; }
 
 function getRoleStore() {
@@ -650,13 +788,43 @@ function buildDimCards() {
   wrap.innerHTML = '<p class="dim-question" style="margin:4px 0 14px;">Read each statement. Yes means you agree with it. No means you don\'t.</p>' +
     dims.map(d => '<div class="dim-card" id="card-' + d.id + '"></div>').join('');
   dims.forEach(renderCard);
+  renderBoundaryCard();
   renderResultsCard();
 }
+function renderBoundaryCard() {
+  let h = '<div class="dim-card"><div class="dim-head"><p class="dim-title">Decision Boundary</p><span class="badge">Not scored</span></div>' +
+    '<p class="dim-question">Count, do not judge. Recorded beside the score so Analysis can show whether authority is being claimed at this tier.</p>' +
+    '<div class="check"><p class="check-label">Hesitations (count)</p><p class="check-desc">Times someone deferred because they were unsure the decision was theirs. "I\'ll have to check," "let\'s take that to Tier 3." Enter 0 if none.</p>' +
+    '<div class="num-row"><input class="num-input" type="number" inputmode="numeric" min="0" step="1" data-bnum="hesitations" value="' + esc(state.hesitations) + '"><span class="num-hint">hesitations</span></div></div>';
+  if (escalatedToday()) {
+    h += '<div class="check"><p class="check-label">Sort each escalation</p><p class="check-desc">Boundary: needed a decision above this tier\'s limits. Clock: the window would close before this tier could resolve it. Just hard: neither.</p>' +
+      '<div class="esc-sort">' +
+      '<div><label>Boundary</label><input class="num-input" type="number" inputmode="numeric" min="0" step="1" data-bnum="escBoundary" value="' + esc(state.escBoundary) + '"></div>' +
+      '<div><label>Clock</label><input class="num-input" type="number" inputmode="numeric" min="0" step="1" data-bnum="escClock" value="' + esc(state.escClock) + '"></div>' +
+      '<div><label>Just hard</label><input class="num-input" type="number" inputmode="numeric" min="0" step="1" data-bnum="escHard" value="' + esc(state.escHard) + '"></div>' +
+      '</div></div>';
+  }
+  document.getElementById('boundary-card').innerHTML = h + '</div>';
+}
+document.getElementById('boundary-card').addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset.bnum) state[el.dataset.bnum] = el.value;
+});
 function renderResultsCard() {
   let h = '<div class="dim-card"><div class="dim-head"><p class="dim-title">Results</p><span class="badge">Not scored</span></div>' +
     '<p class="dim-question">Read off the board. Recorded beside the score, not part of it, so you can see whether better meetings bring better results.</p>';
   RESULT_ITEMS.forEach(r => {
-    h += '<div class="check"><p class="check-label">' + esc(r.label) + '</p><p class="check-desc">' + esc(r.desc) + '</p>' + ynRow('result:' + r.id, state.results[r.id]) + '</div>';
+    const n = state.resultNums[r.id] || {};
+    let nums;
+    if (r.num === 'count') {
+      nums = '<div class="num-pair"><label>Count (optional)</label><input class="num-input" type="number" inputmode="decimal" min="0" step="1" data-rnum="' + r.id + ':actual" value="' + esc(n.actual) + '"></div>';
+    } else {
+      const lower = lowerIsBetter(currentSite(), currentMeeting(), r.id);
+      nums = '<div class="num-pair"><label>Actual</label><input class="num-input" type="number" inputmode="decimal" step="any" data-rnum="' + r.id + ':actual" value="' + esc(n.actual) + '">' +
+        '<label>Target</label><input class="num-input" type="number" inputmode="decimal" step="any" data-rnum="' + r.id + ':target" value="' + esc(n.target) + '">' +
+        '<button class="dir-btn" data-dir="' + r.id + '">' + (lower ? 'Lower is better' : 'Higher is better') + '</button></div>';
+    }
+    h += '<div class="check"><p class="check-label">' + esc(r.label) + '</p><p class="check-desc">' + esc(r.desc) + '</p>' + ynRow('result:' + r.id, state.results[r.id]) + nums + '</div>';
     if (state.results[r.id] === 'no') {
       h += '<div class="check" style="margin-left:14px;border-left:2px solid var(--line);padding-left:12px;">' +
         '<p class="check-label">The root cause for the ' + (r.id === 'safety' ? 'incident' : 'miss') + ' is clear and understood.</p>' +
@@ -666,7 +834,21 @@ function renderResultsCard() {
   });
   document.getElementById('results-card').innerHTML = h + '</div>';
 }
+document.getElementById('results-card').addEventListener('input', e => {
+  const el = e.target;
+  if (!el.dataset.rnum) return;
+  const [id, field] = el.dataset.rnum.split(':');
+  state.resultNums[id] = state.resultNums[id] || {};
+  state.resultNums[id][field] = el.value;
+});
 document.getElementById('results-card').addEventListener('click', e => {
+  const dirBtn = e.target.closest('button[data-dir]');
+  if (dirBtn) {
+    const id = dirBtn.dataset.dir;
+    setLowerIsBetter(currentSite(), currentMeeting(), id, !lowerIsBetter(currentSite(), currentMeeting(), id));
+    renderResultsCard();
+    return;
+  }
   const btn = e.target.closest('button[data-key^="result:"], button[data-key^="rc:"]');
   if (!btn) return;
   const key = btn.dataset.key;
@@ -715,6 +897,7 @@ document.getElementById('dim-cards').addEventListener('click', e => {
     return;
   }
   renderCard(dim);
+  if (btn.dataset.key === 'escSent' || btn.dataset.key === 't2EscOn') renderBoundaryCard();
 });
 
 document.getElementById('dim-cards').addEventListener('input', e => {
@@ -730,7 +913,19 @@ document.getElementById('dim-cards').addEventListener('input', e => {
 document.getElementById('tier-select').addEventListener('change', buildDimCards);
 document.getElementById('site-name').addEventListener('change', () => {
   renderCard(dimById('attendance'));
+  renderResultsCard();
 });
+document.getElementById('meeting-name').addEventListener('change', renderResultsCard);
+document.getElementById('observer-name').addEventListener('change', () => {
+  try { localStorage.setItem('signalWalkObserver', fieldVal('observer-name')); } catch (e) {}
+});
+function fillDatalists() {
+  const hist = getHistory();
+  const uniq = key => Array.from(new Set(hist.map(e => (e[key] || '').trim()).filter(Boolean))).sort();
+  [['dl-meeting', 'meeting'], ['dl-chair', 'chair'], ['dl-observer', 'observer']].forEach(([dl, key]) => {
+    document.getElementById(dl).innerHTML = uniq(key).map(v => '<option value="' + esc(v) + '">').join('');
+  });
+}
 
 function getHistory() {
   try { return JSON.parse(localStorage.getItem('signalWalkHistory') || '[]'); } catch (e) { return []; }
@@ -789,11 +984,12 @@ function renderResult(entry) {
 
   content.innerHTML =
     '<div class="result-card">' +
-      '<div class="band-sub">' + esc(entry.site || 'Unnamed site') + ', ' + esc(entry.tier) + ', ' + esc(entry.date) + '</div>' +
+      '<div class="band-sub">' + esc(entry.site || 'Unnamed site') + ', ' + esc(entry.tier) + (entry.meeting ? ', ' + esc(entry.meeting) : '') + ', ' + esc(entry.date) + '</div>' +
       '<div class="band-name">' + band + '</div>' +
       '<div class="gauge">' + gaugeSegs + '</div>' +
       '<div class="gauge-labels">' + IMI_BANDS.map(b => '<span>' + b[0] + '</span>').join('') + '</div>' +
       '<div class="band-sub">' + pct + '% across the ' + dims.length + ' dimensions</div>' +
+      (walkDefects(entry) ? '<div class="band-sub">' + walkDefects(entry).d + ' misses in ' + walkDefects(entry).n + ' opportunities' + (typeof entry.hesitations === 'number' ? ', ' + entry.hesitations + ' hesitation' + (entry.hesitations === 1 ? '' : 's') : '') + '</div>' : '') +
       resultsLine(entryResults(entry), 'band-sub', 'margin-top:8px;font-weight:600;', entry.rootCause) +
     '</div>' + bars +
     (missed ? '<div class="list-head">What missed</div>' + missed : '') +
@@ -891,12 +1087,13 @@ function renderHistory() {
       const missCount = e.misses ? Object.values(e.misses).reduce((s, l) => s + l.length, 0) : 0;
       html += '<div class="history-item">' +
         '<div class="history-top"><span class="history-site">' + esc(site) + '</span><span class="history-date">' + esc(e.date) + '</span></div>' +
-        '<div class="history-tier">' + esc(e.tier) + '</div>' +
+        '<div class="history-tier">' + esc(e.tier) + (e.meeting ? ', ' + esc(e.meeting) : '') + (e.chair ? ', chair ' + esc(e.chair) : '') + (e.shift ? ', ' + esc(e.shift) + ' shift' : '') + '</div>' +
         '<div class="history-band">' + bandForScore(pct) + ', ' + pct + '%</div>' +
         resultsLine(entryResults(e), 'history-tier', '', e.rootCause) +
         (e.v >= 2 ? (missCount ? '<div class="history-miss">' + missCount + ' check' + (missCount === 1 ? '' : 's') + ' missed</div>' : '') : '<div class="history-tag">Earlier six-dimension format</div>') +
         (i === 0 && scores.length > 1 ? '<div class="sparkline">' + renderSparkline(scores) + '</div>' : '') +
         (e.v >= 2 ? '<button class="delete-link" data-view-entry="' + esc(e.id) + '">View result</button>' : '') +
+        (e.v >= 2 ? '<button class="delete-link" data-cal-copy="' + esc(e.id) + '">Copy for calibration</button>' : '') +
         '<button class="delete-link" data-del="' + esc(e.id) + '">Delete this entry</button>' +
         '</div>';
     });
@@ -910,6 +1107,15 @@ function renderHistory() {
       renderHistory();
     });
   });
+  content.querySelectorAll('[data-cal-copy]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const entry = getHistory().find(e => e.id === btn.dataset.calCopy);
+      if (!entry) return;
+      const text = JSON.stringify(entry);
+      try { await navigator.clipboard.writeText(text); btn.textContent = 'Copied. Send it to the other observer.'; }
+      catch (err) { prompt('Copy this and send it to the other observer:', text); }
+    });
+  });
   content.querySelectorAll('[data-view-entry]').forEach(btn => {
     btn.addEventListener('click', () => {
       const entry = getHistory().find(e => e.id === btn.dataset.viewEntry);
@@ -917,6 +1123,585 @@ function renderHistory() {
     });
   });
 }
+
+/* == Statistics engine == */
+function normCdf(z) {
+  const t = 1 / (1 + 0.3275911 * Math.abs(z) / Math.SQRT2);
+  const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-z * z / 2);
+  return z >= 0 ? 0.5 * (1 + y) : 0.5 * (1 - y);
+}
+function normInv(p) {
+  if (p <= 0) return -Infinity;
+  if (p >= 1) return Infinity;
+  const a = [-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02, 1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00];
+  const b = [-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02, 6.680131188771972e+01, -1.328068155288572e+01];
+  const c = [-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00, -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00];
+  const d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00, 3.754408661907416e+00];
+  const pl = 0.02425;
+  let q, r;
+  if (p < pl) {
+    q = Math.sqrt(-2 * Math.log(p));
+    return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+  }
+  if (p > 1 - pl) {
+    q = Math.sqrt(-2 * Math.log(1 - p));
+    return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+  }
+  q = p - 0.5; r = q * q;
+  return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+}
+function lnGamma(x) {
+  const g = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+  let y = x, tmp = x + 5.5;
+  tmp -= (x + 0.5) * Math.log(tmp);
+  let ser = 1.000000000190015;
+  for (let j = 0; j < 6; j++) ser += g[j] / ++y;
+  return -tmp + Math.log(2.5066282746310005 * ser / x);
+}
+function betacf(a, b, x) {
+  const FPMIN = 1e-300;
+  const qab = a + b, qap = a + 1, qam = a - 1;
+  let c = 1, d = 1 - qab * x / qap;
+  if (Math.abs(d) < FPMIN) d = FPMIN;
+  d = 1 / d;
+  let h = d;
+  for (let m = 1; m <= 200; m++) {
+    const m2 = 2 * m;
+    let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+    c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+    d = 1 / d; h *= d * c;
+    aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+    c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+    d = 1 / d;
+    const del = d * c;
+    h *= del;
+    if (Math.abs(del - 1) < 3e-12) break;
+  }
+  return h;
+}
+function betai(a, b, x) {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const bt = Math.exp(lnGamma(a + b) - lnGamma(a) - lnGamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+  return x < (a + 1) / (a + b + 2) ? bt * betacf(a, b, x) / a : 1 - bt * betacf(b, a, 1 - x) / b;
+}
+function tTwoSidedP(t, df) { return betai(df / 2, 0.5, df / (df + t * t)); }
+function mean(arr) { return arr.reduce((s, v) => s + v, 0) / arr.length; }
+
+function linReg(xs, ys) {
+  const n = xs.length;
+  if (n < 3) return null;
+  const mx = mean(xs), my = mean(ys);
+  let sxx = 0, sxy = 0, syy = 0;
+  for (let i = 0; i < n; i++) { const dx = xs[i] - mx, dy = ys[i] - my; sxx += dx * dx; sxy += dx * dy; syy += dy * dy; }
+  if (sxx === 0) return null;
+  const slope = sxy / sxx, intercept = my - slope * mx;
+  const sse = Math.max(0, syy - slope * sxy);
+  const r2 = syy > 0 ? 1 - sse / syy : 0;
+  const df = n - 2;
+  const se = Math.sqrt(sse / df / sxx);
+  const p = se > 0 ? tTwoSidedP(slope / se, df) : (slope === 0 ? 1 : 0);
+  return { n, slope, intercept, r2, p };
+}
+function logitFit(xs, ys) {
+  const n = xs.length;
+  let b0 = 0, b1 = 0, converged = false;
+  const stats = () => {
+    let g0 = 0, g1 = 0, h00 = 0, h01 = 0, h11 = 0;
+    for (let i = 0; i < n; i++) {
+      const p = 1 / (1 + Math.exp(-(b0 + b1 * xs[i])));
+      const w = p * (1 - p);
+      g0 += ys[i] - p; g1 += (ys[i] - p) * xs[i];
+      h00 += w; h01 += w * xs[i]; h11 += w * xs[i] * xs[i];
+    }
+    return { g0, g1, h00, h01, h11, det: h00 * h11 - h01 * h01 };
+  };
+  for (let it = 0; it < 60; it++) {
+    const s = stats();
+    if (!(s.det > 1e-12)) break;
+    const d0 = (s.h11 * s.g0 - s.h01 * s.g1) / s.det;
+    const d1 = (-s.h01 * s.g0 + s.h00 * s.g1) / s.det;
+    b0 += d0; b1 += d1;
+    if (Math.abs(d0) < 1e-9 && Math.abs(d1) < 1e-9) { converged = true; break; }
+  }
+  const s = stats();
+  if (!converged || Math.abs(b1) > 40 || !(s.det > 1e-12)) return { separated: true };
+  const se1 = Math.sqrt(s.h00 / s.det);
+  const z = b1 / se1;
+  return { b0, b1, p: 2 * (1 - normCdf(Math.abs(z))), prob: x => 1 / (1 + Math.exp(-(b0 + b1 * x))) };
+}
+function mannWhitney(a, b) {
+  const n1 = a.length, n2 = b.length;
+  if (n1 < 2 || n2 < 2) return null;
+  const all = a.map(v => ({ v, g: 0 })).concat(b.map(v => ({ v, g: 1 }))).sort((x, y) => x.v - y.v);
+  let i = 0, tieSum = 0;
+  while (i < all.length) {
+    let j = i;
+    while (j + 1 < all.length && all[j + 1].v === all[i].v) j++;
+    const r = (i + j) / 2 + 1;
+    for (let k = i; k <= j; k++) all[k].r = r;
+    const t = j - i + 1;
+    tieSum += t * t * t - t;
+    i = j + 1;
+  }
+  const R1 = all.filter(x => x.g === 0).reduce((s, x) => s + x.r, 0);
+  const U1 = R1 - n1 * (n1 + 1) / 2;
+  const N = n1 + n2;
+  const sigma = Math.sqrt(n1 * n2 / 12 * ((N + 1) - tieSum / (N * (N - 1))));
+  if (!(sigma > 0)) return { p: 1 };
+  const z = Math.max(0, Math.abs(U1 - n1 * n2 / 2) - 0.5) / sigma;
+  return { p: 2 * (1 - normCdf(Math.abs(z))) };
+}
+function twoProp(d1, n1, d2, n2) {
+  const p1 = d1 / n1, p2 = d2 / n2, p = (d1 + d2) / (n1 + n2);
+  const se = Math.sqrt(p * (1 - p) * (1 / n1 + 1 / n2));
+  if (!(se > 0)) return { p1, p2, pval: 1 };
+  return { p1, p2, pval: 2 * (1 - normCdf(Math.abs((p2 - p1) / se))) };
+}
+function cohenKappa(pairs) {
+  const n = pairs.length;
+  if (!n) return null;
+  let agree = 0, aYes = 0, bYes = 0;
+  pairs.forEach(([a, b]) => { if (a === b) agree++; if (a) aYes++; if (b) bYes++; });
+  const po = agree / n, pa = aYes / n, pb = bYes / n;
+  const pe = pa * pb + (1 - pa) * (1 - pb);
+  const degenerate = pa === 0 || pa === 1 || pb === 0 || pb === 1;
+  return { n, po, degenerate, kappa: pe < 1 ? (po - pe) / (1 - pe) : 1 };
+}
+function sigmaLevel(d, n) {
+  if (!n) return null;
+  if (d === 0) return { val: normInv(1 - 0.5 / n) + 1.5, floor: true };
+  if (d >= n) return { val: 1.5 - 4.5, floor: false };
+  return { val: normInv(1 - d / n) + 1.5, floor: false };
+}
+function fmtP(p) { return p < 0.001 ? 'p < 0.001' : 'p = ' + p.toFixed(3); }
+function pct1(x) { return (x * 100).toFixed(1) + '%'; }
+
+/* == Opportunities and defects per walk == */
+function walkOpps(e) {
+  if (!e || !e.checks || e.v < 2) return null;
+  const items = [];
+  Object.keys(e.checks).forEach(id => {
+    const v = e.checks[id];
+    if (v === 'yes' || v === 'no') items.push({ key: id, label: CHECKS[id] ? CHECKS[id].label : id, miss: v === 'no' });
+  });
+  if (typeof e.minutesLate === 'number' && !isNaN(e.minutesLate)) items.push({ key: 't_start', label: 'Started within 1 minute of time', miss: e.minutesLate > 1 });
+  if (typeof e.heldForSomeone === 'boolean') items.push({ key: 't_nowait', label: 'The chair started without waiting for anyone.', miss: e.heldForSomeone });
+  if (typeof e.runTime === 'number' && !isNaN(e.runTime) && TIME_LIMITS[e.tier]) items.push({ key: 't_run', label: 'Finished inside the time box', miss: e.runTime > TIME_LIMITS[e.tier] + 1 });
+  if (e.attendance) Object.keys(e.attendance).forEach(r => {
+    const v = e.attendance[r];
+    if (v) items.push({ key: 'role:' + r, label: 'Attendance: ' + r + ' covered', miss: v === 'absent' });
+  });
+  return items.length ? items : null;
+}
+function walkDefects(e) {
+  const items = walkOpps(e);
+  if (!items) return null;
+  return { n: items.length, d: items.filter(i => i.miss).length, items };
+}
+function walkSort(a, b) { return a.date === b.date ? String(a.id).localeCompare(String(b.id)) : a.date.localeCompare(b.date); }
+const STANDARD_BAND = IMI_BANDS.indexOf('Regulating');
+function atStandard(e) { return IMI_BANDS.indexOf(bandForScore(entryPct(e))) >= STANDARD_BAND; }
+
+/* == Analysis view == */
+function setOptions(sel, opts, keep) {
+  const prev = keep !== undefined ? keep : sel.value;
+  sel.innerHTML = opts.map(o => '<option value="' + esc(o.value) + '">' + esc(o.label) + '</option>').join('');
+  if (opts.some(o => o.value === prev)) sel.value = prev;
+}
+function analysisWalks() {
+  const all = getHistory().filter(e => walkOpps(e));
+  const siteSel = document.getElementById('an-site');
+  const sites = Array.from(new Set(all.map(e => e.site || 'Unnamed site'))).sort();
+  const latest = all.slice().sort(walkSort).pop();
+  const defSite = siteSel.value || (latest ? (latest.site || 'Unnamed site') : '');
+  setOptions(siteSel, sites.map(s => ({ value: s, label: s })), defSite);
+  const site = siteSel.value;
+  const tier = document.getElementById('an-tier').value;
+  const bySite = all.filter(e => (e.site || 'Unnamed site') === site && (!tier || e.tier === tier));
+  const meetSel = document.getElementById('an-meeting');
+  const meetings = Array.from(new Set(bySite.map(e => e.meeting || ''))).sort();
+  setOptions(meetSel, [{ value: '*', label: 'All meetings' }].concat(meetings.map(m => ({ value: m, label: m || '(no meeting name)' }))));
+  const meeting = meetSel.value;
+  const walks = bySite.filter(e => meeting === '*' || (e.meeting || '') === meeting).sort(walkSort);
+  return { walks, mixed: new Set(walks.map(e => streamKey(e.site, e.meeting, e.tier))).size > 1 };
+}
+
+function renderAnalysis() {
+  const content = document.getElementById('analysis-content');
+  const { walks, mixed } = analysisWalks();
+  if (!walks.length) {
+    content.innerHTML = '<div class="empty-state">No walks to analyze yet. Walks scored in the current format (October 2026 on) build the analysis here.</div>';
+  } else {
+    content.innerHTML = anSummary(walks) + anPChart(walks, mixed) + anSustain(walks) + anPareto(walks) + anBeforeAfter(walks) + anResults(walks) + anBoundary(walks);
+  }
+  renderCalibration();
+}
+
+function anSummary(walks) {
+  let n = 0, d = 0, clean = 0;
+  walks.forEach(e => { const w = walkDefects(e); n += w.n; d += w.d; if (w.d === 0) clean++; });
+  const sig = sigmaLevel(d, n);
+  const dpmo = Math.round(d / n * 1e6);
+  return '<div class="an-card"><p class="an-title">Sigma level of the meeting</p>' +
+    '<p class="an-sub">Every scored statement, the start and run time rules, and each required role is one opportunity. Every No, late start, overrun, or absent role is one defect.</p>' +
+    '<div class="stat-grid">' +
+    '<div class="stat"><div class="stat-num">' + (sig.floor ? '&gt; ' : '') + sig.val.toFixed(2) + '</div><div class="stat-lbl">Sigma level (1.5 shift)</div></div>' +
+    '<div class="stat"><div class="stat-num">' + dpmo.toLocaleString() + '</div><div class="stat-lbl">DPMO</div></div>' +
+    '<div class="stat"><div class="stat-num">' + pct1(d / n) + '</div><div class="stat-lbl">Miss rate, ' + d + ' of ' + n + '</div></div>' +
+    '<div class="stat"><div class="stat-num">' + Math.round(clean / walks.length * 100) + '%</div><div class="stat-lbl">Walks with zero misses, ' + clean + ' of ' + walks.length + '</div></div>' +
+    '</div>' +
+    (sig.floor ? '<p class="an-note">No misses yet, so the sigma level is a floor, not a value.</p>' : '') +
+    '<p class="an-note">Sigma level here is a way to make meeting discipline readable next to process data. With a few hundred opportunities, read it to one decimal, not two.</p></div>';
+}
+
+function pChartSignals(ps, ucl, lcl, center) {
+  const sig = new Set(), notes = [];
+  ps.forEach((p, i) => { if (p > ucl[i] + 1e-12 || p < lcl[i] - 1e-12) sig.add(i); });
+  if (sig.size) notes.push(sig.size + ' walk' + (sig.size === 1 ? '' : 's') + ' outside the control limits');
+  let run = 0, side = 0;
+  for (let i = 0; i < ps.length; i++) {
+    const s = ps[i] > center ? 1 : ps[i] < center ? -1 : 0;
+    run = s !== 0 && s === side ? run + 1 : (s !== 0 ? 1 : 0);
+    side = s;
+    if (run === 8) notes.push('8 walks in a row ' + (s > 0 ? 'above' : 'below') + ' the center line, ending ' + i);
+    if (run >= 8) for (let k = i - run + 1; k <= i; k++) sig.add(k);
+  }
+  let up = 1, down = 1;
+  for (let i = 1; i < ps.length; i++) {
+    up = ps[i] > ps[i - 1] ? up + 1 : 1;
+    down = ps[i] < ps[i - 1] ? down + 1 : 1;
+    if (up === 6) notes.push('6 walks in a row getting worse, ending ' + i);
+    if (down === 6) notes.push('6 walks in a row getting better, ending ' + i);
+  }
+  return { sig, notes };
+}
+function anPChart(walks, mixed) {
+  const data = walks.map(e => ({ e, w: walkDefects(e) }));
+  const N = data.reduce((s, x) => s + x.w.n, 0), D = data.reduce((s, x) => s + x.w.d, 0);
+  const center = D / N;
+  const ps = data.map(x => x.w.d / x.w.n);
+  const ucl = data.map(x => Math.min(1, center + 3 * Math.sqrt(center * (1 - center) / x.w.n)));
+  const lcl = data.map(x => Math.max(0, center - 3 * Math.sqrt(center * (1 - center) / x.w.n)));
+  const { sig, notes } = pChartSignals(ps, ucl, lcl, center);
+  const named = notes.map(t => t.replace(/ending (\d+)$/, (m, i) => 'ending ' + data[+i].e.date));
+
+  const W = 340, H = 170, L = 34, R = 8, T = 10, B = 22;
+  const ymax = Math.max(0.1, Math.max.apply(null, ps.concat(ucl)) * 1.1);
+  const x = i => data.length === 1 ? L + (W - L - R) / 2 : L + i * (W - L - R) / (data.length - 1);
+  const y = v => T + (H - T - B) * (1 - v / ymax);
+  const line = arr => arr.map((v, i) => x(i).toFixed(1) + ',' + y(v).toFixed(1)).join(' ');
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="p-chart of miss rate per walk">';
+  [0, ymax / 2, ymax].forEach(v => {
+    svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="#3A423F" stroke-width="0.5"/>' +
+      '<text x="' + (L - 4) + '" y="' + (y(v) + 3) + '" fill="#6C736F" font-size="9" text-anchor="end">' + Math.round(v * 100) + '%</text>';
+  });
+  svg += '<polyline points="' + line(ucl) + '" fill="none" stroke="#B8452E" stroke-width="1" stroke-dasharray="4 3"/>';
+  if (lcl.some(v => v > 0)) svg += '<polyline points="' + line(lcl) + '" fill="none" stroke="#B8452E" stroke-width="1" stroke-dasharray="4 3"/>';
+  svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(center) + '" y2="' + y(center) + '" stroke="#9CA39F" stroke-width="1"/>';
+  if (data.length > 1) svg += '<polyline points="' + line(ps) + '" fill="none" stroke="#E8A33D" stroke-width="1.5" stroke-linejoin="round"/>';
+  ps.forEach((p, i) => { svg += '<circle cx="' + x(i) + '" cy="' + y(p) + '" r="3" fill="' + (sig.has(i) ? '#B8452E' : '#E8A33D') + '"><title>' + esc(data[i].e.date) + ': ' + pct1(p) + '</title></circle>'; });
+  svg += '<text x="' + L + '" y="' + (H - 6) + '" fill="#6C736F" font-size="9">' + esc(data[0].e.date) + '</text>' +
+    '<text x="' + (W - R) + '" y="' + (H - 6) + '" fill="#6C736F" font-size="9" text-anchor="end">' + esc(data[data.length - 1].e.date) + '</text></svg>';
+
+  let verdict;
+  if (walks.length < 20) verdict = '<p class="verdict drift">Provisional limits: ' + walks.length + ' of about 20 walks needed</p>';
+  else if (!named.length) verdict = '<p class="verdict good">Stable: no special cause signals</p>';
+  else verdict = '<p class="verdict fail">Special cause present</p>';
+  return '<div class="an-card"><p class="an-title">Control chart (p-chart)</p>' +
+    '<p class="an-sub">Miss rate per walk. Solid line is the average, dashed lines are the 3-sigma limits. Red points are signals.</p>' +
+    '<div class="chart-wrap">' + svg + '</div>' + verdict +
+    named.map(t => '<p class="an-line">' + esc(t) + '</p>').join('') +
+    (mixed ? '<p class="an-note">More than one meeting is in this view. Pick one meeting above so the chart tracks a single process.</p>' : '') +
+    '<p class="an-note">Stable is not the same as good. A meeting can be stable at a 30% miss rate. Sustained means stable and at standard.</p></div>';
+}
+
+function anSustain(walks) {
+  const recent = walks.slice(-10);
+  const k = recent.filter(atStandard).length;
+  let streak = 0;
+  for (let i = walks.length - 1; i >= 0 && atStandard(walks[i]); i--) streak++;
+  const est = (k + 1) / (recent.length + 2);
+  const rates = walks.map(e => { const w = walkDefects(e); return w.d / w.n; });
+  const trend = linReg(rates.map((_, i) => i), rates);
+  let trendLine = '<p class="an-line">Trend needs at least 3 walks.</p>';
+  if (trend) {
+    const per10 = trend.slope * 10 * 100;
+    const word = trend.p < 0.05 ? (per10 < 0 ? 'improving' : 'decaying') : 'flat, no clear trend';
+    trendLine = '<p class="an-line">Miss rate trend: <b>' + word + '</b>, ' + (per10 >= 0 ? '+' : '') + per10.toFixed(1) + ' points per 10 walks, ' + fmtP(trend.p) + '.</p>';
+  }
+  const cls = est >= 0.8 ? 'good' : est >= 0.5 ? 'drift' : 'fail';
+  return '<div class="an-card"><p class="an-title">Sustainment</p>' +
+    '<p class="an-sub">Standard is an IMI band of Regulating or better on the walk.</p>' +
+    '<div class="stat-grid">' +
+    '<div class="stat"><div class="stat-num">' + Math.round(est * 100) + '%</div><div class="stat-lbl">Chance the next walk is at standard</div></div>' +
+    '<div class="stat"><div class="stat-num">' + streak + '</div><div class="stat-lbl">Walks in a row at standard</div></div>' +
+    '</div>' +
+    '<p class="verdict ' + cls + '">' + k + ' of the last ' + recent.length + ' walks at standard</p>' + trendLine +
+    '<p class="an-note">The chance is estimated from the last 10 walks with a small-sample correction ((k + 1) / (n + 2)), so it never claims 0% or 100%.</p></div>';
+}
+
+function anPareto(walks) {
+  const agg = {};
+  walks.forEach(e => walkDefects(e).items.forEach(it => {
+    const a = agg[it.key] = agg[it.key] || { label: it.label, n: 0, d: 0 };
+    a.n++; if (it.miss) a.d++;
+  }));
+  const rows = Object.values(agg).filter(a => a.d > 0).sort((a, b) => b.d - a.d || b.d / b.n - a.d / a.n);
+  if (!rows.length) return '<div class="an-card"><p class="an-title">Where the misses are</p><p class="an-line">No misses in this view.</p></div>';
+  const total = rows.reduce((s, a) => s + a.d, 0);
+  let cum = 0, h = '';
+  rows.slice(0, 8).forEach(a => {
+    cum += a.d;
+    h += '<div class="pareto-row"><div class="pareto-lbl">' + esc(a.label) + '</div><div class="pareto-track"><div class="pareto-fill" style="width:' + (a.d / rows[0].d * 100) + '%"></div></div><div class="pareto-val">' + a.d + '/' + a.n + '</div></div>';
+  });
+  const top3 = rows.slice(0, 3).reduce((s, a) => s + a.d, 0);
+  return '<div class="an-card"><p class="an-title">Where the misses are (Pareto)</p>' +
+    '<p class="an-sub">Misses out of times the check applied. The top 3 account for ' + Math.round(top3 / total * 100) + '% of all misses.</p>' + h + '</div>';
+}
+
+function anBeforeAfter(walks) {
+  const split = document.getElementById('an-split').value;
+  const head = '<div class="an-card"><p class="an-title">Before and after</p>';
+  if (!split) return head + '<p class="an-sub">Pick a date above, such as the day a coaching module was delivered, to test whether the meeting really changed.</p></div>';
+  const before = walks.filter(e => e.date < split), after = walks.filter(e => e.date >= split);
+  if (before.length < 2 || after.length < 2) return head + '<p class="an-sub">Need at least 2 walks on each side of ' + esc(split) + '. Now: ' + before.length + ' before, ' + after.length + ' after.</p></div>';
+  const sum = list => list.reduce((s, e) => { const w = walkDefects(e); s.n += w.n; s.d += w.d; return s; }, { n: 0, d: 0 });
+  const b = sum(before), a = sum(after);
+  const tp = twoProp(b.d, b.n, a.d, a.n);
+  const rate = e => { const w = walkDefects(e); return w.d / w.n; };
+  const mw = mannWhitney(before.map(rate), after.map(rate));
+  const better = tp.p2 < tp.p1;
+  const sigA = tp.pval < 0.05, sigB = mw && mw.p < 0.05;
+  let verdict;
+  if (sigA && sigB) verdict = '<p class="verdict ' + (better ? 'good' : 'fail') + '">Real change: the meeting got ' + (better ? 'better' : 'worse') + '</p>';
+  else if (sigA || sigB) verdict = '<p class="verdict drift">Leaning ' + (better ? 'better' : 'worse') + ', not proven. Keep walking.</p>';
+  else verdict = '<p class="verdict drift">Could be noise. No proven change yet.</p>';
+  return head + '<p class="an-sub">Split at ' + esc(split) + '.</p>' +
+    '<table class="an-table"><tr><th></th><th>Walks</th><th>Miss rate</th></tr>' +
+    '<tr><td>Before</td><td>' + before.length + '</td><td><b>' + pct1(tp.p1) + '</b></td></tr>' +
+    '<tr><td>After</td><td>' + after.length + '</td><td><b>' + pct1(tp.p2) + '</b></td></tr></table>' + verdict +
+    '<p class="an-line">2-proportion test on checks: ' + fmtP(tp.pval) + '. Walk-level test (Mann-Whitney): ' + (mw ? fmtP(mw.p) : 'n/a') + '.</p>' +
+    '<p class="an-note">The checks in one walk are not independent, so the 2-proportion test runs optimistic. The walk-level test is the conservative one. Trust a change when both agree.</p></div>';
+}
+
+function attainment(rn) {
+  if (!rn || typeof rn.actual !== 'number' || typeof rn.target !== 'number' || rn.target <= 0) return null;
+  if (rn.lowerIsBetter) return rn.actual > 0 ? rn.target / rn.actual : null;
+  return rn.actual / rn.target;
+}
+function anResults(walks) {
+  const head = '<div class="an-card"><p class="an-title">Does the meeting drive results?</p>' +
+    '<p class="an-sub">Logistic regression of each result on the walk score. Same walk, and lagged: this walk\'s score against the next walk\'s result for the same meeting.</p>';
+  const rowFor = (label, pairs) => {
+    const ys = pairs.map(p => p[1] ? 1 : 0);
+    const hits = ys.reduce((s, v) => s + v, 0);
+    if (pairs.length < 10) return '<tr><td>' + label + '</td><td>' + pairs.length + '</td><td colspan="2">Needs 10 walks</td></tr>';
+    if (hits < 2 || pairs.length - hits < 2) return '<tr><td>' + label + '</td><td>' + pairs.length + '</td><td colspan="2">Hit ' + hits + ' of ' + pairs.length + ', too one-sided to test</td></tr>';
+    const fit = logitFit(pairs.map(p => p[0]), ys);
+    if (fit.separated) return '<tr><td>' + label + '</td><td>' + pairs.length + '</td><td colspan="2">Score splits hits from misses perfectly. Needs more walks.</td></tr>';
+    return '<tr><td>' + label + '</td><td>' + pairs.length + '</td><td><b>' + Math.round(fit.prob(0.5) * 100) + '% / ' + Math.round(fit.prob(0.9) * 100) + '%</b></td><td>' + fmtP(fit.p) + (fit.p < 0.05 ? ' <b>*</b>' : '') + '</td></tr>';
+  };
+  let same = '', lag = '';
+  RESULT_ITEMS.forEach(r => {
+    const pairs = walks.filter(e => entryResults(e) && typeof entryResults(e)[r.id] === 'boolean').map(e => [entryPct(e) / 100, entryResults(e)[r.id]]);
+    same += rowFor(r.short, pairs);
+    const lagPairs = [];
+    const streams = {};
+    walks.forEach(e => { (streams[streamKey(e.site, e.meeting, e.tier)] = streams[streamKey(e.site, e.meeting, e.tier)] || []).push(e); });
+    Object.values(streams).forEach(list => {
+      for (let i = 0; i + 1 < list.length; i++) {
+        const nx = entryResults(list[i + 1]);
+        if (nx && typeof nx[r.id] === 'boolean') lagPairs.push([entryPct(list[i]) / 100, nx[r.id]]);
+      }
+    });
+    lag += rowFor(r.short, lagPairs);
+  });
+  const th = '<tr><th>Result</th><th>Walks</th><th>Hit chance at 50% / 90% score</th><th>Signal</th></tr>';
+  let nums = '';
+  RESULT_ITEMS.filter(r => r.num === 'pair').forEach(r => {
+    const pts = walks.map(e => [entryPct(e), attainment(e.resultNums && e.resultNums[r.id])]).filter(p => p[1] !== null);
+    if (pts.length < 8) return;
+    const fit = linReg(pts.map(p => p[0]), pts.map(p => p[1] * 100));
+    if (!fit) return;
+    nums += '<tr><td>' + r.short + '</td><td>' + fit.n + '</td><td><b>' + (fit.slope * 10 >= 0 ? '+' : '') + (fit.slope * 10).toFixed(1) + ' pts</b> per +10 score, R&sup2; ' + fit.r2.toFixed(2) + '</td><td>' + fmtP(fit.p) + (fit.p < 0.05 ? ' <b>*</b>' : '') + '</td></tr>';
+  });
+  return head + '<p class="an-line"><b>Same walk</b></p><table class="an-table">' + th + same + '</table>' +
+    '<p class="an-line" style="margin-top:12px;"><b>Next walk</b></p><table class="an-table">' + th + lag + '</table>' +
+    (nums ? '<p class="an-line" style="margin-top:12px;"><b>Actual vs target</b> (linear regression, attainment as % of target)</p><table class="an-table"><tr><th>Result</th><th>Walks</th><th>Effect</th><th>Signal</th></tr>' + nums + '</table>' : '<p class="an-note">Actual vs target regression appears once 8 walks have numbers entered for a result.</p>') +
+    '<p class="an-note">* means p below 0.05. A signal shows the meeting and the result move together. The lagged test is the stronger evidence, because the meeting comes before the result. Neither proves cause on its own.</p></div>';
+}
+
+function anBoundary(walks) {
+  const hw = walks.filter(e => typeof e.hesitations === 'number');
+  const ew = walks.filter(e => e.escSort);
+  if (!hw.length && !ew.length) return '';
+  let h = '<div class="an-card"><p class="an-title">Decision Boundary</p><p class="an-sub">Hesitations are visible Unclaimed Authority. Healthy direction: falling.</p>';
+  if (hw.length) {
+    const vals = hw.map(e => e.hesitations);
+    const tot = vals.reduce((s, v) => s + v, 0);
+    h += '<div class="stat-grid"><div class="stat"><div class="stat-num">' + tot + '</div><div class="stat-lbl">Hesitations across ' + hw.length + ' walks</div></div>' +
+      '<div class="stat"><div class="stat-num">' + (tot / hw.length).toFixed(1) + '</div><div class="stat-lbl">Per walk</div></div></div>';
+    const tr = linReg(vals.map((_, i) => i), vals);
+    if (tr) h += '<p class="an-line">Trend: <b>' + (tr.p < 0.05 ? (tr.slope < 0 ? 'falling' : 'rising') : 'no clear trend') + '</b>, ' + fmtP(tr.p) + '.</p>';
+  }
+  if (ew.length) {
+    const s = ew.reduce((a, e) => { a.boundary += e.escSort.boundary || 0; a.clock += e.escSort.clock || 0; a.hard += e.escSort.hard || 0; return a; }, { boundary: 0, clock: 0, hard: 0 });
+    const t = s.boundary + s.clock + s.hard;
+    if (t) {
+      h += '<p class="an-line" style="margin-top:10px;"><b>Escalation sort</b>, ' + t + ' escalations: boundary ' + s.boundary + ', clock ' + s.clock + ', just hard ' + s.hard + '.</p>' +
+        '<p class="verdict ' + (s.hard / t <= 0.1 ? 'good' : s.hard / t <= 0.3 ? 'drift' : 'fail') + '">Just hard share: ' + Math.round(s.hard / t * 100) + '%</p>' +
+        '<p class="an-note">A high just hard share means the tier is running a status meeting, not a decision meeting.</p>';
+    }
+  }
+  return h + '</div>';
+}
+
+/* == Observer calibration (Kappa) == */
+function getCals() { try { return JSON.parse(localStorage.getItem('signalWalkCalibrations') || '[]'); } catch (e) { return []; } }
+function saveCals(list) { try { localStorage.setItem('signalWalkCalibrations', JSON.stringify(list)); } catch (e) {} }
+let pendingCal = null;
+function calPairs(mine, theirs) {
+  const a = walkOpps(mine) || [], b = walkOpps(theirs) || [];
+  const bm = {};
+  b.forEach(it => { bm[it.key] = it; });
+  return a.filter(it => bm[it.key]).map(it => ({ key: it.key, label: it.label, a: !it.miss, b: !bm[it.key].miss }));
+}
+function kappaVerdict(k) {
+  if (k >= 0.75) return ['good', 'Acceptable: observers agree'];
+  if (k >= 0.4) return ['drift', 'Marginal: tighten the statements that disagree'];
+  return ['fail', 'Not acceptable: scores depend on who is watching'];
+}
+function renderCalibration() {
+  const box = document.getElementById('calibration-content');
+  const hist = getHistory();
+  const byId = {};
+  hist.forEach(e => { byId[e.id] = e; });
+  const cals = getCals().filter(c => byId[c.myId]);
+  let h = '<div class="an-card"><p class="an-title">Observer calibration (Kappa)</p>' +
+    '<p class="an-sub">Two observers score the same meeting. The other observer uses Copy for calibration on that walk in their History and sends it to you. Paste it here.</p>';
+  const allPairs = [], disputes = {};
+  cals.forEach(c => calPairs(byId[c.myId], c.theirs).forEach(p => {
+    allPairs.push([p.a, p.b]);
+    if (p.a !== p.b) disputes[p.label] = (disputes[p.label] || 0) + 1;
+  }));
+  const k = cohenKappa(allPairs);
+  if (k) {
+    const [cls, txt] = k.degenerate ? ['drift', 'Not enough misses yet: Kappa needs both observers to record at least one No'] : kappaVerdict(k.kappa);
+    h += '<div class="stat-grid"><div class="stat"><div class="stat-num">' + (k.degenerate ? 'n/a' : k.kappa.toFixed(2)) + '</div><div class="stat-lbl">Kappa across ' + cals.length + ' paired walk' + (cals.length === 1 ? '' : 's') + '</div></div>' +
+      '<div class="stat"><div class="stat-num">' + Math.round(k.po * 100) + '%</div><div class="stat-lbl">Raw agreement, ' + k.n + ' items</div></div></div>' +
+      '<p class="verdict ' + cls + '">' + txt + '</p>';
+    const top = Object.keys(disputes).sort((x, y) => disputes[y] - disputes[x]).slice(0, 5);
+    if (top.length) h += '<p class="an-line"><b>Most disputed</b></p>' + top.map(l => '<p class="an-line">' + esc(l) + ' (' + disputes[l] + ')</p>').join('');
+    h += cals.map(c => {
+      const m = byId[c.myId];
+      return '<p class="an-line">' + esc(m.date) + ', ' + esc(m.tier) + (m.meeting ? ', ' + esc(m.meeting) : '') + ', with ' + esc(c.theirs.observer || 'other observer') +
+        ' <button class="link-btn" data-cal-del="' + esc(c.id) + '">Remove</button></p>';
+    }).join('');
+    h += '<p class="an-note">Kappa corrects raw agreement for agreement by chance. 0.75 or higher is the usual bar for an attribute measurement system.</p>';
+  }
+  h += '<textarea class="cal-input" id="cal-paste" placeholder="Paste the other observer\'s walk here"></textarea>' +
+    '<button class="btn-secondary" id="btn-cal-read">Read pasted walk</button>';
+  if (pendingCal) {
+    const t = pendingCal;
+    const cands = hist.filter(e => walkOpps(e)).sort(walkSort).reverse();
+    const best = cands.find(e => e.date === t.date && (e.site || '').toLowerCase() === (t.site || '').toLowerCase() && e.tier === t.tier) || cands.find(e => e.tier === t.tier) || cands[0];
+    h += '<p class="an-line" style="margin-top:10px;">Pasted: ' + esc(t.date) + ', ' + esc(t.site || 'Unnamed site') + ', ' + esc(t.tier) + (t.observer ? ', by ' + esc(t.observer) : '') + '. Pair it with your walk:</p>' +
+      '<div class="field"><select id="cal-mine">' + cands.map(e => '<option value="' + esc(e.id) + '"' + (best && e.id === best.id ? ' selected' : '') + '>' + esc(e.date + ', ' + (e.site || 'Unnamed') + ', ' + e.tier + (e.meeting ? ', ' + e.meeting : '')) + '</option>').join('') + '</select></div>' +
+      '<button class="btn-primary" id="btn-cal-save">Compare and save</button>';
+  }
+  box.innerHTML = h + '</div>';
+}
+document.getElementById('calibration-content').addEventListener('click', e => {
+  const t = e.target;
+  if (t.id === 'btn-cal-read') {
+    let parsed;
+    try { parsed = JSON.parse(document.getElementById('cal-paste').value); } catch (err) { alert('That is not a SignalWalk walk. Copy it again with Copy for calibration.'); return; }
+    if (Array.isArray(parsed)) parsed = parsed[parsed.length - 1];
+    if (!parsed || !parsed.checks || !parsed.tier) { alert('That is not a SignalWalk walk in the current format.'); return; }
+    pendingCal = parsed;
+    renderCalibration();
+  } else if (t.id === 'btn-cal-save') {
+    const myId = document.getElementById('cal-mine').value;
+    const mine = getHistory().find(x => x.id === myId);
+    const pairs = calPairs(mine, pendingCal);
+    if (!pairs.length) { alert('These two walks share no statements. Check they are the same tier.'); return; }
+    const cals = getCals();
+    cals.push({ id: Date.now().toString(), myId, theirs: pendingCal });
+    saveCals(cals);
+    const k = cohenKappa(pairs.map(p => [p.a, p.b]));
+    const diffs = pairs.filter(p => p.a !== p.b).map(p => p.label);
+    pendingCal = null;
+    renderCalibration();
+    alert((k.degenerate ? 'Kappa needs both observers to record at least one No, so this pair counts toward the pooled Kappa only.' : 'Kappa for this pair: ' + k.kappa.toFixed(2) + '.') + ' Agreement ' + Math.round(k.po * 100) + '%.' + (diffs.length ? '\n\nDisagreed on:\n' + diffs.join('\n') : '\n\nNo disagreements.'));
+  } else if (t.dataset && t.dataset.calDel) {
+    if (!confirm('Remove this paired walk from calibration?')) return;
+    saveCals(getCals().filter(c => c.id !== t.dataset.calDel));
+    renderCalibration();
+  }
+});
+['an-site', 'an-tier', 'an-meeting', 'an-split'].forEach(id => {
+  document.getElementById(id).addEventListener('change', () => {
+    if (id === 'an-site' || id === 'an-tier') document.getElementById('an-meeting').value = '*';
+    renderAnalysis();
+  });
+});
+
+/* == CSV export == */
+function csvCell(v) {
+  if (v === null || v === undefined) return '';
+  const s = String(v);
+  return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+function buildCSV() {
+  const hist = getHistory().slice().sort(walkSort);
+  const checkIds = Object.keys(CHECKS);
+  const dimIds = DIMENSIONS_ALL.map(d => d.id);
+  const rateNum = { good: 1, drift: 0.5, fail: 0 };
+  const head = ['walk_id', 'format_version', 'date', 'site', 'meeting', 'tier', 'chair', 'shift', 'observer',
+    'score_pct', 'imi_band', 'at_standard', 'opportunities', 'misses', 'miss_rate', 'dpmo',
+    'minutes_late', 'held_start', 'run_time', 'run_limit', 'roles_required', 'roles_absent', 'roles_delegate', 'absent_roles',
+    'hesitations', 'esc_boundary', 'esc_clock', 'esc_just_hard']
+    .concat(dimIds.map(d => 'dim_' + d))
+    .concat(RESULT_ITEMS.reduce((a, r) => a.concat(['res_' + r.id + '_hit', 'res_' + r.id + '_cause_understood', 'res_' + r.id + '_actual', 'res_' + r.id + '_target', 'res_' + r.id + '_lower_is_better']), []))
+    .concat(checkIds.map(c => 'chk_' + c));
+  const rows = [head];
+  hist.forEach(e => {
+    const w = walkDefects(e);
+    const pct = entryPct(e);
+    const att = e.attendance || {};
+    const roles = Object.keys(att);
+    const res = entryResults(e) || {};
+    const rc = e.rootCause || {};
+    const rn = e.resultNums || {};
+    const b = v => typeof v === 'boolean' ? (v ? 1 : 0) : '';
+    const row = [e.id, e.v || 1, e.date, e.site, e.meeting, e.tier, e.chair, e.shift, e.observer,
+      pct, bandForScore(pct), atStandard(e) ? 1 : 0,
+      w ? w.n : '', w ? w.d : '', w ? (w.d / w.n).toFixed(4) : '', w ? Math.round(w.d / w.n * 1e6) : '',
+      e.minutesLate, b(e.heldForSomeone), e.runTime, TIME_LIMITS[e.tier],
+      roles.length || '', roles.filter(r => att[r] === 'absent').length, roles.filter(r => att[r] === 'delegate').length, roles.filter(r => att[r] === 'absent').join('; '),
+      e.hesitations, e.escSort ? e.escSort.boundary : '', e.escSort ? e.escSort.clock : '', e.escSort ? e.escSort.hard : '']
+      .concat(dimIds.map(d => (e.notApplicable || []).includes(d) ? 'NA' : (e.ratings && e.ratings[d] in rateNum ? rateNum[e.ratings[d]] : '')))
+      .concat(RESULT_ITEMS.reduce((a, r) => {
+        const n = rn[r.id] || {};
+        return a.concat([b(res[r.id]), b(rc[r.id]), n.actual, n.target, r.num === 'pair' && rn[r.id] ? b(!!n.lowerIsBetter) : '']);
+      }, []))
+      .concat(checkIds.map(c => e.checks && e.checks[c] ? (e.checks[c] === 'yes' ? 1 : 0) : ''));
+    rows.push(row);
+  });
+  return rows.map(r => r.map(csvCell).join(',')).join('\r\n');
+}
+document.getElementById('btn-csv').addEventListener('click', () => {
+  const blob = new Blob([buildCSV()], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'signalwalk-' + todayISO() + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+});
 
 function switchView(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -930,6 +1715,7 @@ function switchView(view) {
     document.getElementById('btn-export').textContent = 'Show export data';
     document.getElementById('copy-toast').style.display = 'none';
   }
+  if (view === 'analysis') renderAnalysis();
   window.scrollTo(0, 0);
 }
 document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchView(btn.dataset.view)));
@@ -943,6 +1729,7 @@ document.getElementById('btn-score').addEventListener('click', () => {
     results[d.id] = evaluate(d.id, tier);
     if (!results[d.id].rating) missing.push(d.title);
   });
+  if (state.hesitations === '' || isNaN(parseFloat(state.hesitations))) missing.push('Decision Boundary (hesitations, enter 0 if none)');
   if (RESULT_ITEMS.some(r => !state.results[r.id] || (state.results[r.id] === 'no' && !state.rootCause[r.id]))) missing.push('Results');
   if (missing.length) {
     alert('Finish these before scoring: ' + missing.join(', '));
@@ -972,12 +1759,31 @@ document.getElementById('btn-score').addEventListener('click', () => {
   const attendance = {};
   roles.forEach(r => { attendance[r] = state.roles[r]; });
 
+  const numOrNull = v => { const n = parseFloat(v); return isNaN(n) ? null : n; };
+  const resultNums = {};
+  RESULT_ITEMS.forEach(r => {
+    const n = state.resultNums[r.id] || {};
+    const actual = numOrNull(n.actual), target = r.num === 'pair' ? numOrNull(n.target) : null;
+    if (actual !== null || target !== null) {
+      resultNums[r.id] = { actual, target };
+      if (r.num === 'pair') resultNums[r.id].lowerIsBetter = lowerIsBetter(currentSite(), currentMeeting(), r.id);
+    }
+  });
+  const escalated = tier === 'Tier 2' ? state.t2EscOn === 'yes' : state.escSent === 'yes';
+
   const entry = {
-    v: 3,
+    v: 4,
     id: Date.now().toString(),
     site: currentSite(),
+    meeting: currentMeeting(),
+    chair: fieldVal('chair-name'),
+    shift: fieldVal('shift-name'),
+    observer: fieldVal('observer-name'),
     date: document.getElementById('obs-date').value || todayISO(),
     tier,
+    hesitations: numOrNull(state.hesitations),
+    escSort: escalated ? { boundary: numOrNull(state.escBoundary) || 0, clock: numOrNull(state.escClock) || 0, hard: numOrNull(state.escHard) || 0 } : null,
+    resultNums,
     minutesLate: parseFloat(state.minutesLate),
     heldForSomeone: state.noWait === 'no',
     runTime: parseFloat(state.runTime),
@@ -993,6 +1799,7 @@ document.getElementById('btn-score').addEventListener('click', () => {
   const history = getHistory();
   history.push(entry);
   saveHistory(history);
+  fillDatalists();
 
   renderResult(entry);
   switchView('result');
@@ -1027,6 +1834,8 @@ document.getElementById('btn-copy').addEventListener('click', async () => {
 });
 
 document.getElementById('obs-date').value = todayISO();
+try { document.getElementById('observer-name').value = localStorage.getItem('signalWalkObserver') || ''; } catch (e) {}
+fillDatalists();
 buildDimCards();
 </script>
 </body>
