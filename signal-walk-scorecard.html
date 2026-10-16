@@ -469,6 +469,7 @@
         <li>Sigma level: DPMO and sigma level for the walks in view. With no misses yet it shows a floor, not a value.</li>
         <li>Control chart: a p-chart of the miss rate per walk with 3-sigma limits. Signals are a walk outside the limits, 8 walks in a row on one side of the center line, or 6 walks in a row moving the same way. Limits are provisional until about 20 walks. Pick one meeting so the chart tracks one process.</li>
         <li>Sustainment: the chance the next walk is at standard (Regulating or better), the current run at standard, and whether the miss rate is trending.</li>
+        <li>Learning curve: the learning rate per doubling of meetings held, and the projected date this meeting reaches its target miss rate.</li>
         <li>Pareto: which checks miss most, and how much of the total the top 3 carry.</li>
         <li>Before and after: pick a date, such as when a coaching module was delivered. A 2-proportion test on checks and a Mann-Whitney test on walks. Trust a change when both agree.</li>
         <li>Results: logistic regression of each result on the walk score, for the same walk and for the next walk of the same meeting. Needs 10 walks. With numbers entered, a linear regression of attainment against score.</li>
@@ -476,6 +477,18 @@
       </ol>
       <p>Read the p-value as the chance of seeing a difference this large if nothing had really changed. Below 0.05 is the usual line. One observer and one walk a day gives direction within a month, not proof.</p>
       <p class="readme-wrong">What can go wrong: mixing meetings in one chart, calling a change after three walks, and treating a correlation between meeting score and results as proof of cause.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Learning curve</h3>
+      <p>Wright's Law: every time the number of meetings held doubles, the miss rate falls by a fixed share. A learning rate of 80% means each doubling leaves 80% of the misses. The tool counts meetings held, not walks, because the team learns from every meeting it runs.</p>
+      <ol>
+        <li>Live since: the date the meeting started. Blank means counting starts at your first walk. A meeting that ran long before you arrived needs its real start date.</li>
+        <li>Meetings per week: 5 for a daily meeting on weekdays, 1 for a weekly one. Tier 1 per shift is meetings per week on the line you walk.</li>
+        <li>Target miss %: where you want this meeting to land.</li>
+      </ol>
+      <p>Pick one meeting. It needs 10 walks spanning at least two doublings of meetings held. It projects the meetings and the date to target, with a range. It projects nothing when misses are not falling, and it flags a plateau when the last 5 walks all sit above the curve. After a chair change or a new agenda, set Live since to the change date and the curve starts over.</p>
+      <p>Power curves slow down as they go. When the target sits more than 3 years out at the current pace, the tool says so: more repetitions will not close the gap, a step change in how the meeting is run will.</p>
+      <p class="readme-wrong">What can go wrong: a guessed start date, which bends the curve, and treating the projected date as a promise instead of a pace.</p>
     </div>
     <div class="readme-section">
       <h3>Observer calibration</h3>
@@ -1201,7 +1214,7 @@ function linReg(xs, ys) {
   const df = n - 2;
   const se = Math.sqrt(sse / df / sxx);
   const p = se > 0 ? tTwoSidedP(slope / se, df) : (slope === 0 ? 1 : 0);
-  return { n, slope, intercept, r2, p };
+  return { n, slope, intercept, r2, p, se, df };
 }
 function logitFit(xs, ys) {
   const n = xs.length;
@@ -1333,7 +1346,7 @@ function renderAnalysis() {
   if (!walks.length) {
     content.innerHTML = '<div class="empty-state">No walks to analyze yet. Walks scored in the current format (October 2026 on) build the analysis here.</div>';
   } else {
-    content.innerHTML = anSummary(walks) + anPChart(walks, mixed) + anSustain(walks) + anPareto(walks) + anBeforeAfter(walks) + anResults(walks) + anBoundary(walks);
+    content.innerHTML = anSummary(walks) + anPChart(walks, mixed) + anSustain(walks) + anCurve(walks, mixed) + anPareto(walks) + anBeforeAfter(walks) + anResults(walks) + anBoundary(walks);
   }
   renderCalibration();
 }
@@ -1556,6 +1569,128 @@ function anBoundary(walks) {
   }
   return h + '</div>';
 }
+
+
+/* == Learning curve (Wright's Law) == */
+const DEFAULT_PER_WEEK = { 'Tier 1': 5, 'Tier 2': 5, 'Tier 3': 1 };
+function getCurveStore() { try { return JSON.parse(localStorage.getItem('signalWalkCurves') || '{}'); } catch (e) { return {}; } }
+function curveSettings(key, tier, firstDate) {
+  const s = getCurveStore()[key] || {};
+  return {
+    liveSince: s.liveSince || '',
+    start: s.liveSince || firstDate,
+    perWeek: typeof s.perWeek === 'number' && s.perWeek > 0 ? s.perWeek : DEFAULT_PER_WEEK[tier] || 5,
+    target: typeof s.target === 'number' && s.target > 0 && s.target < 100 ? s.target : 5
+  };
+}
+function saveCurveSetting(key, field, val) {
+  const store = getCurveStore();
+  store[key] = store[key] || {};
+  store[key][field] = val;
+  try { localStorage.setItem('signalWalkCurves', JSON.stringify(store)); } catch (e) {}
+}
+function daysBetween(a, b) { return Math.round((Date.parse(b + 'T12:00:00') - Date.parse(a + 'T12:00:00')) / 86400000); }
+function addDays(iso, days) {
+  const d = new Date(Date.parse(iso + 'T12:00:00') + days * 86400000);
+  const p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+function fmtDate(iso) { return new Date(Date.parse(iso + 'T12:00:00')).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); }
+
+function anCurve(walks, mixed) {
+  const head = '<div class="an-card"><p class="an-title">Learning curve</p>' +
+    '<p class="an-sub">Wright\'s Law: every time the meetings held double, the miss rate falls by a fixed share. The fitted rate projects when this meeting reaches its target.</p>';
+  if (mixed) return head + '<p class="an-line">Pick one meeting above. A learning curve belongs to one meeting and one team.</p></div>';
+  const first = walks[0];
+  const key = streamKey(first.site, first.meeting, first.tier);
+  const cs = curveSettings(key, first.tier, first.date);
+  const settings = '<div class="field-row" style="margin-top:4px;">' +
+    '<div class="field"><label>Live since</label><input type="date" data-curve="liveSince" value="' + esc(cs.liveSince) + '"></div>' +
+    '<div class="field"><label>Meetings / week</label><input type="number" inputmode="decimal" min="0.25" step="any" data-curve="perWeek" value="' + cs.perWeek + '"></div>' +
+    '<div class="field"><label>Target miss %</label><input type="number" inputmode="decimal" min="0.1" max="99" step="any" data-curve="target" value="' + cs.target + '"></div></div>' +
+    (cs.liveSince ? '' : '<p class="an-note">No live-since date, so counting starts at your first walk (' + esc(fmtDate(cs.start)) + '). For a meeting that ran long before you arrived, enter its real start date. It changes the learning rate.</p>');
+
+  const pts = walks.filter(e => e.date >= cs.start).map(e => {
+    const w = walkDefects(e);
+    const x = Math.max(1, daysBetween(cs.start, e.date) * cs.perWeek / 7 + 1);
+    return { e, x, p: (w.d + 0.5) / (w.n + 1) };
+  });
+  const xs = pts.map(q => q.x);
+  const span = xs.length ? Math.max.apply(null, xs) / Math.min.apply(null, xs) : 0;
+  if (pts.length < 10 || span < 4) {
+    return head + settings + '<p class="verdict drift">Not enough history yet</p><p class="an-line">Needs 10 walks spanning at least two doublings of meetings held. Now: ' + pts.length + ' walks, ' + (span >= 2 ? Math.log2(span).toFixed(1) : '0') + ' doublings.</p></div>';
+  }
+  const fit = linReg(xs.map(Math.log), pts.map(q => Math.log(q.p)));
+  const b = fit.slope, a = fit.intercept;
+  const lr = Math.pow(2, b);
+  const target = cs.target / 100;
+  const xNow = daysBetween(cs.start, todayISO()) * cs.perWeek / 7 + 1;
+  const pNow = Math.exp(a + b * Math.log(Math.max(1, xNow)));
+  const tcrit = fit.df >= 30 ? 2.04 : [12.71, 4.30, 3.18, 2.78, 2.57, 2.45, 2.36, 2.31, 2.26, 2.23, 2.20, 2.18, 2.16, 2.14, 2.13, 2.12, 2.11, 2.10, 2.09, 2.09, 2.08, 2.07, 2.07, 2.06, 2.06, 2.06, 2.05, 2.05, 2.05, 2.04][fit.df - 1];
+  const dateFor = slope => {
+    if (!(slope < 0)) return null;
+    const xT = Math.exp((Math.log(target) - a) / slope);
+    const remaining = Math.max(0, xT - xNow);
+    return { meetings: Math.ceil(remaining), date: addDays(todayISO(), Math.ceil(remaining / cs.perWeek * 7)) };
+  };
+
+  // Plateau check: last 5 walks all above the fitted curve
+  const last = pts.slice(-5);
+  const plateau = last.length === 5 && last.every(q => Math.log(q.p) > a + b * Math.log(q.x));
+
+  // Chart: log-log
+  const W = 340, H = 170, L = 34, R = 8, T = 10, B = 22;
+  const lx0 = Math.log(Math.min.apply(null, xs)), lx1 = Math.log(Math.max(Math.max.apply(null, xs), xNow) * 1.05);
+  const ps = pts.map(q => q.p).concat([target]);
+  const ly0 = Math.log(Math.min.apply(null, ps) * 0.8), ly1 = Math.log(Math.max.apply(null, ps) * 1.2);
+  const X = lx => L + (lx - lx0) / (lx1 - lx0) * (W - L - R);
+  const Y = ly => T + (1 - (ly - ly0) / (ly1 - ly0)) * (H - T - B);
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Learning curve, miss rate against meetings held, log scales">';
+  [Math.exp(ly0), Math.exp((ly0 + ly1) / 2), Math.exp(ly1)].forEach(v => {
+    svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(Math.log(v)) + '" y2="' + Y(Math.log(v)) + '" stroke="#3A423F" stroke-width="0.5"/>' +
+      '<text x="' + (L - 4) + '" y="' + (Y(Math.log(v)) + 3) + '" fill="#6C736F" font-size="9" text-anchor="end">' + (v * 100 < 10 ? (v * 100).toFixed(1) : Math.round(v * 100)) + '%</text>';
+  });
+  svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(Math.log(target)) + '" y2="' + Y(Math.log(target)) + '" stroke="#4F8B5B" stroke-width="1" stroke-dasharray="4 3"/>';
+  svg += '<line x1="' + X(lx0) + '" y1="' + Y(a + b * lx0) + '" x2="' + X(lx1) + '" y2="' + Y(a + b * lx1) + '" stroke="#9CA39F" stroke-width="1.2"/>';
+  pts.forEach(q => { svg += '<circle cx="' + X(Math.log(q.x)) + '" cy="' + Y(Math.log(q.p)) + '" r="3" fill="#E8A33D"><title>' + esc(q.e.date) + ', meeting ' + Math.round(q.x) + ': ' + pct1(q.p) + '</title></circle>'; });
+  svg += '<text x="' + L + '" y="' + (H - 6) + '" fill="#6C736F" font-size="9">meeting ' + Math.round(Math.exp(lx0)) + '</text>' +
+    '<text x="' + (W - R) + '" y="' + (H - 6) + '" fill="#6C736F" font-size="9" text-anchor="end">meeting ' + Math.round(Math.exp(lx1) / 1.05) + '</text></svg>';
+
+  let verdict, proj = '';
+  if (b >= 0 || fit.p >= 0.05) {
+    verdict = '<p class="verdict fail">No proven learning: misses are not falling with experience (' + fmtP(fit.p) + ')</p>';
+    proj = '<p class="an-line">No date is projected. Something has to change in how the meeting is run or coached before the curve bends.</p>';
+  } else if (pNow <= target) {
+    verdict = '<p class="verdict good">At target on the curve now</p>';
+    proj = '<p class="an-line">The fitted miss rate today is ' + pct1(pNow) + ', at or below the ' + cs.target + '% target. Keep walking to confirm it holds.</p>';
+  } else {
+    const mid = dateFor(b), fast = dateFor(b - tcrit * fit.se), slow = dateFor(b + tcrit * fit.se);
+    verdict = '<p class="verdict ' + (plateau ? 'drift' : 'good') + '">Learning rate ' + Math.round(lr * 100) + '%: each doubling leaves ' + Math.round(lr * 100) + '% of the misses</p>';
+    const far = d => !d || daysBetween(todayISO(), d.date) > 1095;
+    const when = d => far(d) ? 'more than 3 years out' : d.meetings === 0 ? 'already there' : fmtDate(d.date);
+    proj = (far(mid)
+        ? '<p class="an-line">At this pace the ' + cs.target + '% target is <b>more than 3 years out</b> (about ' + mid.meetings.toLocaleString() + ' more meetings).</p>' +
+          '<p class="verdict drift">Repetition alone will not get there. The curve needs a step change: coaching, a reset agenda, or new standards.</p>'
+        : '<p class="an-line">Reaches the ' + cs.target + '% target in about <b>' + mid.meetings + ' more meetings</b>, around <b>' + esc(fmtDate(mid.date)) + '</b>.</p>') +
+      '<p class="an-line">Range: ' + esc(when(fast)) + ' to ' + esc(when(slow)) + '.</p>';
+  }
+  return head + settings + '<div class="chart-wrap">' + svg + '</div>' + verdict + proj +
+    '<p class="an-line">Fitted miss rate today: ' + pct1(pNow) + ' at meeting ' + Math.round(xNow) + '. Fit R&sup2; ' + fit.r2.toFixed(2) + '.</p>' +
+    (plateau ? '<p class="verdict drift">Possible plateau: the last 5 walks all sit above the curve</p>' : '') +
+    (fit.r2 < 0.2 && b < 0 && fit.p < 0.05 ? '<p class="an-note">Weak fit. Treat the date as direction, not a commitment.</p>' : '') +
+    '<p class="an-note">The curve forecasts misses, not results. A chair change or a new agenda resets the curve: set Live since to the change date.</p></div>';
+}
+document.getElementById('analysis-content').addEventListener('change', e => {
+  const el = e.target;
+  if (!el.dataset.curve) return;
+  const { walks } = analysisWalks();
+  if (!walks.length) return;
+  const key = streamKey(walks[0].site, walks[0].meeting, walks[0].tier);
+  const v = el.dataset.curve === 'liveSince' ? el.value : parseFloat(el.value);
+  if (el.dataset.curve !== 'liveSince' && !(v > 0)) return;
+  saveCurveSetting(key, el.dataset.curve, v);
+  renderAnalysis();
+});
 
 /* == Observer calibration (Kappa) == */
 function getCals() { try { return JSON.parse(localStorage.getItem('signalWalkCalibrations') || '[]'); } catch (e) { return []; } }
