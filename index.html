@@ -253,6 +253,11 @@
     .price-card.popular .problem-pitch { color: rgba(255,255,255,0.72); }
     .price-anchor { text-align: center; font-family: var(--serif); font-size: 1.2rem; color: var(--navy); margin: 0.5rem auto 0.75rem; max-width: 640px; }
     @media (max-width: 1080px) { .problem-grid { grid-template-columns: repeat(2, 1fr); } }
+    .price-card.feature-wide { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 2rem; border: 2px solid var(--gold); position: relative; }
+    .feature-wide .feature-text { flex: 1; }
+    .feature-wide .feature-buy { flex: 0 0 220px; text-align: center; }
+    .feature-badge { position: absolute; top: -11px; left: 1.75rem; background: var(--gold); color: #fff; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; padding: 3px 10px; border-radius: 20px; }
+    @media (max-width: 720px) { .price-card.feature-wide { flex-direction: column; align-items: stretch; gap: 1rem; } .feature-wide .feature-buy { flex: none; } }
     @media (max-width: 720px) { .problem-grid { grid-template-columns: 1fr; } }
   </style>
 <!-- Privacy-friendly analytics by Plausible -->
@@ -336,6 +341,18 @@
         <div class="price-amount">$249</div>
         <div class="price-note">25 tools &middot; client-ready</div>
         <a href="https://moseiorg.gumroad.com/l/Enterprise-Consultant" class="price-cta">Get Enterprise &rarr;</a>
+      </div>
+      <div class="price-card feature-wide">
+        <div class="feature-badge">NEW</div>
+        <div class="feature-text">
+          <h3 class="problem-title">I walk tier meetings, but I can't prove they're getting better.</h3>
+          <p class="problem-pitch">You sit in, you take notes, you coach. Three months later nobody can say whether the meetings improved. SignalWalk scores every walk on your phone, in the room, places each meeting on the IMI scale, and shows the trend, the sigma level, and when each meeting will reach standard. One tap sends the chair a walk report.</p>
+        </div>
+        <div class="feature-buy">
+          <div class="price-amount">$39.99</div>
+          <div class="price-note">Phone app &middot; works in the room</div>
+          <a href="https://moseiorg.gumroad.com/l/signalwalk" class="price-cta gold">Get SignalWalk &rarr;</a>
+        </div>
       </div>
     </div>
     <p class="price-anchor">A consultant day to diagnose this costs $2,500 to $5,000. These tools let you do it yourself, starting at $29.</p>
