@@ -345,7 +345,7 @@ exports.handler = async function(event, context) {
     for (const model of MODELS) {
       const payload = JSON.stringify({
         model: model,
-        max_tokens: 1024,
+        max_tokens: 4096,
         system: systemPrompt,
         messages: messages
       });
