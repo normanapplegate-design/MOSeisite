@@ -40,8 +40,9 @@
   .wordmark span { color: var(--amber); }
   .subtitle { color: var(--text-dim); font-size: 13px; margin: 4px 0 0; }
 
-  nav.tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surface); padding: 4px; border-radius: var(--radius); }
-  nav.tabs button { flex: 1; background: transparent; border: none; color: var(--text-dim); font-family: var(--sans); font-size: 12.5px; padding: 9px 4px; border-radius: 7px; cursor: pointer; }
+ nav.tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surface); padding: 4px; border-radius: var(--radius); overflow-x: auto; scrollbar-width: none; }
+  nav.tabs::-webkit-scrollbar { display: none; }
+  nav.tabs button { flex: 1 0 auto; white-space: nowrap; padding-left: 10px !important; padding-right: 10px !important; background: transparent; border: none; color: var(--text-dim); font-family: var(--sans); font-size: 12.5px; padding: 9px 4px; border-radius: 7px; cursor: pointer; }
   nav.tabs button.active { background: var(--surface-raised); color: var(--text); font-weight: 600; }
 
   .view { display: none; }
@@ -190,6 +191,37 @@
   .an-table td b { color: var(--text); }
   .cal-input { width: 100%; min-height: 90px; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 8px 10px; font-family: var(--mono); font-size: 11.5px; }
 
+  .band-chip { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; border: 1px solid; white-space: nowrap; }
+  .band-chip.good { background: var(--good-bg); border-color: var(--good); color: var(--good); }
+  .band-chip.drift { background: var(--drift-bg); border-color: var(--drift); color: var(--drift); }
+  .band-chip.fail { background: var(--fail-bg); border-color: var(--fail); color: var(--fail); }
+  .imi-strip { display: flex; gap: 3px; margin: 6px 0 4px; }
+  .imi-seg { flex: 1; text-align: center; }
+  .imi-bar { height: 70px; display: flex; align-items: flex-end; background: var(--bg); border-radius: 5px; overflow: hidden; }
+  .imi-fill { width: 100%; border-radius: 5px 5px 0 0; }
+  .imi-fill.good { background: var(--good); }
+  .imi-fill.drift { background: var(--drift); }
+  .imi-fill.fail { background: var(--fail); }
+  .imi-count { font-size: 13px; font-weight: 700; color: var(--text); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .imi-name { font-size: 9.5px; color: var(--text-faint); line-height: 1.2; }
+  .dash-row { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px; }
+  .dash-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .dash-name { font-size: 14px; font-weight: 650; }
+  .dash-sub { font-size: 11.5px; color: var(--text-dim); margin-top: 2px; }
+  .dash-nums { display: flex; gap: 14px; margin-top: 8px; font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .dash-nums b { color: var(--text); font-size: 15px; }
+  .score-track { position: relative; height: 8px; background: var(--bg); border-radius: 4px; margin-top: 8px; }
+  .score-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+  .score-fill.good { background: var(--good); }
+  .score-fill.drift { background: var(--drift); }
+  .score-fill.fail { background: var(--fail); }
+  .score-std { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text-dim); }
+  .legend-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--text-dim); }
+  .legend-row:first-of-type { border-top: none; }
+  .legend-row .band-chip { min-width: 96px; text-align: center; }
+  .legend-range { width: 82px; white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--text); }
+  .explain-q { font-size: 12.5px; color: var(--text); font-weight: 600; margin: 0 0 6px; }
+
   @media print {
     nav.tabs, .btn-primary, .btn-secondary, .delete-link, .export-box { display: none !important; }
     body { background: white; color: black; }
@@ -208,7 +240,9 @@
     <button class="tab-btn active" data-view="score">Score</button>
     <button class="tab-btn" data-view="result">Result</button>
     <button class="tab-btn" data-view="history">History</button>
+    <button class="tab-btn" data-view="dashboard">Dashboard</button>
     <button class="tab-btn" data-view="analysis">Analysis</button>
+    <button class="tab-btn" data-view="explain">Explain</button>
     <button class="tab-btn" data-view="readme">Read Me</button>
   </nav>
 
@@ -259,6 +293,11 @@
     <div id="dim-cards"></div>
     <div id="boundary-card"></div>
     <div id="results-card"></div>
+    <div class="dim-card">
+      <div class="dim-head"><p class="dim-title">Coaching focus</p><span class="badge">Not scored</span></div>
+      <p class="dim-question">The one thing the chair should work on before the next walk. It leads the walk report.</p>
+      <textarea class="evidence" id="focus-input" placeholder="e.g. Park problem-solving within 1 minute"></textarea>
+    </div>
 
     <button class="btn-primary" id="btn-score">Score this walk</button>
   </div>
@@ -272,15 +311,41 @@
   <div class="view" id="view-history">
     <div id="history-content"></div>
     <div class="export-box">
-      <div class="export-hint">Download a CSV for Excel (one row per walk, one column per check), or show the raw history data to back it up or move it to another device.</div>
+      <div class="export-hint">Back up your walks to a file, and restore them on a new phone or browser. Download a CSV for Excel (one row per walk, one column per check).</div>
       <div class="export-actions">
-        <button class="btn-secondary" id="btn-csv">Download CSV</button>
-        <button class="btn-secondary" id="btn-export">Show export data</button>
+        <button class="btn-secondary" id="btn-backup">Download backup</button>
+        <button class="btn-secondary" id="btn-restore">Restore from backup</button>
       </div>
+      <input type="file" id="restore-file" accept=".json,.txt,application/json,text/plain" style="display:none;">
+      <div class="export-actions" style="margin-top:8px;">
+        <button class="btn-secondary" id="btn-csv">Download CSV</button>
+        <button class="btn-secondary" id="btn-export">Show backup text</button>
+      </div>
+      <div id="restore-paste" style="display:none;margin-top:10px;">
+        <div class="export-hint">No backup file? Paste the backup text here instead.</div>
+        <textarea class="cal-input" id="restore-text" placeholder="Paste backup text"></textarea>
+        <button class="btn-secondary" id="btn-restore-paste">Restore pasted text</button>
+      </div>
+      <div class="copy-toast" id="restore-toast"></div>
       <button class="btn-secondary" id="btn-copy" style="display:none;">Copy to clipboard</button>
       <textarea class="export-output" id="export-output" readonly></textarea>
       <div class="copy-toast" id="copy-toast">Copied.</div>
     </div>
+  </div>
+
+  <div class="view" id="view-dashboard">
+    <div class="field-row">
+      <div class="field">
+        <label for="dash-site">Site</label>
+        <select id="dash-site"></select>
+      </div>
+      <div class="field">
+        <label for="dash-tier">Tier</label>
+        <select id="dash-tier"><option value="">All tiers</option><option>Tier 1</option><option>Tier 2</option><option>Tier 3</option></select>
+      </div>
+    </div>
+    <div id="dashboard-content"></div>
+    <div class="an-card" id="dash-legend"></div>
   </div>
 
   <div class="view" id="view-analysis">
@@ -308,14 +373,97 @@
     <div id="calibration-content"></div>
   </div>
 
+  <div class="view" id="view-explain">
+    <div class="readme-section">
+      <h3>What the Analysis tab tells you</h3>
+      <p>Each card in Analysis answers one plain question about a meeting. This page gives the question, an example, and what good looks like. No math needed.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Start here: chances and misses</h3>
+      <p>Every number comes from counting two things on each walk. A <b>chance</b> is one thing the meeting should get right: started on time, board updated, Materials in the room. A <b>miss</b> is a chance it got wrong.</p>
+      <p>Example: a Tier 2 walk has 24 things to check. The meeting gets 22 right and 2 wrong. That walk has 24 chances and 2 misses. Everything else is these two counts, added up across walks and looked at from different angles.</p>
+      <p>A walk is <b>at standard</b> when its score lands at Regulating or better on the IMI scale. Think of it as a passing grade.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Sigma level: how often does it miss?</h3>
+      <p class="explain-q">Out of all the chances, how many did the meeting miss?</p>
+      <p>Miss rate, DPMO, and sigma all answer that one question in different units, like miles, kilometers, and feet. 2 misses in 24 chances is about an 8% miss rate. Per million, that is 80,000 DPMO. As a sigma score, where higher is better, it is about 2.9.</p>
+      <p>Each step up in sigma is harder than the last. Cutting misses from 30% to 15% gains half a point. Cutting from 7% to 5% gains a tenth. The last few misses are always the hardest to remove.</p>
+      <p>Zero-miss walks are rare by design. With 24 chances to slip, even a good meeting comes out perfect about 3 walks in 10.</p>
+      <p><b>Good:</b> miss rate 5% or lower, about 3.1 sigma.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Control chart: normal, or did something change?</h3>
+      <p class="explain-q">One walk had 20% misses and the next had 5%. Real change, or the normal up and down?</p>
+      <p>Every meeting wobbles, the way a commute takes 22 minutes one day and 26 the next. The chart draws a band around the normal wobble. A walk inside the band is noise. A walk outside it means something specific happened that day, and it is worth asking what.</p>
+      <p>Three warning signs, shown in red or written under the chart: a dot outside the band, 8 dots in a row on one side of the middle line, or 6 dots in a row heading the same way.</p>
+      <p>Steady is not the same as good. A meeting can be steady at 30% misses. The band settles after about 20 walks.</p>
+      <p><b>Good:</b> no warning signs for 20 walks, middle line at 5% or lower.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Sustainment: is it holding?</h3>
+      <p class="explain-q">It looked good last month. Is it still good, and will it be good tomorrow?</p>
+      <p><b>Chance the next walk passes:</b> if 8 of the last 10 passed, about 75%. <b>Walks in a row at standard:</b> like a safety board's days without an incident. <b>Trend:</b> misses going up, down, or flat. It only says improving or decaying when the change is clear.</p>
+      <p><b>Good:</b> 80% chance or higher, 10 or more in a row, trend improving, or flat once at target.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Learning curve: when will it get there?</h3>
+      <p class="explain-q">The team improves with practice. At this pace, when does the meeting hit target?</p>
+      <p>Like learning to drive: big gains in the first 10 trips, small ones by trip 500. Every time the team doubles the meetings it has held, misses drop by about the same share. If 25 meetings in it misses 20%, and at 50 meetings it misses 16%, each doubling kept 80% of the misses. That is a learning rate of 80%. Lower is faster.</p>
+      <p>"More than 3 years out" means practice alone will not close the gap. Change something, such as coaching, the agenda, or a standard, and watch the curve bend. Enter the meeting's real start date and how often it meets. After a chair change, set a new start date.</p>
+      <p><b>Good:</b> learning rate 85% or lower, target date inside the engagement.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Pareto: where are the misses coming from?</h3>
+      <p class="explain-q">Which checks get missed most, so we know what to coach first?</p>
+      <p>A few checks usually cause most of the trouble. 9/26 means missed 9 times out of the 26 times the check applied. If the top 3 carry half the misses, coaching those 3 habits cuts misses in half. Trust 9/26 more than 3/4: four times is not much to go on.</p>
+      <p><b>Good:</b> no check missed more than 1 time in 10.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Before and after: did the coaching work?</h3>
+      <p class="explain-q">We coached the chair on the 13th. Better meeting, or a good week?</p>
+      <p>Pick the date. The tool compares the walks before and after, and runs two separate checks. Real change means both agree. Leaning better means one agrees, so keep walking. Could be noise means neither does. About 10 walks on each side gives a trustworthy answer.</p>
+      <p><b>Good:</b> Real change, in the better direction, after each round of coaching.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Results: do better meetings bring better numbers?</h3>
+      <p class="explain-q">When the meeting runs well, does the area hit its targets more often?</p>
+      <p>Example: Delivery hit chance 35% at a 50% meeting score, 57% at a 90% score. A well-run meeting nearly doubles the odds. An asterisk means the link is strong enough to trust. The next walk table carries more weight than same walk, because the meeting happens first. A strong link still does not prove cause: a good supervisor may run better meetings and get better results.</p>
+      <p><b>Good:</b> at least one result with an asterisk on the next walk table.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Participation: does the room own the meeting?</h3>
+      <p class="explain-q">Do the people in the room speak to their own numbers, or does the chair do all the talking?</p>
+      <p>Example: 9 people in the room, 5 spoke besides the chair. That is 5 of 8, about 63%.</p>
+      <p><b>Good:</b> half the room or more.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Decision Boundary: is the room making its own calls?</h3>
+      <p class="explain-q">Does this team decide what it is allowed to decide?</p>
+      <p><b>Hesitations</b> count each "I'll have to check" about something the room could have decided. <b>Escalations</b> sort into boundary (truly needed someone higher), clock (could not be fixed in time here), or just hard (the team owned it and passed it up anyway). A high just hard share means the meeting reports status instead of making decisions.</p>
+      <p><b>Good:</b> hesitations heading to zero, just hard at 1 in 10 or fewer.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Kappa: do two observers see the same meeting?</h3>
+      <p class="explain-q">If you and a colleague score the same meeting, do you get the same answers?</p>
+      <p>This checks the scorecard, not the meeting. Raw agreement flatters: two people who answer Yes to everything would agree 90% of the time without looking. Kappa removes the agreement you would get by luck. 0.75 or higher is good, 0.40 to 0.74 means tighten the disputed statements, below 0.40 is not reliable yet.</p>
+      <p><b>Good:</b> 0.75 or higher across at least 5 paired walks.</p>
+    </div>
+    <div class="readme-section">
+      <h3>P-value: how sure can we be?</h3>
+      <p class="explain-q">Is the pattern real, or luck?</p>
+      <p>Flip a coin 10 times and get 7 heads: that happens by luck all the time, p about 0.34. Get 10 of 10: p about 0.002, something is going on. Below 0.05 is sure enough to call it real. 0.05 to 0.10 is maybe, keep walking. Above 0.10, can't tell yet. With about one walk a day, expect a direction within a month and a firm answer within a quarter.</p>
+    </div>
+  </div>
+
   <div class="view" id="view-readme">
     <div class="readme-section">
       <h3>Why this exists</h3>
-      <p>This is a personal field tool, not a client deliverable. It scores a live tier meeting against seven dimensions (eight at Tier 2) that separate a meeting that regulates from one that just occupies a slot on the calendar. Every dimension is scored from things you can see or count in the room, not from an impression.</p>
+      <p>SignalWalk is a field tool for the person who audits tier meetings: a consultant, an operations excellence lead, or a plant manager walking the floor. It scores a live tier meeting against seven dimensions (eight at Tier 2) that separate a meeting that regulates from one that just occupies a slot on the calendar. Every dimension is scored from things you can see or count in the room, not from an impression.</p>
     </div>
     <div class="readme-section">
       <h3>Purpose</h3>
-      <p>Sit in on any Tier 1, 2, or 3 meeting at a client site. Read each statement and answer Yes if you agree, No if you don't, as it happens. Enter the minutes late and the run time, mark who was in the room, and walk out with a scored profile and an IMI read for that tier.</p>
+      <p>Sit in on any Tier 1, 2, or 3 meeting. Read each statement and answer Yes if you agree, No if you don't, as it happens. Enter the minutes late and the run time, mark who was in the room, and walk out with a scored profile and an IMI read for that tier.</p>
     </div>
     <div class="readme-section">
       <h3>Inputs</h3>
@@ -323,7 +471,7 @@
     </div>
     <div class="readme-section">
       <h3>Outputs</h3>
-      <p>A rating for each dimension that the tool works out from your answers, a profile bar chart, an overall IMI maturity band, the list of checks that missed, and a saved history entry. Repeat visits to the same site show the trend and which roles keep missing the meeting. The Analysis tab turns the history into a sigma level, a control chart, a sustainment read, a Pareto of misses, a before and after test, a regression of results on meeting score, and an observer calibration check. History downloads as a CSV for Excel.</p>
+      <p>A rating for each dimension that the tool works out from your answers, a profile bar chart, an overall IMI maturity band, the list of checks that missed, and a saved history entry. Repeat visits to the same site show the trend and which roles keep missing the meeting. The Dashboard places every meeting you walk on the IMI scale in one view. The Analysis tab turns the history into a sigma level, a control chart, a sustainment read, a Pareto of misses, a before and after test, a regression of results on meeting score, and an observer calibration check. History downloads as a CSV for Excel.</p>
     </div>
     <div class="readme-section">
       <h3>Cadence</h3>
@@ -335,7 +483,7 @@
     </div>
     <div class="readme-section">
       <h3>Supporting documents</h3>
-      <p>Pairs with the Tier Meeting Diagnostic and the Meeting Signal Review. This tool is the only one of the three meant for your own use in the room rather than for the client to fill out.</p>
+      <p>Pairs with the Tier Meeting Diagnostic and the Meeting Signal Review on mosei.org. This tool is the one used in the room, by the observer, while the meeting runs.</p>
     </div>
     <div class="readme-section">
       <h3>Three things most likely to fail in year one</h3>
@@ -360,8 +508,9 @@
       <ol>
         <li>The board was updated before the meeting started.</li>
         <li>Attendees had their own numbers ready.</li>
+        <li>Every metric on the board shows target, actual, and red or green status.</li>
       </ol>
-      <p class="readme-wrong">What can go wrong: the first several minutes are spent catching people up instead of deciding anything.</p>
+      <p class="readme-wrong">What can go wrong: the first several minutes are spent catching people up instead of deciding anything, and a board with no targets or status colors cannot tell anyone what needs attention.</p>
     </div>
     <div class="readme-section">
       <h3>3. Focus</h3>
@@ -391,36 +540,38 @@
         <li>Every log item on day 3 or later has a confirmed countermeasure (owner, date, recovery plan) or was escalated.</li>
         <li>Every escalation was a skip-the-log item or a day 3 miss, not just a hard problem.</li>
         <li>Each escalation stated What, Why, and Need.</li>
+        <li>Every escalation from the tier below was answered within 24 hours. Tier 3 only.</li>
       </ol>
       <p>If nothing was escalated, statements 3 and 4 are skipped.</p>
       <p class="readme-wrong">What can go wrong: the chair holds the issue. "We'll handle it ourselves" becomes the answer, and by the time it surfaces it costs more to fix or has already reached the customer.</p>
     </div>
     <div class="readme-section">
       <h3>Tier 2: Action Log, Escalations, A3 Status</h3>
-      <p>At Tier 2, Actions and Escalation are replaced by three short dimensions that match how the meeting runs: a laminated action log under each SQDPP element for longer-term issues, daily escalations such as material and drawings, and A3 status.</p>
+      <p>At Tier 2, Actions and Escalation are replaced by three short dimensions that match how the meeting runs: an action log under each element on the board for longer-term issues, the day's escalations, and A3 status.</p>
       <p><b>Action Log</b></p>
       <ol>
-        <li>Every SQDPP action log sheet was reviewed in the meeting.</li>
+        <li>Every board element's action log was reviewed in the meeting.</li>
         <li>No open item is past due without a new date agreed in the meeting.</li>
       </ol>
       <p><b>Escalations</b> (N/A if none were on the agenda)</p>
       <ol>
         <li>Every new escalation was read out and given a named owner in the meeting.</li>
         <li>Every escalation from the last meeting was reported closed or given a new date.</li>
+        <li>Every escalation from the tier below was answered within 24 hours.</li>
       </ol>
       <p><b>A3 Status</b> (N/A if no A3 was presented)</p>
       <ol>
         <li>Each A3 owner stated what changed since the last review and asked for a specific decision or help.</li>
         <li>Every countermeasure discussed was backed by evidence of the cause shown in the meeting.</li>
       </ol>
-      <p class="readme-wrong">What can go wrong: the logs go stale while the meeting looks busy, material and drawing requests get an owner and are never asked about again, and A3s become status reports with the fix chosen before the cause is shown.</p>
+      <p class="readme-wrong">What can go wrong: the logs go stale while the meeting looks busy, escalations get an owner and are never asked about again, and A3s become status reports with the fix chosen before the cause is shown.</p>
     </div>
     <div class="readme-section">
       <h3>6. Attendance</h3>
       <p>Mark each required role Present, Delegate, or Absent. A delegate counts only if they can decide: if they defer anything in the meeting ("I'll have to check"), mark them Absent. All roles covered is Good. One role missing is Drifting. Two or more missing, or the chair absent with no stand-in, is Failure mode.</p>
       <ul>
         <li>Tier 1: Team Lead (chair), Crew.</li>
-        <li>Tier 2: Supervisor (chair), Safety, Quality, Delivery, Production, People, Engineering, Materials, Project Manager.</li>
+        <li>Tier 2: Supervisor (chair), Safety, Quality, Production, Maintenance, Materials, Engineering, HR.</li>
         <li>Tier 3: VP Ops (chair), Leadership team.</li>
       </ul>
       <p>Role lists can be edited per site with Edit roles. History shows which roles keep missing.</p>
@@ -441,8 +592,11 @@
         <li>Safety: there was no safety incident since the last meeting.</li>
         <li>Quality: quality met or exceeded its target.</li>
         <li>Delivery: today's delivery target was met.</li>
-        <li>Output: today's output met or exceeded the target.</li>
+        <li>Productivity: productivity met or exceeded its target.</li>
+        <li>Cost: cost met or beat its target.</li>
+        <li>People: the staffing plan was met.</li>
       </ol>
+      <p>The six results follow a standard SQDC board plus Productivity and People. Walks scored before October 2026 recorded Output, which now shows as Productivity.</p>
       <p>Read each one off the board. No if the target was missed or no target was posted.</p>
       <p>Any No opens one follow-up: the root cause for the miss is clear and understood. Yes means it was named in the meeting and backed by evidence. No means the room is still asking why. A miss with a known cause is a problem being worked. A miss with no cause is a problem being absorbed.</p>
       <p>Results are recorded beside the score, not inside it. The score measures how well the meeting ran. Results measure what the operation delivered. Keeping them apart lets History show whether better meetings bring better results, instead of a bad day on the line pulling down a well-run meeting.</p>
@@ -477,6 +631,24 @@
       </ol>
       <p>Read the p-value as the chance of seeing a difference this large if nothing had really changed. Below 0.05 is the usual line. One observer and one walk a day gives direction within a month, not proof.</p>
       <p class="readme-wrong">What can go wrong: mixing meetings in one chart, calling a change after three walks, and treating a correlation between meeting score and results as proof of cause.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Participation (not scored)</h3>
+      <p>Count the people in the room and how many spoke at least once, besides the chair. Count each person once. Optional, but it feeds the Participation card in Analysis. Half the room or more is healthy.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Coaching focus and walk report</h3>
+      <p>Before scoring, write the one thing the chair should work on before the next walk. After scoring, tap Share walk report on the Result tab. It sends a plain-text summary by text, email, or any app on your phone: the band and score, the coaching focus, what missed, what went well, and the results. On a computer it copies to the clipboard.</p>
+      <p class="readme-wrong">What can go wrong: a report with five things to fix. Pick one. The chair will work on one.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Dashboard</h3>
+      <p>Every meeting you walk, placed on the IMI scale by its latest walk, lowest score first. Each row shows the latest score, the average of the last 5 walks, how many of those were at standard, and the trend against the 5 walks before. Filter by site and tier. The legend at the bottom explains the score, the bands, and the colors.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Backup and restore</h3>
+      <p>Your walks are saved on this phone, in this browser, and nowhere else. Download a backup from History every week or two and keep it somewhere safe. To move to a new phone or browser, open SignalWalk there, tap Restore from backup, and pick the file. Walks already on the device are kept and never duplicated.</p>
+      <p class="readme-wrong">What can go wrong: clearing the browser's history or website data deletes every walk. Back up first.</p>
     </div>
     <div class="readme-section">
       <h3>Learning curve</h3>
@@ -516,7 +688,7 @@ const RATE_LABELS = { good: 'Good', drift: 'Drifting', fail: 'Failure mode', na:
 const TIME_LIMITS = { 'Tier 1': 15, 'Tier 2': 15, 'Tier 3': 30 };
 const DEFAULT_ROLES = {
   'Tier 1': ['Team Lead', 'Crew'],
-  'Tier 2': ['Supervisor', 'Safety', 'Quality', 'Delivery', 'Production', 'People', 'Engineering', 'Materials', 'Project Manager'],
+  'Tier 2': ['Supervisor', 'Safety', 'Quality', 'Production', 'Maintenance', 'Materials', 'Engineering', 'HR'],
   'Tier 3': ['VP Ops', 'Leadership team']
 };
 
@@ -524,7 +696,9 @@ const RESULT_ITEMS = [
   { id: 'safety', short: 'Safety', num: 'count', label: 'There was no safety incident since the last meeting.', desc: 'Recordable, first aid, or near miss, whatever the site counts. No if any occurred.' },
   { id: 'quality', short: 'Quality', num: 'pair', label: 'Quality met or exceeded its target.', desc: 'Scrap, first pass yield, or whatever the board tracks. No if below target or no target was posted.' },
   { id: 'delivery', short: 'Delivery', num: 'pair', label: 'Today\'s delivery target was met.', desc: 'On-time shipments or orders against plan. No if missed or no target was posted.' },
-  { id: 'output', short: 'Output', num: 'pair', label: 'Today\'s output met or exceeded the target.', desc: 'Read it off the board. No if output was below target or no target was posted.' }
+  { id: 'output', short: 'Productivity', num: 'pair', label: 'Productivity met or exceeded its target.', desc: 'Output against plan, units per labor hour, or whatever the board tracks. No if below target or no target was posted.' },
+  { id: 'cost', short: 'Cost', num: 'pair', lowerDefault: true, label: 'Cost met or beat its target.', desc: 'Scrap cost, overtime, spend against budget, or whatever the board tracks. No if over target or no target was posted.' },
+  { id: 'people', short: 'People', num: 'pair', label: 'The staffing plan was met.', desc: 'Planned headcount, absenteeism, or training against plan, whatever the board tracks. No if missed or no target was posted.' }
 ];
 function streamKey(site, meeting, tier) { return [(site || '').toLowerCase(), (meeting || '').toLowerCase(), tier || ''].join('|'); }
 function getDirStore() {
@@ -532,7 +706,9 @@ function getDirStore() {
 }
 function lowerIsBetter(site, meeting, id) {
   const s = getDirStore()[streamKey(site, meeting, '')];
-  return !!(s && s[id]);
+  if (s && typeof s[id] === 'boolean') return s[id];
+  const item = RESULT_ITEMS.find(r => r.id === id);
+  return !!(item && item.lowerDefault);
 }
 function setLowerIsBetter(site, meeting, id, val) {
   const store = getDirStore();
@@ -550,6 +726,7 @@ function entryResults(e) {
 const CHECKS = {
   prep_board: { label: 'The board was updated before the meeting started.', desc: 'All numbers on the board were current when the meeting began.' },
   prep_numbers: { label: 'Attendees had their own numbers ready.', desc: 'Nobody looked numbers up in the room.' },
+  prep_visual: { label: 'Every metric on the board shows target, actual, and red or green status.', desc: 'Readable from where the team stands. No if any metric is missing one of the three.' },
   prep_preread: { label: 'Attendees had read the pre-read before the meeting.', desc: 'Retired October 2026. Kept so earlier walks still read correctly.', retired: true },
   focus_order: { label: 'The board was walked in order, Safety first.', desc: 'Each element in sequence, not whatever someone raised.' },
   focus_data: { label: 'Every issue was tied to a number, trend, or red item.', desc: 'No issue ran over 1 minute on story or opinion alone.' },
@@ -565,22 +742,24 @@ const CHECKS = {
   esc_day3: { label: 'Every log item on day 3 or later has a confirmed countermeasure or was escalated.', desc: 'Confirmed means owner, date, and recovery plan.' },
   esc_reason: { label: 'Every escalation was a skip-the-log item or a day 3 miss.', desc: 'Nothing was sent up just because it was a hard problem.' },
   esc_format: { label: 'Each escalation stated What, Why, and Need.', desc: 'All three, every time.' },
-  t2_log_reviewed: { label: 'Every SQDPP action log sheet was reviewed in the meeting.', desc: 'The sheet under each element was gone through, none skipped.' },
+  esc_below: { label: 'Every escalation from the tier below was answered within 24 hours.', desc: 'Answered means a decision, resource, or new date went back down. Yes if none came up.', tiers: ['Tier 3'] },
+  t2_log_reviewed: { label: 'Every board element\'s action log was reviewed in the meeting.', desc: 'The log under each metric on the board was gone through, none skipped.' },
   t2_log_dated: { label: 'No open item is past due without a new date agreed in the meeting.', desc: 'Yes if nothing on the sheets is past due.' },
-  t2_esc_owned: { label: 'Every new escalation was read out and given a named owner in the meeting.', desc: 'Material, drawings, and similar requests. Yes if none came in.' },
+  t2_esc_owned: { label: 'Every new escalation was read out and given a named owner in the meeting.', desc: 'Requests for help, parts, information, or decisions. Yes if none came in.' },
   t2_esc_closed: { label: 'Every escalation from the last meeting was reported closed or given a new date.', desc: 'Yes if there were none from the last meeting.' },
+  t2_esc_below: { label: 'Every escalation from the tier below was answered within 24 hours.', desc: 'Answered means a decision, resource, or new date went back down. Yes if none came up.' },
   a3_ask: { label: 'Each A3 owner stated what changed since the last review and asked for a specific decision or help.', desc: 'A status update with no ask is a No.' },
   a3_evidence: { label: 'Every countermeasure discussed was backed by evidence of the cause shown in the meeting.', desc: 'Data, a chart, or the cause section of the A3. Yes if no countermeasure came up.' }
 };
 
 const DIMENSIONS_ALL = [
   { id: 'start', title: 'Start', question: 'The meeting started on time, without waiting for anyone.' },
-  { id: 'prep', title: 'Preparation', question: 'The board and the people were ready before it began.', checks: ['prep_board', 'prep_numbers'] },
+  { id: 'prep', title: 'Preparation', question: 'The board and the people were ready before it began.', checks: ['prep_board', 'prep_numbers', 'prep_visual'] },
   { id: 'focus', title: 'Focus', question: 'The board and the data drove the conversation.', checks: ['focus_order', 'focus_data', 'focus_hijack', 'focus_board'] },
   { id: 'actions', title: 'Actions', question: 'Every action was owned, accepted, recorded, and the log was read.', tiers: ['Tier 1', 'Tier 3'] },
   { id: 'escalation', title: 'Escalation', question: 'The right items went up, on time and in format.', tiers: ['Tier 1', 'Tier 3'] },
-  { id: 'actionlog', title: 'Action Log', question: 'The SQDPP action logs were reviewed and kept current.', tiers: ['Tier 2'], checks: ['t2_log_reviewed', 't2_log_dated'] },
-  { id: 't2esc', title: 'Escalations', question: 'Every escalation was owned and followed through.', tiers: ['Tier 2'], checks: ['t2_esc_owned', 't2_esc_closed'] },
+  { id: 'actionlog', title: 'Action Log', question: 'The action logs on the board were reviewed and kept current.', tiers: ['Tier 2'], checks: ['t2_log_reviewed', 't2_log_dated'] },
+  { id: 't2esc', title: 'Escalations', question: 'Every escalation was owned and followed through.', tiers: ['Tier 2'], checks: ['t2_esc_owned', 't2_esc_closed', 't2_esc_below'] },
   { id: 'a3', title: 'A3 Status', question: 'A3s came for a decision, backed by evidence.', tiers: ['Tier 2'], checks: ['a3_ask', 'a3_evidence'] },
   { id: 'attendance', title: 'Attendance', question: 'The right people were in the room.' },
   { id: 'energy', title: 'Energy', question: 'It stayed inside the time box without problem-solving in the room.' }
@@ -592,7 +771,7 @@ const TITLES = { start: 'Start', prep: 'Preparation', focus: 'Focus', energy: 'E
 
 let state;
 function resetState() {
-  state = { minutesLate: '', noWait: null, runTime: '', newActions: null, escSent: null, t2EscOn: null, a3On: null, results: {}, rootCause: {}, resultNums: {}, hesitations: '', escBoundary: '', escClock: '', escHard: '', checks: {}, roles: {}, notes: {}, editingRoles: false };
+  state = { minutesLate: '', noWait: null, runTime: '', newActions: null, escSent: null, t2EscOn: null, a3On: null, results: {}, rootCause: {}, resultNums: {}, present: '', speakers: '', focus: '', hesitations: '', escBoundary: '', escClock: '', escHard: '', checks: {}, roles: {}, notes: {}, editingRoles: false };
 }
 resetState();
 
@@ -650,8 +829,9 @@ function actionChecks() {
   return ['act_owner', 'act_accepted', 'act_live', 'act_log'];
 }
 function escChecks() {
-  if (state.escSent === 'yes') return ['esc_skip', 'esc_day3', 'esc_reason', 'esc_format'];
-  return ['esc_skip', 'esc_day3'];
+  const base = currentTier() === 'Tier 3' ? ['esc_skip', 'esc_day3', 'esc_below'] : ['esc_skip', 'esc_day3'];
+  if (state.escSent === 'yes') return base.concat(['esc_reason', 'esc_format']);
+  return base;
 }
 
 function evaluate(dimId, tier) {
@@ -749,7 +929,7 @@ function cardBody(dim, tier) {
   } else if (dim.id === 't2esc' || dim.id === 'a3') {
     const key = dim.id === 't2esc' ? 't2EscOn' : 'a3On';
     const gateText = dim.id === 't2esc'
-      ? ['Escalations were on today\'s agenda, new or from the last meeting.', 'Not scored. If No, Escalations is marked N/A.']
+      ? ['Escalations were on today\'s agenda: new, from the last meeting, or from the tier below.', 'Not scored. If No, Escalations is marked N/A.']
       : ['At least one A3 was presented.', 'Not scored. If No, A3 Status is marked N/A.'];
     h += '<div class="check"><p class="check-label">' + gateText[0] + '</p><p class="check-desc">' + gateText[1] + '</p>' + ynRow(key, state[key], 'Yes', 'No', true) + '</div>';
     if (state[key] === 'yes') dim.checks.forEach(id => { h += checkBlock(id); });
@@ -803,7 +983,13 @@ function buildDimCards() {
   renderResultsCard();
 }
 function renderBoundaryCard() {
-  let h = '<div class="dim-card"><div class="dim-head"><p class="dim-title">Decision Boundary</p><span class="badge">Not scored</span></div>' +
+  let h = '<div class="dim-card"><div class="dim-head"><p class="dim-title">Participation</p><span class="badge">Not scored</span></div>' +
+    '<p class="dim-question">Count, do not judge. A meeting where only the chair talks is a briefing, not a tier meeting.</p>' +
+    '<div class="esc-sort" style="grid-template-columns:1fr 1fr;">' +
+    '<div><label>People in the room</label><input class="num-input" type="number" inputmode="numeric" min="0" step="1" data-bnum="present" value="' + esc(state.present) + '"></div>' +
+    '<div><label>Spoke, besides the chair</label><input class="num-input" type="number" inputmode="numeric" min="0" step="1" data-bnum="speakers" value="' + esc(state.speakers) + '"></div>' +
+    '</div><p class="check-desc" style="margin-top:8px;">Optional. Count a person once, however often they spoke.</p></div>';
+  h += '<div class="dim-card"><div class="dim-head"><p class="dim-title">Decision Boundary</p><span class="badge">Not scored</span></div>' +
     '<p class="dim-question">Count, do not judge. Recorded beside the score so Analysis can show whether authority is being claimed at this tier.</p>' +
     '<div class="check"><p class="check-label">Hesitations (count)</p><p class="check-desc">Times someone deferred because they were unsure the decision was theirs. "I\'ll have to check," "let\'s take that to Tier 3." Enter 0 if none.</p>' +
     '<div class="num-row"><input class="num-input" type="number" inputmode="numeric" min="0" step="1" data-bnum="hesitations" value="' + esc(state.hesitations) + '"><span class="num-hint">hesitations</span></div></div>';
@@ -927,6 +1113,7 @@ document.getElementById('site-name').addEventListener('change', () => {
   renderResultsCard();
 });
 document.getElementById('meeting-name').addEventListener('change', renderResultsCard);
+document.getElementById('focus-input').addEventListener('input', e => { state.focus = e.target.value; });
 document.getElementById('observer-name').addEventListener('change', () => {
   try { localStorage.setItem('signalWalkObserver', fieldVal('observer-name')); } catch (e) {}
 });
@@ -1005,9 +1192,22 @@ function renderResult(entry) {
     '</div>' + bars +
     (missed ? '<div class="list-head">What missed</div>' + missed : '') +
     (evidence ? '<div class="list-head">Evidence notes</div>' + evidence : '') +
+    (entry.focus ? '<div class="list-head">Coaching focus</div><div class="ev-item"><div class="ev-text">' + esc(entry.focus) + '</div></div>' : '') +
+    '<button class="btn-primary" id="btn-report">Share walk report</button>' +
+    '<div class="copy-toast" id="report-toast"></div>' +
     '<button class="btn-secondary" id="btn-new-walk">Score another walk</button>';
 
   document.getElementById('btn-new-walk').addEventListener('click', () => switchView('score'));
+  document.getElementById('btn-report').addEventListener('click', async () => {
+    const text = walkReport(entry);
+    const toast = document.getElementById('report-toast');
+    const show = msg => { toast.textContent = msg; toast.style.display = 'block'; setTimeout(() => { toast.style.display = 'none'; }, 2500); };
+    if (navigator.share) {
+      try { await navigator.share({ title: 'Signal Walk report', text }); return; } catch (err) { if (err && err.name === 'AbortError') return; }
+    }
+    try { await navigator.clipboard.writeText(text); show('Report copied. Paste it into a text or email.'); }
+    catch (err) { prompt('Copy this report:', text); }
+  });
 }
 
 function resultsLine(res, cls, style, rc) {
@@ -1082,11 +1282,12 @@ function renderHistory() {
         Object.keys(e.rootCause).forEach(k => { rcMiss += 1; if (e.rootCause[k]) rcKnown += 1; });
       });
       if (rcMiss) lines.push('Root cause understood in ' + rcKnown + ' of ' + rcMiss + ' miss' + (rcMiss === 1 ? '' : 'es'));
-      const full = resWalks.filter(e => RESULT_ITEMS.every(r => typeof entryResults(e)[r.id] === 'boolean'));
+      const recorded = e => RESULT_ITEMS.filter(r => typeof entryResults(e)[r.id] === 'boolean');
+      const full = resWalks.filter(e => recorded(e).length);
       if (full.length) {
-        const allHit = full.filter(e => RESULT_ITEMS.every(r => entryResults(e)[r.id]));
-        const anyMiss = full.filter(e => !RESULT_ITEMS.every(r => entryResults(e)[r.id]));
-        lines.push('Average meeting score when all four hit: ' + avg(allHit));
+        const allHit = full.filter(e => recorded(e).every(r => entryResults(e)[r.id]));
+        const anyMiss = full.filter(e => !recorded(e).every(r => entryResults(e)[r.id]));
+        lines.push('Average meeting score when every result hit: ' + avg(allHit));
         lines.push('Average meeting score when any missed: ' + avg(anyMiss));
       }
       html += '<div class="pattern-box"><b>' + esc(site) + ': results against meeting score</b><br>' + lines.join('<br>') + '</div>';
@@ -1346,7 +1547,7 @@ function renderAnalysis() {
   if (!walks.length) {
     content.innerHTML = '<div class="empty-state">No walks to analyze yet. Walks scored in the current format (October 2026 on) build the analysis here.</div>';
   } else {
-    content.innerHTML = anSummary(walks) + anPChart(walks, mixed) + anSustain(walks) + anCurve(walks, mixed) + anPareto(walks) + anBeforeAfter(walks) + anResults(walks) + anBoundary(walks);
+    content.innerHTML = anSummary(walks) + anPChart(walks, mixed) + anSustain(walks) + anCurve(walks, mixed) + anPareto(walks) + anBeforeAfter(walks) + anResults(walks) + anParticipation(walks) + anBoundary(walks);
   }
   renderCalibration();
 }
@@ -1545,6 +1746,25 @@ function anResults(walks) {
     '<p class="an-note">* means p below 0.05. A signal shows the meeting and the result move together. The lagged test is the stronger evidence, because the meeting comes before the result. Neither proves cause on its own.</p></div>';
 }
 
+function participationRate(e) {
+  if (typeof e.present !== 'number' || typeof e.speakers !== 'number' || e.present < 2) return null;
+  return Math.min(1, e.speakers / (e.present - 1));
+}
+function anParticipation(walks) {
+  const pw = walks.filter(e => participationRate(e) !== null);
+  if (!pw.length) return '';
+  const rates = pw.map(participationRate);
+  const avgRate = mean(rates);
+  const tr = linReg(rates.map((_, i) => i), rates);
+  const cls = avgRate >= 0.5 ? 'good' : avgRate >= 0.25 ? 'drift' : 'fail';
+  return '<div class="an-card"><p class="an-title">Participation</p>' +
+    '<p class="an-sub">Share of the people in the room, other than the chair, who spoke at least once.</p>' +
+    '<div class="stat-grid"><div class="stat"><div class="stat-num">' + Math.round(avgRate * 100) + '%</div><div class="stat-lbl">Average across ' + pw.length + ' walk' + (pw.length === 1 ? '' : 's') + '</div></div>' +
+    '<div class="stat"><div class="stat-num">' + Math.round(rates[rates.length - 1] * 100) + '%</div><div class="stat-lbl">Latest walk</div></div></div>' +
+    '<p class="verdict ' + cls + '">' + (cls === 'good' ? 'The room owns the meeting' : cls === 'drift' ? 'A few voices carry the meeting' : 'The chair is briefing, the room is listening') + '</p>' +
+    (tr ? '<p class="an-line">Trend: <b>' + (tr.p < 0.05 ? (tr.slope > 0 ? 'rising' : 'falling') : 'no clear trend') + '</b>, ' + fmtP(tr.p) + '.</p>' : '') +
+    '<p class="an-note">Healthy is half the room or more. Every element owner should speak to their own numbers.</p></div>';
+}
 function anBoundary(walks) {
   const hw = walks.filter(e => typeof e.hesitations === 'number');
   const ew = walks.filter(e => e.escSort);
@@ -1796,7 +2016,7 @@ function buildCSV() {
   const head = ['walk_id', 'format_version', 'date', 'site', 'meeting', 'tier', 'chair', 'shift', 'observer',
     'score_pct', 'imi_band', 'at_standard', 'opportunities', 'misses', 'miss_rate', 'dpmo',
     'minutes_late', 'held_start', 'run_time', 'run_limit', 'roles_required', 'roles_absent', 'roles_delegate', 'absent_roles',
-    'hesitations', 'esc_boundary', 'esc_clock', 'esc_just_hard']
+    'hesitations', 'esc_boundary', 'esc_clock', 'esc_just_hard', 'people_present', 'speakers', 'participation_rate', 'coaching_focus']
     .concat(dimIds.map(d => 'dim_' + d))
     .concat(RESULT_ITEMS.reduce((a, r) => a.concat(['res_' + r.id + '_hit', 'res_' + r.id + '_cause_understood', 'res_' + r.id + '_actual', 'res_' + r.id + '_target', 'res_' + r.id + '_lower_is_better']), []))
     .concat(checkIds.map(c => 'chk_' + c));
@@ -1815,7 +2035,8 @@ function buildCSV() {
       w ? w.n : '', w ? w.d : '', w ? (w.d / w.n).toFixed(4) : '', w ? Math.round(w.d / w.n * 1e6) : '',
       e.minutesLate, b(e.heldForSomeone), e.runTime, TIME_LIMITS[e.tier],
       roles.length || '', roles.filter(r => att[r] === 'absent').length, roles.filter(r => att[r] === 'delegate').length, roles.filter(r => att[r] === 'absent').join('; '),
-      e.hesitations, e.escSort ? e.escSort.boundary : '', e.escSort ? e.escSort.clock : '', e.escSort ? e.escSort.hard : '']
+      e.hesitations, e.escSort ? e.escSort.boundary : '', e.escSort ? e.escSort.clock : '', e.escSort ? e.escSort.hard : '',
+      e.present, e.speakers, participationRate(e) === null ? '' : participationRate(e).toFixed(3), e.focus]
       .concat(dimIds.map(d => (e.notApplicable || []).includes(d) ? 'NA' : (e.ratings && e.ratings[d] in rateNum ? rateNum[e.ratings[d]] : '')))
       .concat(RESULT_ITEMS.reduce((a, r) => {
         const n = rn[r.id] || {};
@@ -1836,19 +2057,212 @@ document.getElementById('btn-csv').addEventListener('click', () => {
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
 });
 
+/* == Dashboard == */
+function bandIndex(pct) { return IMI_BANDS.indexOf(bandForScore(pct)); }
+function bandClass(idx) { return idx >= STANDARD_BAND ? 'good' : idx === STANDARD_BAND - 1 ? 'drift' : 'fail'; }
+function bandRange(i) {
+  const lo = i === 0 ? 0 : Math.ceil(i * 100 / IMI_BANDS.length);
+  const hi = i === IMI_BANDS.length - 1 ? 100 : Math.ceil((i + 1) * 100 / IMI_BANDS.length) - 1;
+  return [lo, hi];
+}
+function bandChip(pct) {
+  const i = bandIndex(pct);
+  return '<span class="band-chip ' + bandClass(i) + '">' + IMI_BANDS[i] + '</span>';
+}
+function renderDashboard() {
+  const all = getHistory();
+  const siteSel = document.getElementById('dash-site');
+  const sites = Array.from(new Set(all.map(e => e.site || 'Unnamed site'))).sort();
+  setOptions(siteSel, [{ value: '*', label: 'All sites' }].concat(sites.map(x => ({ value: x, label: x }))));
+  const site = siteSel.value || '*';
+  const tier = document.getElementById('dash-tier').value;
+  const walks = all.filter(e => (site === '*' || (e.site || 'Unnamed site') === site) && (!tier || e.tier === tier)).sort(walkSort);
+  const content = document.getElementById('dashboard-content');
+  renderLegend();
+  if (!walks.length) {
+    content.innerHTML = '<div class="empty-state">No walks yet. Score a walk and every meeting you walk shows up here, placed on the IMI scale.</div>';
+    return;
+  }
+  const groups = {};
+  walks.forEach(e => {
+    const k = streamKey(e.site, e.meeting, e.tier);
+    (groups[k] = groups[k] || { site: e.site || 'Unnamed site', meeting: e.meeting || '', tier: e.tier, walks: [] }).walks.push(e);
+  });
+  const meetings = Object.values(groups).map(g => {
+    const pcts = g.walks.map(entryPct);
+    const last5 = pcts.slice(-5), prev5 = pcts.slice(-10, -5);
+    const avg5 = Math.round(mean(last5));
+    const delta = prev5.length >= 3 ? avg5 - Math.round(mean(prev5)) : null;
+    return Object.assign(g, { latest: pcts[pcts.length - 1], avg5, delta, lastDate: g.walks[g.walks.length - 1].date,
+      atStd5: g.walks.slice(-5).filter(atStandard).length, n5: last5.length });
+  });
+  const latestAvg = Math.round(mean(meetings.map(m => m.latest)));
+  const atStd = meetings.filter(m => bandIndex(m.latest) >= STANDARD_BAND).length;
+  const counts = IMI_BANDS.map(() => 0);
+  meetings.forEach(m => { counts[bandIndex(m.latest)]++; });
+  const maxCount = Math.max.apply(null, counts) || 1;
+
+  let h = '<div class="an-card"><p class="an-title">All meetings at a glance</p>' +
+    '<p class="an-sub">Each meeting is placed by its latest walk. ' + (site === '*' ? 'All sites' : esc(site)) + (tier ? ', ' + esc(tier) : '') + '.</p>' +
+    '<div class="stat-grid">' +
+    '<div class="stat"><div class="stat-num">' + atStd + ' of ' + meetings.length + '</div><div class="stat-lbl">Meetings at standard (Regulating or better)</div></div>' +
+    '<div class="stat"><div class="stat-num">' + latestAvg + '%</div><div class="stat-lbl">Average latest score, ' + IMI_BANDS[bandIndex(latestAvg)] + '</div></div>' +
+    '<div class="stat"><div class="stat-num">' + meetings.length + '</div><div class="stat-lbl">Meetings walked</div></div>' +
+    '<div class="stat"><div class="stat-num">' + walks.length + '</div><div class="stat-lbl">Walks scored</div></div>' +
+    '</div>' +
+    '<p class="an-line" style="margin-top:12px;"><b>Where the meetings sit on the IMI scale</b></p>' +
+    '<div class="imi-strip">' + IMI_BANDS.map((b, i) =>
+      '<div class="imi-seg"><div class="imi-bar"><div class="imi-fill ' + bandClass(i) + '" style="height:' + (counts[i] ? Math.max(8, counts[i] / maxCount * 100) : 0) + '%"></div></div>' +
+      '<div class="imi-count">' + counts[i] + '</div><div class="imi-name">' + b + '</div></div>').join('') + '</div>' +
+    '</div>';
+
+  h += '<div class="list-head">Meetings, lowest score first</div>';
+  meetings.sort((a, b) => a.latest - b.latest || a.site.localeCompare(b.site)).forEach(m => {
+    const cls = bandClass(bandIndex(m.latest));
+    const trend = m.delta === null ? 'not enough walks' : m.delta >= 5 ? '&#9650; up ' + m.delta + ' pts' : m.delta <= -5 ? '&#9660; down ' + Math.abs(m.delta) + ' pts' : 'steady';
+    const trendColor = m.delta === null ? 'var(--text-faint)' : m.delta >= 5 ? 'var(--good)' : m.delta <= -5 ? 'var(--fail)' : 'var(--text-dim)';
+    h += '<div class="dash-row"><div class="dash-top"><span class="dash-name">' + esc(m.meeting || m.tier + ' (no meeting name)') + '</span>' + bandChip(m.latest) + '</div>' +
+      '<div class="dash-sub">' + esc(m.site) + ', ' + esc(m.tier) + ', last walk ' + esc(m.lastDate) + '</div>' +
+      '<div class="score-track"><div class="score-fill ' + cls + '" style="width:' + m.latest + '%"></div><div class="score-std" style="left:' + bandRange(STANDARD_BAND)[0] + '%"></div></div>' +
+      '<div class="dash-nums"><span><b>' + m.latest + '%</b> latest</span><span><b>' + m.avg5 + '%</b> last ' + m.n5 + '</span><span><b>' + m.atStd5 + '/' + m.n5 + '</b> at standard</span></div>' +
+      '<div class="dash-sub" style="color:' + trendColor + ';">' + trend + (m.delta === null ? '' : ' vs the 5 walks before') + ', ' + m.walks.length + ' walk' + (m.walks.length === 1 ? '' : 's') + ' total</div></div>';
+  });
+  content.innerHTML = h;
+}
+function renderLegend() {
+  const rows = IMI_BANDS.map((b, i) => {
+    const [lo, hi] = bandRange(i);
+    return '<div class="legend-row"><span class="band-chip ' + bandClass(i) + '">' + b + '</span><span class="legend-range">' + lo + ' to ' + hi + '%</span><span>' +
+      (i >= STANDARD_BAND ? 'At standard' : i === STANDARD_BAND - 1 ? 'Close: the steps happen' : 'Below standard') + '</span></div>';
+  }).join('');
+  document.getElementById('dash-legend').innerHTML =
+    '<p class="an-title">How to read the scores</p>' +
+    '<p class="an-sub"><b>The score.</b> Each dimension of a walk is rated Good (1 point), Drifting (half a point), or Failure mode (0). The score is the average across the dimensions that applied, as a percentage. A meeting rated Good on 5 of 8 dimensions and Drifting on 3 scores 81%.</p>' +
+    '<p class="an-sub"><b>The IMI band.</b> The score places the walk on the seven-band IMI scale:</p>' + rows +
+    '<p class="an-sub" style="margin-top:10px;"><b>The colors.</b> Green is at standard: Regulating or better, 58% and up. Amber is Compliant: the meeting runs its steps but does not yet regulate the work. Red is below that. On each meeting bar, the thin line marks the standard.</p>' +
+    '<p class="an-sub"><b>Dimension colors on a walk.</b> Green Good means no misses. Amber Drifting means one miss. Red Failure mode means two or more misses, or a hard rule broken, such as the chair absent with no stand-in.</p>' +
+    '<p class="an-sub"><b>Trend.</b> The average of the last 5 walks against the 5 before. Up or down means a move of 5 points or more. Anything smaller is steady.</p>';
+}
+['dash-site', 'dash-tier'].forEach(id => document.getElementById(id).addEventListener('change', renderDashboard));
+
+/* == Walk report == */
+function walkReport(e) {
+  const pct = entryPct(e);
+  const w = walkDefects(e);
+  const L = [];
+  L.push('SIGNAL WALK REPORT');
+  L.push([e.site || 'Unnamed site', e.meeting, e.tier, e.date].filter(Boolean).join(', '));
+  if (e.chair) L.push('Chair: ' + e.chair);
+  L.push('');
+  L.push('Result: ' + bandForScore(pct) + ', ' + pct + '%' + (atStandard(e) ? ' (at standard)' : ' (below standard)'));
+  if (w) L.push(w.d + ' miss' + (w.d === 1 ? '' : 'es') + ' in ' + w.n + ' checks');
+  if (e.focus) { L.push(''); L.push('ONE THING TO WORK ON'); L.push(e.focus); }
+  const dims = Object.keys(e.ratings || {});
+  L.push('');
+  L.push('BY DIMENSION');
+  dims.forEach(id => L.push((TITLES[id] || id) + ': ' + RATE_LABELS[e.ratings[id]]));
+  const missed = [];
+  dims.forEach(id => ((e.misses && e.misses[id]) || []).forEach(m => missed.push(m)));
+  if (missed.length) { L.push(''); L.push('WHAT MISSED (not true in this meeting)'); missed.forEach(m => L.push('- ' + m)); }
+  const strong = dims.filter(id => e.ratings[id] === 'good').map(id => TITLES[id] || id);
+  if (strong.length) { L.push(''); L.push('WHAT WENT WELL'); L.push(strong.join(', ')); }
+  const res = entryResults(e);
+  if (res) {
+    const parts = RESULT_ITEMS.filter(r => typeof res[r.id] === 'boolean').map(r => r.short + ' ' + (res[r.id] ? 'hit' : 'missed'));
+    if (parts.length) { L.push(''); L.push('RESULTS'); L.push(parts.join(', ')); }
+  }
+  const notes = dims.filter(id => e.notes && e.notes[id] && e.notes[id].trim());
+  if (notes.length) { L.push(''); L.push('NOTES'); notes.forEach(id => L.push((TITLES[id] || id) + ': ' + e.notes[id].trim())); }
+  return L.join('\n');
+}
+
+/* == Backup and restore == */
+function downloadFile(name, text, type) {
+  const blob = new Blob([text], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+function backupPayload() {
+  const read = k => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
+  return { app: 'SignalWalk', version: 1, exported: new Date().toISOString(),
+    history: getHistory(), roles: read('signalWalkRoles'), resultDir: read('signalWalkResultDir'),
+    curves: read('signalWalkCurves'), calibrations: read('signalWalkCalibrations') };
+}
+function restoreFrom(text) {
+  let data;
+  try { data = JSON.parse(text); } catch (e) { return 'That is not a SignalWalk backup.'; }
+  const incoming = Array.isArray(data) ? data : (data && Array.isArray(data.history) ? data.history : null);
+  if (!incoming) return 'That is not a SignalWalk backup.';
+  const valid = incoming.filter(x => x && x.id && x.date && x.tier);
+  const hist = getHistory();
+  const have = new Set(hist.map(x => x.id));
+  const added = valid.filter(x => !have.has(x.id));
+  saveHistory(hist.concat(added));
+  if (!Array.isArray(data)) {
+    const mergeObj = (key, val) => {
+      if (!val || typeof val !== 'object') return;
+      let cur = {};
+      try { cur = JSON.parse(localStorage.getItem(key) || '{}') || {}; } catch (e) {}
+      Object.keys(val).forEach(k => { if (!(k in cur)) cur[k] = val[k]; });
+      try { localStorage.setItem(key, JSON.stringify(cur)); } catch (e) {}
+    };
+    mergeObj('signalWalkRoles', data.roles);
+    mergeObj('signalWalkResultDir', data.resultDir);
+    mergeObj('signalWalkCurves', data.curves);
+    if (Array.isArray(data.calibrations)) {
+      const cals = getCals();
+      const ids = new Set(cals.map(c => c.id));
+      saveCals(cals.concat(data.calibrations.filter(c => c && c.id && !ids.has(c.id))));
+    }
+  }
+  fillDatalists();
+  renderHistory();
+  return 'Restored ' + added.length + ' walk' + (added.length === 1 ? '' : 's') + (valid.length - added.length ? ', skipped ' + (valid.length - added.length) + ' already here' : '') + '.';
+}
+function restoreToast(msg) {
+  const t = document.getElementById('restore-toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 4000);
+}
+document.getElementById('btn-backup').addEventListener('click', () => {
+  downloadFile('signalwalk-backup-' + todayISO() + '.json', JSON.stringify(backupPayload()), 'application/json');
+});
+document.getElementById('btn-restore').addEventListener('click', () => {
+  document.getElementById('restore-paste').style.display = 'block';
+  document.getElementById('restore-file').click();
+});
+document.getElementById('restore-file').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => { restoreToast(restoreFrom(String(r.result))); e.target.value = ''; };
+  r.readAsText(f);
+});
+document.getElementById('btn-restore-paste').addEventListener('click', () => {
+  const msg = restoreFrom(document.getElementById('restore-text').value);
+  if (msg.indexOf('Restored') === 0) document.getElementById('restore-text').value = '';
+  restoreToast(msg);
+});
+
 function switchView(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('view-' + view).classList.add('active');
   document.querySelector('.tab-btn[data-view="' + view + '"]').classList.add('active');
+  try { document.querySelector('.tab-btn[data-view="' + view + '"]').scrollIntoView({ inline: 'nearest', block: 'nearest' }); } catch (e) {}
   if (view === 'history') {
     renderHistory();
     document.getElementById('export-output').style.display = 'none';
     document.getElementById('btn-copy').style.display = 'none';
-    document.getElementById('btn-export').textContent = 'Show export data';
+    document.getElementById('btn-export').textContent = 'Show backup text';
     document.getElementById('copy-toast').style.display = 'none';
   }
   if (view === 'analysis') renderAnalysis();
+  if (view === 'dashboard') renderDashboard();
   window.scrollTo(0, 0);
 }
 document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchView(btn.dataset.view)));
@@ -1863,6 +2277,7 @@ document.getElementById('btn-score').addEventListener('click', () => {
     if (!results[d.id].rating) missing.push(d.title);
   });
   if (state.hesitations === '' || isNaN(parseFloat(state.hesitations))) missing.push('Decision Boundary (hesitations, enter 0 if none)');
+  if (state.present !== '' && state.speakers !== '' && parseFloat(state.speakers) >= parseFloat(state.present)) missing.push('Participation (speakers besides the chair must be fewer than people in the room)');
   if (RESULT_ITEMS.some(r => !state.results[r.id] || (state.results[r.id] === 'no' && !state.rootCause[r.id]))) missing.push('Results');
   if (missing.length) {
     alert('Finish these before scoring: ' + missing.join(', '));
@@ -1915,6 +2330,9 @@ document.getElementById('btn-score').addEventListener('click', () => {
     date: document.getElementById('obs-date').value || todayISO(),
     tier,
     hesitations: numOrNull(state.hesitations),
+    present: numOrNull(state.present),
+    speakers: numOrNull(state.speakers),
+    focus: (state.focus || '').trim(),
     escSort: escalated ? { boundary: numOrNull(state.escBoundary) || 0, clock: numOrNull(state.escClock) || 0, hard: numOrNull(state.escHard) || 0 } : null,
     resultNums,
     minutesLate: parseFloat(state.minutesLate),
@@ -1938,6 +2356,7 @@ document.getElementById('btn-score').addEventListener('click', () => {
   switchView('result');
 
   resetState();
+  document.getElementById('focus-input').value = '';
   buildDimCards();
 });
 
@@ -1945,14 +2364,14 @@ document.getElementById('btn-export').addEventListener('click', () => {
   const output = document.getElementById('export-output');
   const isHidden = output.style.display === 'none' || !output.style.display;
   if (isHidden) {
-    output.value = JSON.stringify(getHistory(), null, 2);
+    output.value = JSON.stringify(backupPayload());
     output.style.display = 'block';
     document.getElementById('btn-copy').style.display = 'block';
-    document.getElementById('btn-export').textContent = 'Hide export data';
+    document.getElementById('btn-export').textContent = 'Hide backup text';
   } else {
     output.style.display = 'none';
     document.getElementById('btn-copy').style.display = 'none';
-    document.getElementById('btn-export').textContent = 'Show export data';
+    document.getElementById('btn-export').textContent = 'Show backup text';
     document.getElementById('copy-toast').style.display = 'none';
   }
 });
