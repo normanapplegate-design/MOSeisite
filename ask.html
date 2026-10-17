@@ -170,18 +170,46 @@
     addMsg('user', esc(q));
     var thinking = addMsg('assistant', 'Thinking...', 'thinking');
     history.push({ role: 'user', content: q });
+    var bubble = thinking.querySelector('.bubble');
     try {
-      var res = await fetch('/.netlify/functions/advisor', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: history })
-      });
-      var data = await res.json();
-      var answer = data.content && data.content[0] ? data.content[0].text : null;
-      if (!answer) throw new Error('empty');
+      var answer = '';
+      var res = null;
+      try {
+        res = await fetch('/.netlify/functions/advisor-stream', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: history })
+        });
+      } catch (e) { res = null; }
+
+      if (res && res.ok && res.body && res.body.getReader) {
+        // Show the answer as it is written.
+        var reader = res.body.getReader();
+        var decoder = new TextDecoder();
+        while (true) {
+          var chunk = await reader.read();
+          if (chunk.done) break;
+          answer += decoder.decode(chunk.value, { stream: true });
+          if (answer.trim()) {
+            thinking.classList.remove('thinking');
+            bubble.innerHTML = format(answer);
+            msgs.scrollTop = msgs.scrollHeight;
+          }
+        }
+      } else {
+        // Fallback: the original advisor, which returns the whole answer at once.
+        var res2 = await fetch('/.netlify/functions/advisor', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: history })
+        });
+        var data = await res2.json();
+        answer = data.content && data.content[0] ? data.content[0].text : '';
+      }
+      if (!answer.trim()) throw new Error('empty');
       history.push({ role: 'assistant', content: answer });
       thinking.classList.remove('thinking');
-      thinking.querySelector('.bubble').innerHTML = format(answer);
+      bubble.innerHTML = format(answer);
     } catch (e) {
       history.pop();
       thinking.classList.remove('thinking');

@@ -202,6 +202,24 @@ USING MATCHED READER SITUATIONS: When a "MATCHED READER SITUATIONS FROM THE NEWS
 
 Answer concisely and practically. Keep responses under 250 words. Speak like a trusted advisor, not a textbook. When answering KPI questions, connect the definition to what it reveals about system or management health. Do not start with "I" or use excessive preamble.`;
 
+// Models to try in order. If the first is unavailable, the next one answers.
+const MODELS = ['claude-haiku-5-5', 'claude-sonnet-4-6'];
+
+function buildSystemPrompt(question) {
+  const relevantKPIs = findRelevantKPIs(question);
+  const kpiContext = relevantKPIs.length > 0
+    ? '\n\nRELEVANT KPI DEFINITIONS:\n' + relevantKPIs.join('\n')
+    : '';
+  const relevantSituations = findRelevantSituations(question);
+  const situationContext = relevantSituations.length > 0
+    ? '\n\nMATCHED READER SITUATIONS FROM THE NEWSLETTER ARCHIVE:\n' + relevantSituations.join('\n\n')
+    : '';
+  return CORE_PROMPT + kpiContext + situationContext;
+}
+
+exports.MODELS = MODELS;
+exports.buildSystemPrompt = buildSystemPrompt;
+
 exports.handler = async function(event, context) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -212,36 +230,30 @@ exports.handler = async function(event, context) {
     const messages = body.messages || [{ role: 'user', content: body.question }];
     const question = messages.filter(m => m.role === 'user').map(m => m.content).pop() || '';
 
-    const relevantKPIs = findRelevantKPIs(question);
-    const kpiContext = relevantKPIs.length > 0
-      ? '\n\nRELEVANT KPI DEFINITIONS:\n' + relevantKPIs.join('\n')
-      : '';
+    const systemPrompt = buildSystemPrompt(question);
 
-    const relevantSituations = findRelevantSituations(question);
-    const situationContext = relevantSituations.length > 0
-      ? '\n\nMATCHED READER SITUATIONS FROM THE NEWSLETTER ARCHIVE:\n' + relevantSituations.join('\n\n')
-      : '';
-
-    const systemPrompt = CORE_PROMPT + kpiContext + situationContext;
-
-    const payload = JSON.stringify({
-      model: '  'claude-haiku-5-5'',
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages: messages
-    });
-
-    const data = await httpsPost({
-      hostname: 'api.anthropic.com',
-      path: '/v1/messages',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(payload),
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      }
-    }, payload);
+    let data;
+    for (const model of MODELS) {
+      const payload = JSON.stringify({
+        model: model,
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: messages
+      });
+      data = await httpsPost({
+        hostname: 'api.anthropic.com',
+        path: '/v1/messages',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(payload),
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01'
+        }
+      }, payload);
+      if (data.content && data.content[0]) break;
+      console.error('Model ' + model + ' failed:', JSON.stringify(data).substring(0, 300));
+    }
 
     if (!data.content || !data.content[0]) {
       console.error('Unexpected API response:', JSON.stringify(data).substring(0, 300));
