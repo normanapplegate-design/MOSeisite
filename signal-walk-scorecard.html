@@ -247,6 +247,10 @@
   </nav>
 
   <div class="view active" id="view-score">
+    <div class="ref-box" id="edit-banner" style="display:none;border-color:var(--amber);">
+      <span id="edit-banner-text"></span>
+      <button class="link-btn" id="btn-cancel-edit" style="display:block;">Cancel editing</button>
+    </div>
     <div class="field-row">
       <div class="field">
         <label for="site-name">Site / client</label>
@@ -296,6 +300,7 @@
     <div class="dim-card">
       <div class="dim-head"><p class="dim-title">Coaching focus</p><span class="badge">Not scored</span></div>
       <p class="dim-question">The one thing the chair should work on before the next walk. It leads the walk report.</p>
+      <div id="focus-follow"></div>
       <textarea class="evidence" id="focus-input" placeholder="e.g. Park problem-solving within 1 minute"></textarea>
     </div>
 
@@ -475,7 +480,7 @@
     </div>
     <div class="readme-section">
       <h3>Cadence</h3>
-      <p>Use it every time you observe a tier meeting in the field. Score the same site again on a later visit to see whether the meeting is regulating better or worse than last time.</p>
+      <p>Use it every time you observe a tier meeting in the field, live and in the room. Score the same site again on a later visit to see whether the meeting is regulating better or worse than last time.</p>
     </div>
     <div class="readme-section">
       <h3>Escalation path</h3>
@@ -487,7 +492,7 @@
     </div>
     <div class="readme-section">
       <h3>Three things most likely to fail in year one</h3>
-      <p>Answering the checks from memory after the meeting instead of live, in the room. Not using a watch, so minutes late and run time become guesses. Treating one weak visit as the verdict instead of checking it against the history trend.</p>
+      <p>Answering the checks from memory after the meeting instead of live, in the room. Not using the timer, so minutes late and run time become guesses. Treating one weak visit as the verdict instead of checking it against the history trend.</p>
     </div>
 
     <div class="readme-section">
@@ -639,7 +644,20 @@
     <div class="readme-section">
       <h3>Coaching focus and walk report</h3>
       <p>Before scoring, write the one thing the chair should work on before the next walk. After scoring, tap Share walk report on the Result tab. It sends a plain-text summary by text, email, or any app on your phone: the band and score, the coaching focus, what missed, what went well, and the results. On a computer it copies to the clipboard.</p>
+      <p>At the next walk of the same meeting, the Coaching focus card shows last walk's focus and asks whether the chair worked on it. Analysis tracks the follow-through rate, so you can see whether your coaching sticks.</p>
       <p class="readme-wrong">What can go wrong: a report with five things to fix. Pick one. The chair will work on one.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Timer</h3>
+      <p>In the Start card, set the meeting's scheduled start once. SignalWalk remembers it for that meeting. Tap Started now the moment the meeting begins, and minutes late fill in. Tap Ended now in the Energy card when it closes, and run time fills in. You can still type either number by hand.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Edit a saved walk</h3>
+      <p>In History, tap Edit this walk. The walk opens in the Score tab with every answer in place. Fix what was wrong and tap Save changes. The walk keeps its place in your history. Walks scored before a statement was added or retired pick up the current statements when edited, so answer any new ones before saving.</p>
+    </div>
+    <div class="readme-section">
+      <h3>Put it on your home screen</h3>
+      <p>On iPhone, open SignalWalk in Safari, tap Share, then Add to Home Screen. It opens like an app, full screen, one tap from your pocket. On Android, use the browser menu and Add to Home screen.</p>
     </div>
     <div class="readme-section">
       <h3>Dashboard</h3>
@@ -771,7 +789,7 @@ const TITLES = { start: 'Start', prep: 'Preparation', focus: 'Focus', energy: 'E
 
 let state;
 function resetState() {
-  state = { minutesLate: '', noWait: null, runTime: '', newActions: null, escSent: null, t2EscOn: null, a3On: null, results: {}, rootCause: {}, resultNums: {}, present: '', speakers: '', focus: '', hesitations: '', escBoundary: '', escClock: '', escHard: '', checks: {}, roles: {}, notes: {}, editingRoles: false };
+  state = { minutesLate: '', noWait: null, runTime: '', newActions: null, escSent: null, t2EscOn: null, a3On: null, results: {}, rootCause: {}, resultNums: {}, present: '', speakers: '', focus: '', focusWorked: null, startedAt: null, endedAt: null, hesitations: '', escBoundary: '', escClock: '', escHard: '', checks: {}, roles: {}, notes: {}, editingRoles: false };
 }
 resetState();
 
@@ -786,6 +804,22 @@ function todayISO() {
 function currentTier() { return document.getElementById('tier-select').value; }
 function currentSite() { return document.getElementById('site-name').value.trim(); }
 function currentMeeting() { return document.getElementById('meeting-name').value.trim(); }
+function getScheduleStore() { try { return JSON.parse(localStorage.getItem('signalWalkSchedule') || '{}'); } catch (e) { return {}; } }
+function scheduledFor(site, meeting, tier) { return getScheduleStore()[streamKey(site, meeting, tier)] || ''; }
+function saveScheduled(site, meeting, tier, hhmm) {
+  const st = getScheduleStore();
+  st[streamKey(site, meeting, tier)] = hhmm;
+  try { localStorage.setItem('signalWalkSchedule', JSON.stringify(st)); } catch (e) {}
+}
+function clockText(ts) { return new Date(ts).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' }); }
+function minutesLateFrom(ts, hhmm) {
+  if (!hhmm) return null;
+  const [h, m] = hhmm.split(':').map(Number);
+  const sched = new Date(ts); sched.setHours(h, m, 0, 0);
+  const diff = (ts - sched.getTime()) / 60000;
+  if (diff < -60 || diff > 120) return null;
+  return Math.max(0, Math.round(diff * 2) / 2);
+}
 function fieldVal(id) { return document.getElementById(id).value.trim(); }
 function escalatedToday() {
   return currentTier() === 'Tier 2' ? state.t2EscOn === 'yes' : state.escSent === 'yes';
@@ -907,6 +941,10 @@ function checkBlock(id) {
 function cardBody(dim, tier) {
   let h = '';
   if (dim.id === 'start') {
+    const sched = scheduledFor(currentSite(), currentMeeting(), tier);
+    h += '<div class="check"><p class="check-label">Timer</p><p class="check-desc">Set the scheduled start once per meeting. Tap Started now the moment the meeting begins, and the minutes late fill in.</p>' +
+      '<div class="num-pair" style="margin-top:0;"><label>Scheduled</label><input class="num-input" type="time" data-sched="1" value="' + esc(sched) + '" style="width:150px;">' +
+      '<button class="yn-btn' + (state.startedAt ? ' sel-yes' : '') + '" data-timer="start" style="flex:1;">' + (state.startedAt ? 'Started ' + esc(clockText(state.startedAt)) : 'Started now') + '</button></div></div>';
     h += '<div class="check"><p class="check-label">Minutes late (measured)</p><p class="check-desc">Up to 1 is Good. Over 1 up to 3 is Drifting. Over 3 is Failure mode. Enter 0 if on time.</p>' +
       '<div class="num-row"><input class="num-input" type="number" inputmode="decimal" min="0" step="0.5" data-num="minutesLate" value="' + esc(state.minutesLate) + '"><span class="num-hint">minutes</span></div></div>';
     h += '<div class="check"><p class="check-label">The chair started without waiting for anyone.</p><p class="check-desc">No if the start was held for a specific person. A No is Failure mode.</p>' + ynRow('noWait', state.noWait) + '</div>';
@@ -914,6 +952,8 @@ function cardBody(dim, tier) {
     visibleChecks(dim.checks, tier).forEach(id => { h += checkBlock(id); });
   } else if (dim.id === 'energy') {
     const limit = TIME_LIMITS[tier];
+    h += '<div class="check"><p class="check-label">Timer</p><p class="check-desc">' + (state.startedAt ? 'Tap Ended now when the meeting closes, and the run time fills in.' : 'Tap Started now in the Start card when the meeting begins, then Ended now here when it closes.') + '</p>' +
+      '<button class="yn-btn' + (state.endedAt ? ' sel-yes' : '') + '" data-timer="end" style="width:100%;"' + (state.startedAt ? '' : ' disabled') + '>' + (state.endedAt ? 'Ended ' + esc(clockText(state.endedAt)) : 'Ended now') + '</button></div>';
     h += '<div class="check"><p class="check-label">Run time (measured)</p><p class="check-desc">Total run time. ' + tier + ' limit is ' + limit + ' minutes. Over ' + (limit + 1) + ' is a miss.</p>' +
       '<div class="num-row"><input class="num-input" type="number" inputmode="decimal" min="0" step="1" data-num="runTime" value="' + esc(state.runTime) + '"><span class="num-hint">minutes</span></div></div>';
     h += checkBlock('energy_parked');
@@ -981,6 +1021,7 @@ function buildDimCards() {
   dims.forEach(renderCard);
   renderBoundaryCard();
   renderResultsCard();
+  renderFocusFollow();
 }
 function renderBoundaryCard() {
   let h = '<div class="dim-card"><div class="dim-head"><p class="dim-title">Participation</p><span class="badge">Not scored</span></div>' +
@@ -1067,6 +1108,21 @@ document.getElementById('dim-cards').addEventListener('click', e => {
   if (!btn) return;
   const dimId = dimOf(btn);
   const dim = dimById(dimId);
+  if (btn.dataset.timer) {
+    const now = Date.now();
+    if (btn.dataset.timer === 'start') {
+      state.startedAt = now; state.endedAt = null;
+      const late = minutesLateFrom(now, scheduledFor(currentSite(), currentMeeting(), currentTier()));
+      if (late !== null) state.minutesLate = String(late);
+      renderCard(dimById('start'));
+      renderCard(dimById('energy'));
+    } else if (state.startedAt) {
+      state.endedAt = now;
+      state.runTime = String(Math.max(0, Math.round((now - state.startedAt) / 60000)));
+      renderCard(dimById('energy'));
+    }
+    return;
+  }
   if (btn.dataset.key) {
     const key = btn.dataset.key, val = btn.dataset.val;
     if (key.startsWith('check:')) {
@@ -1097,6 +1153,15 @@ document.getElementById('dim-cards').addEventListener('click', e => {
   if (btn.dataset.key === 'escSent' || btn.dataset.key === 't2EscOn') renderBoundaryCard();
 });
 
+document.getElementById('dim-cards').addEventListener('change', e => {
+  const el = e.target;
+  if (!el.dataset.sched) return;
+  saveScheduled(currentSite(), currentMeeting(), currentTier(), el.value);
+  if (state.startedAt) {
+    const late = minutesLateFrom(state.startedAt, el.value);
+    if (late !== null) { state.minutesLate = String(late); renderCard(dimById('start')); }
+  }
+});
 document.getElementById('dim-cards').addEventListener('input', e => {
   const el = e.target;
   if (el.dataset.num) {
@@ -1110,10 +1175,38 @@ document.getElementById('dim-cards').addEventListener('input', e => {
 document.getElementById('tier-select').addEventListener('change', buildDimCards);
 document.getElementById('site-name').addEventListener('change', () => {
   renderCard(dimById('attendance'));
+  updateSchedField();
   renderResultsCard();
+  renderFocusFollow();
 });
-document.getElementById('meeting-name').addEventListener('change', renderResultsCard);
+document.getElementById('meeting-name').addEventListener('change', () => { renderResultsCard(); renderFocusFollow(); updateSchedField(); });
+function updateSchedField() {
+  const el = document.querySelector('input[data-sched]');
+  if (el && document.activeElement !== el) el.value = scheduledFor(currentSite(), currentMeeting(), currentTier());
+}
+function previousFocusWalk() {
+  const key = streamKey(currentSite(), currentMeeting(), currentTier());
+  if (!currentSite() && !currentMeeting()) return null;
+  const list = getHistory().filter(e => streamKey(e.site, e.meeting, e.tier) === key && e.id !== editingId && (!editingDate || e.date < editingDate || (e.date === editingDate && e.id < editingId))).sort(walkSort);
+  const last = list[list.length - 1];
+  return last && last.focus ? last : null;
+}
+function renderFocusFollow() {
+  const box = document.getElementById('focus-follow');
+  const prev = previousFocusWalk();
+  if (!prev) { box.innerHTML = ''; state.focusWorked = null; return; }
+  box.innerHTML = '<div class="ref-box" style="margin-top:4px;"><b>Last walk\'s focus (' + esc(prev.date) + '):</b> ' + esc(prev.focus) + '</div>' +
+    '<div class="check" style="padding-top:0;"><p class="check-label">The chair worked on it.</p><p class="check-desc">Yes if you saw the change in this meeting. Not scored.</p>' +
+    ynRow('focusWorked', state.focusWorked) + '</div>';
+}
+document.getElementById('focus-follow').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-key="focusWorked"]');
+  if (!btn) return;
+  state.focusWorked = state.focusWorked === btn.dataset.val ? null : btn.dataset.val;
+  renderFocusFollow();
+});
 document.getElementById('focus-input').addEventListener('input', e => { state.focus = e.target.value; });
+document.getElementById('btn-cancel-edit').addEventListener('click', () => { clearForm(); });
 document.getElementById('observer-name').addEventListener('change', () => {
   try { localStorage.setItem('signalWalkObserver', fieldVal('observer-name')); } catch (e) {}
 });
@@ -1305,6 +1398,7 @@ function renderHistory() {
         (e.v >= 2 ? (missCount ? '<div class="history-miss">' + missCount + ' check' + (missCount === 1 ? '' : 's') + ' missed</div>' : '') : '<div class="history-tag">Earlier six-dimension format</div>') +
         (i === 0 && scores.length > 1 ? '<div class="sparkline">' + renderSparkline(scores) + '</div>' : '') +
         (e.v >= 2 ? '<button class="delete-link" data-view-entry="' + esc(e.id) + '">View result</button>' : '') +
+        (e.v >= 2 ? '<button class="delete-link" data-edit="' + esc(e.id) + '">Edit this walk</button>' : '') +
         (e.v >= 2 ? '<button class="delete-link" data-cal-copy="' + esc(e.id) + '">Copy for calibration</button>' : '') +
         '<button class="delete-link" data-del="' + esc(e.id) + '">Delete this entry</button>' +
         '</div>';
@@ -1317,6 +1411,12 @@ function renderHistory() {
       if (!confirm('Delete this entry?')) return;
       saveHistory(getHistory().filter(e => e.id !== btn.dataset.del));
       renderHistory();
+    });
+  });
+  content.querySelectorAll('[data-edit]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const entry = getHistory().find(x => x.id === btn.dataset.edit);
+      if (entry) loadWalkForEdit(entry);
     });
   });
   content.querySelectorAll('[data-cal-copy]').forEach(btn => {
@@ -1547,7 +1647,7 @@ function renderAnalysis() {
   if (!walks.length) {
     content.innerHTML = '<div class="empty-state">No walks to analyze yet. Walks scored in the current format (October 2026 on) build the analysis here.</div>';
   } else {
-    content.innerHTML = anSummary(walks) + anPChart(walks, mixed) + anSustain(walks) + anCurve(walks, mixed) + anPareto(walks) + anBeforeAfter(walks) + anResults(walks) + anParticipation(walks) + anBoundary(walks);
+    content.innerHTML = anSummary(walks) + anPChart(walks, mixed) + anSustain(walks) + anCurve(walks, mixed) + anPareto(walks) + anBeforeAfter(walks) + anResults(walks) + anCoaching(walks) + anParticipation(walks) + anBoundary(walks);
   }
   renderCalibration();
 }
@@ -1746,6 +1846,20 @@ function anResults(walks) {
     '<p class="an-note">* means p below 0.05. A signal shows the meeting and the result move together. The lagged test is the stronger evidence, because the meeting comes before the result. Neither proves cause on its own.</p></div>';
 }
 
+function anCoaching(walks) {
+  const fw = walks.filter(e => e.focusFollow);
+  if (!fw.length) return '';
+  const worked = fw.filter(e => e.focusFollow.worked).length;
+  const share = worked / fw.length;
+  const cls = share >= 0.7 ? 'good' : share >= 0.4 ? 'drift' : 'fail';
+  const recent = fw.slice(-5).map(e => '<p class="an-line">' + esc(e.date) + ': ' + esc(e.focusFollow.focus) + ', <b>' + (e.focusFollow.worked ? 'worked on' : 'not yet') + '</b></p>').join('');
+  return '<div class="an-card"><p class="an-title">Coaching follow-through</p>' +
+    '<p class="an-sub">At each walk, did the chair act on the focus from the walk before?</p>' +
+    '<div class="stat-grid"><div class="stat"><div class="stat-num">' + worked + ' of ' + fw.length + '</div><div class="stat-lbl">Focus points acted on</div></div>' +
+    '<div class="stat"><div class="stat-num">' + Math.round(share * 100) + '%</div><div class="stat-lbl">Follow-through rate</div></div></div>' +
+    '<p class="verdict ' + cls + '">' + (cls === 'good' ? 'Coaching is sticking' : cls === 'drift' ? 'Some coaching sticks, some does not' : 'Coaching is not landing yet') + '</p>' + recent +
+    '<p class="an-note">Healthy is 7 in 10 or better. A low rate usually means the focus was too big, or there were too many at once.</p></div>';
+}
 function participationRate(e) {
   if (typeof e.present !== 'number' || typeof e.speakers !== 'number' || e.present < 2) return null;
   return Math.min(1, e.speakers / (e.present - 1));
@@ -2016,7 +2130,7 @@ function buildCSV() {
   const head = ['walk_id', 'format_version', 'date', 'site', 'meeting', 'tier', 'chair', 'shift', 'observer',
     'score_pct', 'imi_band', 'at_standard', 'opportunities', 'misses', 'miss_rate', 'dpmo',
     'minutes_late', 'held_start', 'run_time', 'run_limit', 'roles_required', 'roles_absent', 'roles_delegate', 'absent_roles',
-    'hesitations', 'esc_boundary', 'esc_clock', 'esc_just_hard', 'people_present', 'speakers', 'participation_rate', 'coaching_focus']
+    'hesitations', 'esc_boundary', 'esc_clock', 'esc_just_hard', 'people_present', 'speakers', 'participation_rate', 'coaching_focus', 'last_focus_worked_on', 'timed_in_app']
     .concat(dimIds.map(d => 'dim_' + d))
     .concat(RESULT_ITEMS.reduce((a, r) => a.concat(['res_' + r.id + '_hit', 'res_' + r.id + '_cause_understood', 'res_' + r.id + '_actual', 'res_' + r.id + '_target', 'res_' + r.id + '_lower_is_better']), []))
     .concat(checkIds.map(c => 'chk_' + c));
@@ -2036,7 +2150,8 @@ function buildCSV() {
       e.minutesLate, b(e.heldForSomeone), e.runTime, TIME_LIMITS[e.tier],
       roles.length || '', roles.filter(r => att[r] === 'absent').length, roles.filter(r => att[r] === 'delegate').length, roles.filter(r => att[r] === 'absent').join('; '),
       e.hesitations, e.escSort ? e.escSort.boundary : '', e.escSort ? e.escSort.clock : '', e.escSort ? e.escSort.hard : '',
-      e.present, e.speakers, participationRate(e) === null ? '' : participationRate(e).toFixed(3), e.focus]
+      e.present, e.speakers, participationRate(e) === null ? '' : participationRate(e).toFixed(3), e.focus,
+      e.focusFollow ? (e.focusFollow.worked ? 1 : 0) : '', e.timed ? 1 : 0]
       .concat(dimIds.map(d => (e.notApplicable || []).includes(d) ? 'NA' : (e.ratings && e.ratings[d] in rateNum ? rateNum[e.ratings[d]] : '')))
       .concat(RESULT_ITEMS.reduce((a, r) => {
         const n = rn[r.id] || {};
@@ -2156,6 +2271,7 @@ function walkReport(e) {
   L.push('');
   L.push('Result: ' + bandForScore(pct) + ', ' + pct + '%' + (atStandard(e) ? ' (at standard)' : ' (below standard)'));
   if (w) L.push(w.d + ' miss' + (w.d === 1 ? '' : 'es') + ' in ' + w.n + ' checks');
+  if (e.focusFollow) { L.push(''); L.push('LAST FOCUS: ' + e.focusFollow.focus); L.push(e.focusFollow.worked ? 'Worked on it: yes, the change showed in this meeting.' : 'Worked on it: not yet.'); }
   if (e.focus) { L.push(''); L.push('ONE THING TO WORK ON'); L.push(e.focus); }
   const dims = Object.keys(e.ratings || {});
   L.push('');
@@ -2319,9 +2435,12 @@ document.getElementById('btn-score').addEventListener('click', () => {
   });
   const escalated = tier === 'Tier 2' ? state.t2EscOn === 'yes' : state.escSent === 'yes';
 
+  const prevFocus = previousFocusWalk();
   const entry = {
     v: 4,
-    id: Date.now().toString(),
+    id: editingId || Date.now().toString(),
+    focusFollow: prevFocus && state.focusWorked ? { fromId: prevFocus.id, focus: prevFocus.focus, worked: state.focusWorked === 'yes' } : null,
+    timed: !!(state.startedAt && state.endedAt),
     site: currentSite(),
     meeting: currentMeeting(),
     chair: fieldVal('chair-name'),
@@ -2348,17 +2467,69 @@ document.getElementById('btn-score').addEventListener('click', () => {
   };
 
   const history = getHistory();
-  history.push(entry);
+  const at = editingId ? history.findIndex(x => x.id === editingId) : -1;
+  if (at >= 0) history[at] = entry; else history.push(entry);
   saveHistory(history);
   fillDatalists();
 
   renderResult(entry);
   switchView('result');
-
+  clearForm();
+});
+function clearForm() {
+  editingId = null; editingDate = null;
   resetState();
   document.getElementById('focus-input').value = '';
+  document.getElementById('obs-date').value = todayISO();
+  document.getElementById('edit-banner').style.display = 'none';
+  document.getElementById('btn-score').textContent = 'Score this walk';
   buildDimCards();
-});
+}
+
+/* == Edit a saved walk == */
+let editingId = null, editingDate = null;
+function loadWalkForEdit(e) {
+  resetState();
+  editingId = e.id; editingDate = e.date;
+  const yn = b => b === true ? 'yes' : b === false ? 'no' : null;
+  const str = v => (typeof v === 'number' && !isNaN(v)) ? String(v) : '';
+  document.getElementById('site-name').value = e.site || '';
+  document.getElementById('meeting-name').value = e.meeting || '';
+  document.getElementById('chair-name').value = e.chair || '';
+  document.getElementById('shift-name').value = e.shift || '';
+  if (e.observer) document.getElementById('observer-name').value = e.observer;
+  document.getElementById('obs-date').value = e.date;
+  document.getElementById('tier-select').value = e.tier;
+  state.minutesLate = str(e.minutesLate);
+  state.noWait = typeof e.heldForSomeone === 'boolean' ? (e.heldForSomeone ? 'no' : 'yes') : null;
+  state.runTime = str(e.runTime);
+  if (e.tier === 'Tier 2') {
+    state.t2EscOn = yn(e.escalated);
+    state.a3On = yn(e.a3Presented);
+  } else {
+    state.newActions = yn(e.newActions);
+    state.escSent = yn(e.escalated);
+  }
+  state.checks = Object.assign({}, e.checks || {});
+  state.roles = Object.assign({}, e.attendance || {});
+  state.notes = Object.assign({}, e.notes || {});
+  const res = entryResults(e) || {};
+  RESULT_ITEMS.forEach(r => { if (typeof res[r.id] === 'boolean') state.results[r.id] = res[r.id] ? 'yes' : 'no'; });
+  Object.keys(e.rootCause || {}).forEach(k => { state.rootCause[k] = e.rootCause[k] ? 'yes' : 'no'; });
+  Object.keys(e.resultNums || {}).forEach(k => { state.resultNums[k] = { actual: str(e.resultNums[k].actual), target: str(e.resultNums[k].target) }; });
+  state.hesitations = str(e.hesitations);
+  if (e.escSort) { state.escBoundary = str(e.escSort.boundary); state.escClock = str(e.escSort.clock); state.escHard = str(e.escSort.hard); }
+  state.present = str(e.present);
+  state.speakers = str(e.speakers);
+  state.focus = e.focus || '';
+  state.focusWorked = e.focusFollow ? (e.focusFollow.worked ? 'yes' : 'no') : null;
+  document.getElementById('focus-input').value = state.focus;
+  document.getElementById('edit-banner').style.display = 'block';
+  document.getElementById('edit-banner-text').textContent = 'Editing the walk from ' + e.date + (e.meeting ? ', ' + e.meeting : '') + '. Saving replaces it.';
+  document.getElementById('btn-score').textContent = 'Save changes';
+  buildDimCards();
+  switchView('score');
+}
 
 document.getElementById('btn-export').addEventListener('click', () => {
   const output = document.getElementById('export-output');
