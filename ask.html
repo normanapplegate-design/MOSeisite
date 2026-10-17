@@ -115,7 +115,7 @@
 </form>
 
 <script>
-  var history = [];
+  var chatHistory = [];
   var busy = false;
   var msgs = document.getElementById('messages');
   var input = document.getElementById('input');
@@ -169,7 +169,7 @@
     if (starters) starters.remove();
     addMsg('user', esc(q));
     var thinking = addMsg('assistant', 'Thinking...', 'thinking');
-    history.push({ role: 'user', content: q });
+    chatHistory.push({ role: 'user', content: q });
     var bubble = thinking.querySelector('.bubble');
     try {
       var answer = '';
@@ -178,7 +178,7 @@
         res = await fetch('/.netlify/functions/advisor-stream', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: history })
+          body: JSON.stringify({ messages: chatHistory })
         });
       } catch (e) { res = null; }
 
@@ -201,17 +201,17 @@
         var res2 = await fetch('/.netlify/functions/advisor', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: history })
+          body: JSON.stringify({ messages: chatHistory })
         });
         var data = await res2.json();
         answer = data.content && data.content[0] ? data.content[0].text : '';
       }
       if (!answer.trim()) throw new Error('empty');
-      history.push({ role: 'assistant', content: answer });
+      chatHistory.push({ role: 'assistant', content: answer });
       thinking.classList.remove('thinking');
       bubble.innerHTML = format(answer);
     } catch (e) {
-      history.pop();
+      chatHistory.pop();
       thinking.classList.remove('thinking');
       thinking.querySelector('.bubble').textContent = 'Could not reach Ask MOSei. Check your connection and try again.';
     }
@@ -239,7 +239,7 @@
   });
   document.getElementById('new-btn').addEventListener('click', function () {
     if (busy) return;
-    history = [];
+    chatHistory = [];
     welcome();
   });
 
