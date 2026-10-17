@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Ask MOSei</title>
+<meta name="description" content="Ask MOSei anything about the Norman System. Answers grounded in Norman Applegate's published works." />
+<link rel="canonical" href="https://mosei.org/ask.html" />
+<meta name="theme-color" content="#1a2744" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Ask MOSei" />
+<link rel="apple-touch-icon" href="ask-mosei-icon-180.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="ask-mosei-icon-512.png" />
+<link rel="manifest" href="ask-manifest.json" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-deep: #111c33;
+    --gold: #c9a84c;
+    --cream: #f8f5ef;
+    --cream-dark: #ede9e1;
+    --text: #1a1a1a;
+    --text-muted: #777;
+    --border: rgba(26,39,68,0.12);
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--sans);
+    background: var(--cream);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+  header {
+    background: var(--navy);
+    color: #fff;
+    padding: calc(env(safe-area-inset-top) + 12px) 16px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .logo { font-family: var(--serif); font-size: 1.35rem; }
+  .logo span { color: var(--gold); }
+  .sub { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-top: 2px; }
+  #new-btn {
+    background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff;
+    font-family: var(--sans); font-size: 0.75rem; padding: 6px 12px; border-radius: 999px;
+  }
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .msg { display: flex; flex-direction: column; max-width: 88%; }
+  .msg.user { align-self: flex-end; align-items: flex-end; }
+  .msg.assistant { align-self: flex-start; }
+  .label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 4px; }
+  .bubble { padding: 11px 14px; border-radius: 14px; font-size: 0.95rem; line-height: 1.55; word-wrap: break-word; }
+  .user .bubble { background: var(--navy); color: #fff; border-bottom-right-radius: 4px; }
+  .assistant .bubble { background: #fff; border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+  .thinking .bubble { opacity: 0.55; }
+  .starters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .starter {
+    background: var(--cream-dark); border: 1px solid var(--border); color: var(--navy);
+    font-family: var(--sans); font-size: 0.82rem; padding: 8px 12px; border-radius: 999px; text-align: left;
+  }
+  form {
+    display: flex; gap: 8px; align-items: flex-end;
+    padding: 10px 12px calc(env(safe-area-inset-bottom) + 10px);
+    background: var(--cream); border-top: 1px solid var(--border); flex-shrink: 0;
+  }
+  textarea {
+    flex: 1; resize: none; font-family: var(--sans); font-size: 16px; line-height: 1.4;
+    padding: 10px 14px; border-radius: 20px; border: 1px solid var(--border); background: #fff;
+    max-height: 120px; color: var(--text);
+  }
+  textarea:focus { outline: none; border-color: var(--gold); }
+  #send {
+    background: var(--gold); color: var(--navy-deep); border: none; font-family: var(--sans);
+    font-weight: 500; font-size: 0.9rem; height: 42px; padding: 0 16px; border-radius: 21px; flex-shrink: 0;
+  }
+  #send:disabled { opacity: 0.45; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="logo">MOS<span>ei</span></div>
+    <div class="sub">Ask MOSei</div>
+  </div>
+  <button id="new-btn" type="button">New</button>
+</header>
+
+<main id="messages" aria-live="polite"></main>
+
+<form id="ask-form">
+  <textarea id="input" rows="1" placeholder="Ask about the Norman System" aria-label="Your question"></textarea>
+  <button id="send" type="submit">Ask</button>
+</form>
+
+<script>
+  var history = [];
+  var busy = false;
+  var msgs = document.getElementById('messages');
+  var input = document.getElementById('input');
+  var sendBtn = document.getElementById('send');
+
+  var STARTERS = [
+    "What is Signal Compression?",
+    "When should an issue escalate to the next tier?",
+    "What is Norman's Gap?",
+    "Why do tier meetings turn into status updates?"
+  ];
+
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function format(s) {
+    return esc(s)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>');
+  }
+  function addMsg(role, html, extraClass) {
+    var wrap = document.createElement('div');
+    wrap.className = 'msg ' + role + (extraClass ? ' ' + extraClass : '');
+    wrap.innerHTML = '<div class="label">' + (role === 'user' ? 'You' : 'Ask MOSei') + '</div><div class="bubble">' + html + '</div>';
+    msgs.appendChild(wrap);
+    msgs.scrollTop = msgs.scrollHeight;
+    return wrap;
+  }
+  function welcome() {
+    msgs.innerHTML = '';
+    var w = addMsg('assistant', "Ask me anything about the Norman System: Norman's Gap, Signal Compression, the Decision Window, tier meetings, KPI design, escalation, or leadership.");
+    var box = document.createElement('div');
+    box.className = 'starters';
+    STARTERS.forEach(function (q) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'starter';
+      b.textContent = q;
+      b.onclick = function () { ask(q); };
+      box.appendChild(b);
+    });
+    w.appendChild(box);
+  }
+
+  async function ask(q) {
+    q = (q || '').trim();
+    if (!q || busy) return;
+    busy = true;
+    sendBtn.disabled = true;
+    var starters = msgs.querySelector('.starters');
+    if (starters) starters.remove();
+    addMsg('user', esc(q));
+    var thinking = addMsg('assistant', 'Thinking...', 'thinking');
+    history.push({ role: 'user', content: q });
+    try {
+      var res = await fetch('/.netlify/functions/advisor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history })
+      });
+      var data = await res.json();
+      var answer = data.content && data.content[0] ? data.content[0].text : null;
+      if (!answer) throw new Error('empty');
+      history.push({ role: 'assistant', content: answer });
+      thinking.classList.remove('thinking');
+      thinking.querySelector('.bubble').innerHTML = format(answer);
+    } catch (e) {
+      history.pop();
+      thinking.classList.remove('thinking');
+      thinking.querySelector('.bubble').textContent = 'Could not reach Ask MOSei. Check your connection and try again.';
+    }
+    busy = false;
+    sendBtn.disabled = false;
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  document.getElementById('ask-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = input.value;
+    input.value = '';
+    input.style.height = 'auto';
+    ask(q);
+  });
+  input.addEventListener('input', function () {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+  });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey && window.matchMedia('(pointer: fine)').matches) {
+      e.preventDefault();
+      document.getElementById('ask-form').requestSubmit();
+    }
+  });
+  document.getElementById('new-btn').addEventListener('click', function () {
+    if (busy) return;
+    history = [];
+    welcome();
+  });
+
+  welcome();
+</script>
+</body>
+</html>

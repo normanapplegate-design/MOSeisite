@@ -1,0 +1,13 @@
+{
+  "name": "Ask MOSei",
+  "short_name": "Ask MOSei",
+  "start_url": "/ask.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8f5ef",
+  "theme_color": "#1a2744",
+  "icons": [
+    { "src": "/ask-mosei-icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/ask-mosei-icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
