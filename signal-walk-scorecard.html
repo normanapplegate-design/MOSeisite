@@ -707,7 +707,7 @@
         <li><b>Embedded:</b> part of how work gets done. It holds without the observer in the room.</li>
         <li><b>Compounding:</b> returns more than its parts. Protect it and extend it under pressure.</li>
       </ol>
-      <p>The Dashboard legend shows the score range for each level.</p>
+      <p>Score ranges: Dark 0 to 20%, Named 21 to 35%, Started 36 to 50%, Compliant 51 to 65%, Regulating 66 to 80%, Embedded 81 to 90%, Compounding 91 to 100%. These match the MOS Assessment on mosei.org, so a meeting lands on the same level in every MOSei tool.</p>
     </div>
     <div class="readme-section">
       <h3>Earlier entries</h3>
@@ -1263,9 +1263,12 @@ function entryPct(e) {
   const total = vals.reduce((s, r) => s + (RATE_VALUES[r] ?? 0), 0);
   return Math.round((total / vals.length) * 100);
 }
+// IMI level ranges, matched to the MOS Assessment on mosei.org
+const IMI_RANGES = [[0, 20], [21, 35], [36, 50], [51, 65], [66, 80], [81, 90], [91, 100]];
 function bandForScore(pct) {
-  const idx = Math.min(IMI_BANDS.length - 1, Math.floor(pct / (100 / IMI_BANDS.length)));
-  return IMI_BANDS[idx];
+  const p = Math.round(pct);
+  const idx = IMI_RANGES.findIndex(r => p <= r[1]);
+  return IMI_BANDS[idx < 0 ? IMI_BANDS.length - 1 : idx];
 }
 function entryDims(e) {
   return Object.keys(e.ratings || {});
@@ -2209,11 +2212,7 @@ document.getElementById('btn-csv').addEventListener('click', () => {
 /* == Dashboard == */
 function bandIndex(pct) { return IMI_BANDS.indexOf(bandForScore(pct)); }
 function bandClass(idx) { return idx >= STANDARD_BAND ? 'good' : idx === STANDARD_BAND - 1 ? 'drift' : 'fail'; }
-function bandRange(i) {
-  const lo = i === 0 ? 0 : Math.ceil(i * 100 / IMI_BANDS.length);
-  const hi = i === IMI_BANDS.length - 1 ? 100 : Math.ceil((i + 1) * 100 / IMI_BANDS.length) - 1;
-  return [lo, hi];
-}
+function bandRange(i) { return IMI_RANGES[i]; }
 function bandChip(pct) {
   const i = bandIndex(pct);
   return '<span class="band-chip ' + bandClass(i) + '">' + IMI_BANDS[i] + '</span>';
@@ -2287,7 +2286,7 @@ function renderLegend() {
     '<p class="an-title">How to read the scores</p>' +
     '<p class="an-sub"><b>The score.</b> Each dimension of a walk is rated Good (1 point), Drifting (half a point), or Failure mode (0). The score is the average across the dimensions that applied, as a percentage. A meeting rated Good on 5 of 8 dimensions and Drifting on 3 scores 81%.</p>' +
     '<p class="an-sub"><b>The IMI level.</b> IMI is the Implementation Maturity Index, the seven-level scale used across the MOSei tools. It runs from a meeting that exists only on paper to one that runs the business. The score places each walk on a level:</p>' + rows +
-    '<p class="an-sub" style="margin-top:10px;"><b>The colors.</b> Green is at standard: Regulating or better, 58% and up. Amber is Compliant: the meeting runs its steps but does not yet regulate the work. Red is below that. On each meeting bar, the thin line marks the standard.</p>' +
+    '<p class="an-sub" style="margin-top:10px;"><b>The colors.</b> Green is at standard: Regulating or better, 66% and up. Amber is Compliant: the meeting runs its steps but does not yet regulate the work. Red is below that. On each meeting bar, the thin line marks the standard.</p>' +
     '<p class="an-sub"><b>Dimension colors on a walk.</b> Green Good means no misses. Amber Drifting means one miss. Red Failure mode means two or more misses, or a hard rule broken, such as the chair absent with no stand-in.</p>' +
     '<p class="an-sub"><b>Trend.</b> The average of the last 5 walks against the 5 before. Up or down means a move of 5 points or more. Anything smaller is steady.</p>';
 }
