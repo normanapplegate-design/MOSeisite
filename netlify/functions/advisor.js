@@ -251,16 +251,18 @@ exports.handler = async function(event, context) {
           'anthropic-version': '2023-06-01'
         }
       }, payload);
-      if (data.content && data.content[0]) break;
+      if (Array.isArray(data.content) && data.content.some(b => b.type === 'text' && b.text)) break;
       console.error('Model ' + model + ' failed:', JSON.stringify(data).substring(0, 300));
     }
 
-    if (!data.content || !data.content[0]) {
+    // The reply can hold more than one block; keep only the written text.
+    const answer = Array.isArray(data.content)
+      ? data.content.filter(b => b.type === 'text' && b.text).map(b => b.text).join('')
+      : '';
+    if (!answer) {
       console.error('Unexpected API response:', JSON.stringify(data).substring(0, 300));
       throw new Error('Unexpected API response: ' + JSON.stringify(data).substring(0, 100));
     }
-
-    const answer = data.content[0].text;
 
     return {
       statusCode: 200,
