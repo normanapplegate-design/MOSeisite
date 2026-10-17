@@ -714,12 +714,16 @@
       <p>Walks scored before October 2026 used six dimensions rated by hand, including Tone. They stay in History, marked as the earlier format, and their percentages still feed the site trend. Tier 2 walks scored before the Action Log, Escalations, and A3 Status change keep their original Actions and Escalation ratings. Walks scored before the Analysis tab have no meeting, chair, shift, observer, hesitation, or result numbers. They still count in the sigma level, control chart, and Pareto, and show as (no meeting name) in the Meeting filter. Two statements were retired in October 2026: the Tier 3 pre-read check, and "The meeting was held at the board," which duplicated "The meeting ran from the board." Earlier walks keep their answers to both.</p>
     </div>
     <div class="readme-section">
-      <h3>More tools</h3>
-      <p>SignalWalk is one of the MOSei tools for management operating systems. Find the Tier Meeting Diagnostic, the Meeting Signal Review, the MOS Assessment, and the rest at <a href="https://mosei.org/tools.html" target="_blank" rel="noopener" style="color:var(--amber);">mosei.org/tools</a>.</p>
+      <h3>More tools and knowledge</h3>
+      <p>SignalWalk is one of the MOSei tools for management operating systems. For more tools and knowledge, go to <a href="https://mosei.org" target="_blank" rel="noopener" style="color:var(--amber);">mosei.org</a>.</p>
+      <ul>
+        <li><a href="https://mosei.org/tools.html" target="_blank" rel="noopener" style="color:var(--amber);">Tools</a>: the Tier Meeting Diagnostic, Meeting Signal Review, MOS Assessment, and the rest of the toolkit.</li>
+        <li><a href="https://mosei.org/knowledge.html" target="_blank" rel="noopener" style="color:var(--amber);">Knowledge</a>: the Norman System, the IMI maturity framework, and the laws behind it.</li>
+      </ul>
     </div>
   </div>
   <footer style="margin-top:28px;padding-top:14px;border-top:1px solid var(--line);text-align:center;font-size:12px;color:var(--text-faint);">
-    SignalWalk by MOSei. More MOS tools at <a href="https://mosei.org/tools.html" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:none;">mosei.org</a>
+    SignalWalk by MOSei. For more tools and knowledge, go to <a href="https://mosei.org" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:none;">mosei.org</a>
   </footer>
 </div>
 
@@ -2323,7 +2327,7 @@ function walkReport(e) {
   const notes = dims.filter(id => e.notes && e.notes[id] && e.notes[id].trim());
   if (notes.length) { L.push(''); L.push('NOTES'); notes.forEach(id => L.push((TITLES[id] || id) + ': ' + e.notes[id].trim())); }
   L.push('');
-  L.push('Scored with SignalWalk. More MOS tools at mosei.org');
+  L.push('Scored with SignalWalk. For more tools and knowledge, go to mosei.org');
   return L.join('\n');
 }
 
