@@ -390,6 +390,13 @@
       <p>A walk is <b>at standard</b> when its score lands at Regulating or better on the IMI scale. Think of it as a passing grade.</p>
     </div>
     <div class="readme-section">
+      <h3>The IMI scale</h3>
+      <p class="explain-q">What do Dark, Compliant, and Regulating mean?</p>
+      <p>IMI stands for Implementation Maturity Index. It is a seven-step ladder from "the meeting does not really exist" to "the meeting runs the business." Every walk lands on one step.</p>
+      <p>The step that matters most is the jump from <b>Compliant</b> to <b>Regulating</b>. A Compliant meeting goes through the motions: the board is walked, the boxes get ticked. A Regulating meeting changes what people do afterward. That is why Regulating is the passing line.</p>
+      <p>Example: a meeting that starts on time, walks the board, and assigns owners, but never escalates anything and lets the action log go stale, usually lands at Compliant. Fix the escalations and the log, and it moves to Regulating.</p>
+    </div>
+    <div class="readme-section">
       <h3>Sigma level: how often does it miss?</h3>
       <p class="explain-q">Out of all the chances, how many did the meeting miss?</p>
       <p>Miss rate, DPMO, and sigma all answer that one question in different units, like miles, kilometers, and feet. 2 misses in 24 chances is about an 8% miss rate. Per million, that is 80,000 DPMO. As a sigma score, where higher is better, it is about 2.9.</p>
@@ -689,18 +696,44 @@
       <p>Not every problem goes on the log. Only a repeat within 30 days, or a miss too big to wait, that this room can fix. The day it is logged is day 1, counting meeting days, not calendar days. An item with a countermeasure confirmed by day 3 (owner, date, recovery plan) is held to its due date and does not escalate.</p>
     </div>
     <div class="readme-section">
-      <h3>IMI bands used for the overall read</h3>
-      <p>Dark, Named, Started, Compliant, Regulating, Embedded, Compounding. The overall score across the dimensions that applied places the meeting on this scale for that visit.</p>
+      <h3>IMI: the Implementation Maturity Index</h3>
+      <p>The IMI is the seven-level maturity scale used across the MOSei tools. It measures how far a management operating system element, here a tier meeting, has moved from existing on paper to running the business. Each walk's score places the meeting on the scale for that visit.</p>
+      <ol start="0">
+        <li><b>Dark:</b> not formally in place. The basics have to be established first.</li>
+        <li><b>Named:</b> named but not run consistently.</li>
+        <li><b>Started:</b> runs some of the time. The gap between existing and practiced is the work.</li>
+        <li><b>Compliant:</b> runs to the steps, but does not yet change how people act.</li>
+        <li><b>Regulating:</b> runs, is used, and changes behavior. The critical threshold, and SignalWalk's standard.</li>
+        <li><b>Embedded:</b> part of how work gets done. It holds without the observer in the room.</li>
+        <li><b>Compounding:</b> returns more than its parts. Protect it and extend it under pressure.</li>
+      </ol>
+      <p>The Dashboard legend shows the score range for each level.</p>
     </div>
     <div class="readme-section">
       <h3>Earlier entries</h3>
       <p>Walks scored before October 2026 used six dimensions rated by hand, including Tone. They stay in History, marked as the earlier format, and their percentages still feed the site trend. Tier 2 walks scored before the Action Log, Escalations, and A3 Status change keep their original Actions and Escalation ratings. Walks scored before the Analysis tab have no meeting, chair, shift, observer, hesitation, or result numbers. They still count in the sigma level, control chart, and Pareto, and show as (no meeting name) in the Meeting filter. Two statements were retired in October 2026: the Tier 3 pre-read check, and "The meeting was held at the board," which duplicated "The meeting ran from the board." Earlier walks keep their answers to both.</p>
     </div>
+    <div class="readme-section">
+      <h3>More tools</h3>
+      <p>SignalWalk is one of the MOSei tools for management operating systems. Find the Tier Meeting Diagnostic, the Meeting Signal Review, the MOS Assessment, and the rest at <a href="https://mosei.org/tools.html" target="_blank" rel="noopener" style="color:var(--amber);">mosei.org/tools</a>.</p>
+    </div>
   </div>
+  <footer style="margin-top:28px;padding-top:14px;border-top:1px solid var(--line);text-align:center;font-size:12px;color:var(--text-faint);">
+    SignalWalk by MOSei. More MOS tools at <a href="https://mosei.org/tools.html" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:none;">mosei.org</a>
+  </footer>
 </div>
 
 <script>
 const IMI_BANDS = ['Dark', 'Named', 'Started', 'Compliant', 'Regulating', 'Embedded', 'Compounding'];
+const IMI_MEANING = [
+  'Not formally in place. The basics have to be established first.',
+  'Named but not run consistently. Get the basics operational.',
+  'Runs some of the time. The gap between existing and practiced is the work.',
+  'Runs to the steps, but does not yet change how people act.',
+  'Runs, is used, and changes behavior. The critical threshold.',
+  'Part of how work gets done. It holds without the observer in the room.',
+  'Returns more than its parts. Protect it and extend it under pressure.'
+];
 const RATE_VALUES = { good: 1, drift: 0.5, fail: 0 };
 const RATE_LABELS = { good: 'Good', drift: 'Drifting', fail: 'Failure mode', na: 'N/A' };
 const TIME_LIMITS = { 'Tier 1': 15, 'Tier 2': 15, 'Tier 3': 30 };
@@ -1279,7 +1312,8 @@ function renderResult(entry) {
       '<div class="band-name">' + band + '</div>' +
       '<div class="gauge">' + gaugeSegs + '</div>' +
       '<div class="gauge-labels">' + IMI_BANDS.map(b => '<span>' + b[0] + '</span>').join('') + '</div>' +
-      '<div class="band-sub">' + pct + '% across the ' + dims.length + ' dimensions</div>' +
+      '<div class="band-sub">Implementation Maturity Index (IMI) level. ' + pct + '% across the ' + dims.length + ' dimensions</div>' +
+      '<div class="band-sub" style="margin-top:4px;">' + IMI_MEANING[IMI_BANDS.indexOf(band)] + '</div>' +
       (walkDefects(entry) ? '<div class="band-sub">' + walkDefects(entry).d + ' misses in ' + walkDefects(entry).n + ' opportunities' + (typeof entry.hesitations === 'number' ? ', ' + entry.hesitations + ' hesitation' + (entry.hesitations === 1 ? '' : 's') : '') + '</div>' : '') +
       resultsLine(entryResults(entry), 'band-sub', 'margin-top:8px;font-weight:600;', entry.rootCause) +
     '</div>' + bars +
@@ -2247,13 +2281,12 @@ function renderDashboard() {
 function renderLegend() {
   const rows = IMI_BANDS.map((b, i) => {
     const [lo, hi] = bandRange(i);
-    return '<div class="legend-row"><span class="band-chip ' + bandClass(i) + '">' + b + '</span><span class="legend-range">' + lo + ' to ' + hi + '%</span><span>' +
-      (i >= STANDARD_BAND ? 'At standard' : i === STANDARD_BAND - 1 ? 'Close: the steps happen' : 'Below standard') + '</span></div>';
+    return '<div class="legend-row" style="align-items:flex-start;"><span class="band-chip ' + bandClass(i) + '">' + b + '</span><span><span class="legend-range" style="display:block;width:auto;">' + lo + ' to ' + hi + '%</span>' + IMI_MEANING[i] + '</span></div>';
   }).join('');
   document.getElementById('dash-legend').innerHTML =
     '<p class="an-title">How to read the scores</p>' +
     '<p class="an-sub"><b>The score.</b> Each dimension of a walk is rated Good (1 point), Drifting (half a point), or Failure mode (0). The score is the average across the dimensions that applied, as a percentage. A meeting rated Good on 5 of 8 dimensions and Drifting on 3 scores 81%.</p>' +
-    '<p class="an-sub"><b>The IMI band.</b> The score places the walk on the seven-band IMI scale:</p>' + rows +
+    '<p class="an-sub"><b>The IMI level.</b> IMI is the Implementation Maturity Index, the seven-level scale used across the MOSei tools. It runs from a meeting that exists only on paper to one that runs the business. The score places each walk on a level:</p>' + rows +
     '<p class="an-sub" style="margin-top:10px;"><b>The colors.</b> Green is at standard: Regulating or better, 58% and up. Amber is Compliant: the meeting runs its steps but does not yet regulate the work. Red is below that. On each meeting bar, the thin line marks the standard.</p>' +
     '<p class="an-sub"><b>Dimension colors on a walk.</b> Green Good means no misses. Amber Drifting means one miss. Red Failure mode means two or more misses, or a hard rule broken, such as the chair absent with no stand-in.</p>' +
     '<p class="an-sub"><b>Trend.</b> The average of the last 5 walks against the 5 before. Up or down means a move of 5 points or more. Anything smaller is steady.</p>';
@@ -2269,7 +2302,8 @@ function walkReport(e) {
   L.push([e.site || 'Unnamed site', e.meeting, e.tier, e.date].filter(Boolean).join(', '));
   if (e.chair) L.push('Chair: ' + e.chair);
   L.push('');
-  L.push('Result: ' + bandForScore(pct) + ', ' + pct + '%' + (atStandard(e) ? ' (at standard)' : ' (below standard)'));
+  L.push('IMI level: ' + bandForScore(pct) + ', ' + pct + '%' + (atStandard(e) ? ' (at standard)' : ' (below standard)'));
+  L.push(IMI_MEANING[IMI_BANDS.indexOf(bandForScore(pct))]);
   if (w) L.push(w.d + ' miss' + (w.d === 1 ? '' : 'es') + ' in ' + w.n + ' checks');
   if (e.focusFollow) { L.push(''); L.push('LAST FOCUS: ' + e.focusFollow.focus); L.push(e.focusFollow.worked ? 'Worked on it: yes, the change showed in this meeting.' : 'Worked on it: not yet.'); }
   if (e.focus) { L.push(''); L.push('ONE THING TO WORK ON'); L.push(e.focus); }
@@ -2289,6 +2323,8 @@ function walkReport(e) {
   }
   const notes = dims.filter(id => e.notes && e.notes[id] && e.notes[id].trim());
   if (notes.length) { L.push(''); L.push('NOTES'); notes.forEach(id => L.push((TITLES[id] || id) + ': ' + e.notes[id].trim())); }
+  L.push('');
+  L.push('Scored with SignalWalk. More MOS tools at mosei.org');
   return L.join('\n');
 }
 
