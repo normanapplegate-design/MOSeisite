@@ -225,7 +225,7 @@ exports.handler = async function(event, context) {
     const systemPrompt = CORE_PROMPT + kpiContext + situationContext;
 
     const payload = JSON.stringify({
-      model: 'claude-sonnet-4-6',
+      model: '  'claude-haiku-5-5'',
       max_tokens: 1024,
       system: systemPrompt,
       messages: messages
